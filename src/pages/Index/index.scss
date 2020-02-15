@@ -1,0 +1,31 @@
+.layout {
+  height: 100vh;
+
+  .header {
+    background: #fff;
+    height: 80px;
+    padding: 0;
+    box-shadow: 0px 1px 4px 0px rgba(0, 21, 41, 0.12);
+  }
+
+  .content {
+    // margin: 24px 16px;
+    // min-height: 100vh;
+    margin-top: 1px;
+    overflow: scroll;
+    @include no-scrollbar();
+    // max-width: 1580px;
+    // min-width: 1580px;
+    // overflow: scroll;
+  }
+
+  .logo {
+    height: 10vh;
+  }
+
+  .app-menu {
+    height: 90vh;
+    overflow-y: scroll;
+    @include no-scrollbar();
+  }
+}

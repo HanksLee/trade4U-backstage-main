@@ -1,19 +1,19 @@
-import axios from 'axios';
-import { message } from 'antd';
+import axios from "axios";
+import { message } from "antd";
 
 const run = (window as any).run;
 const wx = (window as any).wx;
 
-export default function (shareData) {
+export default function(shareData) {
   // 调用 APP 设置分享内容接口
   run.menuShare(shareData);
 
   const curlUrl = encodeURIComponent(window.location.href);
   // @ts-ignore
   axios({
-    method: 'get',
-    url: '',
-    responseType: 'jsonp',
+    method: "get",
+    url: "",
+    responseType: "jsonp",
     params: {
       url: curlUrl,
     },
@@ -28,25 +28,25 @@ export default function (shareData) {
         nonceStr: data.nonceStr,
         signature: data.signature,
         jsApiList: [
-          'checkJsApi',
-          'onMenuShareTimeline',
-          'onMenuShareAppMessage',
-          'onMenuShareQQ',
-          'onMenuShareWeibo',
-          'onMenuShareQZone'
+          "checkJsApi",
+          "onMenuShareTimeline",
+          "onMenuShareAppMessage",
+          "onMenuShareQQ",
+          "onMenuShareWeibo",
+          "onMenuShareQZone"
         ],
       });
     })
     .catch(err => message.error(err));
 
-  wx.ready(function () {
+  wx.ready(function() {
     wx.checkJsApi({
       jsApiList: [
-        'onMenuShareTimeline',
-        'onMenuShareAppMessage',
-        'onMenuShareQQ',
-        'onMenuShareWeibo',
-        'onMenuShareQZone'
+        "onMenuShareTimeline",
+        "onMenuShareAppMessage",
+        "onMenuShareQQ",
+        "onMenuShareWeibo",
+        "onMenuShareQZone"
       ],
     });
     wx.onMenuShareAppMessage(shareData);
@@ -56,7 +56,7 @@ export default function (shareData) {
     wx.onMenuShareQZone(shareData);
   });
 
-  wx.error(function (res) {
+  wx.error(function(res) {
     message.error(res);
   });
 }

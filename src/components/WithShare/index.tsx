@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { BaseReact } from 'components/BaseReact';
-import { SHARE_DATA } from 'constant';
+import * as React from "react";
+import { BaseReact } from "components/BaseReact";
+import { SHARE_DATA } from "constant";
 
 const WithShare = (WrappedComponent): any => {
   return class extends BaseReact {

@@ -3,9 +3,9 @@ import axios, {
   AxiosInstance,
   AxiosResponse,
   AxiosError
-} from 'axios';
-import { message } from 'antd';
-import NProgress from 'nprogress';
+} from "axios";
+import { message } from "antd";
+import NProgress from "nprogress";
 
 export interface IAPI {
   getInstance(): AxiosInstance;
@@ -19,33 +19,44 @@ export default class API implements IAPI {
   }
 
   private handleInterceptors() {
-    this.api.interceptors.request.use((res: AxiosResponse) => {
-      NProgress.start();
-      return res;
-    }, (err: AxiosError) => {
-      NProgress.done();
-      return Promise.reject(err);
-    });
-
-    this.api.interceptors.response.use(async (res: AxiosResponse) => {
-      let {data: {statusCode, msg}} = res;
-
-      if (statusCode === 401) {
-        location.href = process.env.NODE_ENV === 'production' ? '/login' : location.origin + '/#/';
-      }
-
-      if (Number(statusCode) >= 400) {
-        message.error(msg);
-        NProgress.done();
-        return Promise.reject(msg);
-      } else {
-        NProgress.done();
+    this.api.interceptors.request.use(
+      (res: AxiosResponse) => {
+        NProgress.start();
         return res;
+      },
+      (err: AxiosError) => {
+        NProgress.done();
+        return Promise.reject(err);
       }
-    }, (err: AxiosError) => {
-      NProgress.done();
-      return Promise.reject(err);
-    });
+    );
+
+    this.api.interceptors.response.use(
+      async (res: AxiosResponse) => {
+        let {
+          data: { statusCode, msg, },
+        } = res;
+
+        if (statusCode === 401) {
+          window.location.href =
+            process.env.NODE_ENV === "production"
+              ? "/login"
+              : window.location.origin + "/#/";
+        }
+
+        if (Number(statusCode) >= 400) {
+          message.error(msg);
+          NProgress.done();
+          return Promise.reject(msg);
+        } else {
+          NProgress.done();
+          return res;
+        }
+      },
+      (err: AxiosError) => {
+        NProgress.done();
+        return Promise.reject(err);
+      }
+    );
   }
 
   constructor(config: AxiosRequestConfig) {
@@ -59,5 +70,5 @@ export default class API implements IAPI {
 }
 
 export const moonAPI = new API({
-  baseURL: '/api/moon',
+  baseURL: "/api/moon",
 }).getInstance();

@@ -65,18 +65,9 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
             <img src={''} alt="logo" />
           </h1>
           <div className='form'>
-            <h2>悦跑圈 Boss 后台管理系统</h2>
-            <p>钉钉扫码登录</p>
-            <div className='qrcode'>
-              <QRCode size={200} level={'H'} value={loginUrl} />,
-            </div>
-          </div>
-          <div className='copyright'>
-            <p>2014-2019 © Joyrun Inc - 悦跑圈</p>
-            <p>粤ICP备13015116号</p>
+            <h2>Moon Admin 管理系统</h2>
           </div>
         </div>
-
       </div>
     );
   }

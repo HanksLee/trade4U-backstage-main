@@ -1,16 +1,15 @@
-import * as React from "react";
-import { BaseReact } from "components/BaseReact";
-import { withRouter } from "react-router-dom";
-import AppRouter from "../../router";
-import { Layout, Menu, Icon } from "antd";
-import UserDropdown from "components/UserDropdown";
-import { PAGE_ROUTES } from "constant";
-import union from "lodash/union";
-import "./index.scss";
-import { inject, observer } from "mobx-react";
+import * as React from 'react';
+import { BaseReact } from 'components/BaseReact';
+import { withRouter } from 'react-router-dom';
+import AppRouter from '../../router';
+import { Layout, Menu, Icon } from 'antd';
+import UserDropdown from 'components/UserDropdown';
+import { PAGE_ROUTES } from 'constant';
+import union from 'lodash/union';
+import './index.scss';
+import { inject, observer } from 'mobx-react';
 
-const logo =
-  "https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130__480.png";
+const logo = 'https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130__480.png';
 const { Header, Sider, Content, } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;

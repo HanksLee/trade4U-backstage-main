@@ -19,16 +19,13 @@ export default class API implements IAPI {
   }
 
   private handleInterceptors() {
-    this.api.interceptors.request.use(
-      (res: AxiosResponse) => {
-        NProgress.start();
-        return res;
-      },
-      (err: AxiosError) => {
-        NProgress.done();
-        return Promise.reject(err);
-      }
-    );
+    this.api.interceptors.request.use((res: AxiosResponse) => {
+      NProgress.start();
+      return res;
+    }, (err: AxiosError) => {
+      NProgress.done();
+      return Promise.reject(err);
+    });
 
     this.api.interceptors.response.use(
       async (res: AxiosResponse) => {

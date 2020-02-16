@@ -74,7 +74,7 @@ img.emoji {
 }
 
 .transparent-bg {
-  @include bg("img/transparent.png");
+  // @include bg("img/transparent.png");
 
   display: inline-block;
   background-size: cover;

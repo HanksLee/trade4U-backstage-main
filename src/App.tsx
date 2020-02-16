@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Provider } from "mobx-react";
 import { BaseReact } from "components/BaseReact";
+import ErrorBoundary from 'components/ErrorBoundary';
 import store from "store";
 import Index from "pages/Index";
 import Login from "pages/Login";
@@ -33,6 +34,7 @@ class App extends BaseReact {
     const { userInfo, } = this.$store.common;
 
     return (
+      <ErrorBoundary>
       <Provider {...store}>
         {/* <Router basename={basename}> */}
         <Router>
@@ -57,6 +59,7 @@ class App extends BaseReact {
           </Switch>
         </Router>
       </Provider>
+      </ErrorBoundary>
     );
   }
 }

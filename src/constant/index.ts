@@ -54,7 +54,7 @@ export const PAGE_ROUTES = [
         path: '/dashboard/exchange/genre',
       },
       {
-        title: '交易产品设置',
+        title: '交易品种设置',
         path: '/dashboard/exchange/product',
       },
       {

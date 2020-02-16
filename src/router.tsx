@@ -30,7 +30,12 @@ const routes: any[] = [
   },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: "exchange-genre-page" */ "./pages/ExchangeProduct/ExchangeGenre")
+      import(/* webpackChunkName: "exchange-genre-page" */ "./pages/ExchangeProduct/GenreList")
+    ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "exchange-rule-page" */ "./pages/ExchangeProduct/RuleList")
     ),
   }
 ];

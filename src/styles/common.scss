@@ -93,3 +93,87 @@ img.emoji {
   height: 1px;
   border-bottom: 2px dashed rgba(0, 0, 0, 0.06);
 }
+
+.editor {
+  .editor-header {
+    .editor-header-title {
+      padding-top: 16px;
+    }
+
+    .editor-header-links {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.65);
+
+      a {
+        margin-right: 38px;
+      }
+    }
+  }
+
+  .editor-form {
+    .editor-specific-shoe {
+      .editor-specific-shoe-panel {
+        min-width: 840px;
+        padding: 20px;
+        margin-top: 15px;
+        // display: flex;
+        overflow: hidden;
+        background-color: #f3f3f3;
+        border-radius: 2px;
+
+        .editor-specific-shoe-panel-left,
+        .editor-specific-shoe-panel-right {
+          float: left;
+          margin-right: 36px;
+        }
+
+        .editor-specific-shoe-panel-right {
+          .form-upload {
+            width: 400px;
+          }
+        }
+
+        .editor-specific-shoe-field {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+
+          .editor-specific-shoe-label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+          }
+
+          .editor-specific-shoe-value {
+            display: inline-block;
+            width: 220px;
+            padding: 0 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+          }
+
+          .editor-specific-shoe-empty {
+            display: inline-block;
+          }
+        }
+      }
+    }
+
+    .editor-form-btns {
+      margin-left: 120px;
+
+      .ant-btn {
+        margin-right: 24px;
+      }
+    }
+  }
+}
+
+.ant-modal.blank-transparent-bg {
+  .ant-modal-content {
+    background-color: #666;
+  }
+}

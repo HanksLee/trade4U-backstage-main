@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BaseReact } from "components/BaseReact";
+// import { BaseReact } from "components/BaseReact";
 import "./index.scss";
 import {
   Button,
@@ -247,7 +247,7 @@ const widgetMap = {
   },
 };
 
-export default class CommonList extends BaseReact {
+export default class CommonList extends React.Component<any, any> {
   state = {
     collapse: true,
   };

@@ -69,7 +69,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       location: { pathname, },
-      common: {},
+      // common: {},
     } = nextProps;
 
     const pathLevel = union(
@@ -173,7 +173,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         )}
         <Layout
           style={{
-            minWidth: 1280,
+            // minWidth: 1280,
             overflow: "hidden",
           }}
         >

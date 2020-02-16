@@ -10,7 +10,7 @@ const updateGenre = (id: string, config): Promise<any> =>
 const deleteGenre = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/market/${id}`, config);
 
-  const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
+const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/markets", config);
 
 const updateRule = (id: string, config): Promise<any> =>

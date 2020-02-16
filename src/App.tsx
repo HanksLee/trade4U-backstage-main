@@ -35,30 +35,30 @@ class App extends BaseReact {
 
     return (
       <ErrorBoundary>
-      <Provider {...store}>
-        {/* <Router basename={basename}> */}
-        <Router>
-          <Switch>
-            {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
-            <Route exact path="/">
-              {!!userInfo ? (
-                <Redirect to="/dashboard" />
-              ) : (
-                <Redirect to="/login" />
-              )}
-            </Route>
-            <Route path="/dashboard">
-              <Index />
-            </Route>
-            <Route exact path="/login">
-              <Login />
-            </Route>
-            <Route path="*">
-              <div>404</div>
-            </Route>
-          </Switch>
-        </Router>
-      </Provider>
+        <Provider {...store}>
+          {/* <Router basename={basename}> */}
+          <Router>
+            <Switch>
+              {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
+              <Route exact path="/">
+                {!!userInfo ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Redirect to="/login" />
+                )}
+              </Route>
+              <Route path="/dashboard">
+                <Index />
+              </Route>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route path="*">
+                <div>404</div>
+              </Route>
+            </Switch>
+          </Router>
+        </Provider>
       </ErrorBoundary>
     );
   }

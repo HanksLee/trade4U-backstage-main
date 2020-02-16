@@ -47,19 +47,19 @@ export const PAGE_ROUTES = [
   },
   {
     title: '交易品种管理',
-    path: '/dashboard/exchange-genre',
+    path: '/dashboard/exchange',
     children: [
       {
-        title: '交易品种设置',
-        path: '/dashboard/exchange-genre/genre',
+        title: '交易类型设置',
+        path: '/dashboard/exchange/genre',
       },
       {
-        title: '交易品种数据',
-        path: '/dashboard/exchange-genre/exchange',
+        title: '交易产品设置',
+        path: '/dashboard/exchange/product',
       },
       {
         title: '利润规则设置',
-        path: '/dashboard/exchange-genre/profit-rule',
+        path: '/dashboard/exchange/rule',
       }
     ],
   }

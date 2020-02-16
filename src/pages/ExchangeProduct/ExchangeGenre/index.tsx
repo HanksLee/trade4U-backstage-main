@@ -4,31 +4,31 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import MarketEditor from 'pages/MarketProduct/MarketEditor';
+import ExchangeGenreEdtior from 'pages/ExchangeProduct/ExchangeGenreEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
+import { Modal } from 'antd';
 
-export interface IMarketProductProps {}
+export interface IExchangeGenreProps { }
 
-export interface IMarketProductState {
+export interface IExchangeGenreState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/market-product", { exact: false, })
-@inject("common", "market")
+@WithRoute("/dashboard/exchange/genre", { exact: false, })
+@inject("common", "exchange")
 @observer
-export default class MarketProduct extends BaseReact<IMarketProductProps, IMarketProductState> {
+export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExchangeGenreState> {
+  private $genreEditor = null;
   state = {
     filter: {},
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
-    name: undefined,
-    code: undefined,
-    market: undefined,
+    genreModalVisible: false,
   };
 
   async componentDidMount() {
@@ -41,8 +41,8 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/market-product") {
-      this.props.history.replace("/dashboard/market-product/list");
+    if (this.props.location.pathname === "/dashboard/exchange/genre") {
+      this.props.history.replace("/dashboard/exchange/genre/list");
     }
   }
 
@@ -56,7 +56,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
         },
       },
       async () => {
-        await this.props.market.getProductList({
+        await this.props.exchange.getGenreList({
           ...this.state.filter,
           ...payload,
         });
@@ -64,6 +64,47 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       }
     );
   };
+
+  toggleGenreModal = () => {
+    this.setState({
+      genreModalVisible: !this.state.genreModalVisible,
+    });
+  }
+
+  onModalConfirm = async () => {
+    const { currentGenre, } = this.props.exchange;
+
+    let res;
+    if (!currentGenre.name) {
+      return this.$msg.warn('请输入品种类型名称');
+    }
+
+    let payload: any = {
+      name: currentGenre.name,
+    };
+
+    if (currentGenre.id) {
+      // payload['id'] = currentGenre.id,
+      res = await this.$api.exchange.updateGenre(payload);
+    } else {
+      res = await this.$api.exchange.updateGenre(payload);
+    }
+
+    if (res.data.ret == 0) {
+      this.$msg.success(!currentGenre.uid ? '品种类型添加成功' : '品种类型编辑成功');
+      this.toggleGenreModal();
+      this.getDataList(this.state.filter);
+    } else {
+      this.$msg.error(res.data.msg);
+    }
+  }
+
+  onModalCancel = () => {
+    this.setState({
+      genreModalVisible: false,
+    });
+    this.props.exchange.setCurrentGenre({});
+  }
 
   resetPagination = async (pageSize, pageNum) => {
     this.setState(
@@ -108,9 +149,6 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       {
         filter,
         currentPage: 1,
-        name: undefined,
-        market: undefined,
-        code: undefined,
       },
       () => {
         this.getDataList(this.state.filter);
@@ -118,21 +156,10 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
     );
   };
 
-  onInputChanged = (field, value) => {
-    this.setState({
-      [field]: value,
-      filter: {
-        ...this.state.filter,
-        [field]: value ? value : undefined,
-      },
-    });
-  }
-
-
   goToEditor = (record: any): void => {
-    const url = `/dashboard/market-product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/exchange/genre/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.market.setCurrentProduct(record, true, false);
+    this.props.exchange.setCurrentGenre(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {
@@ -140,11 +167,13 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;
-    const computedTitle = "行情产品管理";
+    const computedTitle = '交易类型设置';
+    const { genreModalVisible, } = this.state;
+    const { currentGenre, } = this.props.exchange;
 
     return (
       <div>
@@ -153,9 +182,21 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        <Route path={`${match.url}/editor`} render={props => (
-          <MarketEditor {...props} />
-        )} />
+        {
+          genreModalVisible && (
+            <Modal
+              // width={}
+              visible={genreModalVisible}
+              title={
+                utils.isEmpty(currentGenre.id) ? '添加品种类型' : '编辑品种类型'
+              }
+              onOk={this.onModalConfirm}
+              onCancel={this.onModalCancel}
+            >
+              <ExchangeGenreEdtior onRef={ref => this.$genreEditor = ref} />
+            </Modal>
+          )
+        }
       </div>
     );
   }

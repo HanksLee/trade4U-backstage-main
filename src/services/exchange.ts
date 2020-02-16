@@ -1,0 +1,18 @@
+import { AxiosRequestConfig } from "axios";
+import { moonAPI as API } from "utils/request";
+
+const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
+  API.get("/markets", config);
+
+const updateGenre = (id: string, config): Promise<any> =>
+  API.put(`/market/${id}`, config);
+
+const deleteGenre = (id: string, config: AxiosRequestConfig): Promise<any> =>
+  API.delete(`/market/${id}`, config);
+
+
+export default {
+  getGenreList,
+  updateGenre,
+  deleteGenre,
+};

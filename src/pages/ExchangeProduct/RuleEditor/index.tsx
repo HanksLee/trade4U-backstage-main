@@ -3,7 +3,7 @@ import { BaseReact } from 'components/BaseReact';
 import {
   Form,
   Input,
-  Select,
+  Select
 } from 'antd';
 import './index.scss';
 import {
@@ -38,11 +38,11 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
       },
       {
         id: 2,
-        name: '盈亏计算'
+        name: '盈亏计算',
       },
       {
         id: 3,
-        name: '预付款计算'
+        name: '预付款计算',
       }
     ],
   }
@@ -52,8 +52,8 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
   }
 
   render() {
-    const {scopeOptions} = this.state;
-    const { currentRule, currentShowRule, setCurrentRule } = this.props.exchange;
+    const { scopeOptions, } = this.state;
+    const { currentRule, currentShowRule, setCurrentRule, } = this.props.exchange;
     const { getFieldDecorator, } = this.props.form;
 
     return (

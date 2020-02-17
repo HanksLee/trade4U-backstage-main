@@ -36,11 +36,11 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       },
       {
         id: 2,
-        name: '盈亏计算'
+        name: '盈亏计算',
       },
       {
         id: 3,
-        name: '预付款计算'
+        name: '预付款计算',
       }
     ],
   };

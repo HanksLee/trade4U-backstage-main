@@ -59,7 +59,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
     return (
       <div className='editor talent-editor'>
         <Form className='editor-form'>
-          <FormItem label='规则名称' {...getFormItemLayout(8, 16)}>
+          <FormItem label='规则名称' {...getFormItemLayout(6, 16)}>
             {getFieldDecorator('name', {
               initialValue: currentRule.name,
               rules: [
@@ -73,7 +73,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
           <FormItem
             label='交易市场'
             className='push-type-select'
-            {...getFormItemLayout(2, 6)}
+            {...getFormItemLayout(6, 6)}
             required
           >
             {

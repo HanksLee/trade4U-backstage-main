@@ -37,6 +37,11 @@ const routes: any[] = [
     component: loadable(() =>
       import(/* webpackChunkName: "exchange-rule-page" */ "./pages/ExchangeProduct/RuleList")
     ),
+  },
+  {
+    component: loadable(() =>
+      import(/* webpackChunkName: "exchange-product-page" */ "./pages/ExchangeProduct/ProductList")
+    ),
   }
 ];
 

@@ -4,31 +4,29 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import ExchangeGenreEdtior from 'pages/ExchangeProduct/GenreEditor';
+import ProductEdtior from 'pages/ExchangeProduct/ProductEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
 import { Modal } from 'antd';
 
-export interface IExchangeGenreProps { }
+export interface IProductListProps { }
 
-export interface IExchangeGenreState {
+export interface IProductListState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/exchange/genre", { exact: false, })
+@WithRoute("/dashboard/exchange/product", { exact: false, })
 @inject("common", "exchange")
 @observer
-export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExchangeGenreState> {
-  private $genreEditor = null;
+export default class ProductList extends BaseReact<IProductListProps, IProductListState> {
   state = {
     filter: {},
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
-    genreModalVisible: false,
   };
 
   async componentDidMount() {
@@ -38,11 +36,12 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
+    // this.getScopeOptions();
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/exchange/genre") {
-      this.props.history.replace("/dashboard/exchange/genre/list");
+    if (this.props.location.pathname === "/dashboard/exchange/product") {
+      this.props.history.replace("/dashboard/exchange/product/list");
     }
   }
 
@@ -56,7 +55,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
         },
       },
       async () => {
-        await this.props.exchange.getGenreList({
+        await this.props.exchange.getProductList({
           ...this.state.filter,
           ...payload,
         });
@@ -64,47 +63,6 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
       }
     );
   };
-
-  toggleGenreModal = () => {
-    this.setState({
-      genreModalVisible: !this.state.genreModalVisible,
-    });
-  }
-
-  onModalConfirm = async () => {
-    const { currentGenre, } = this.props.exchange;
-
-    let res;
-    if (!currentGenre.name) {
-      return this.$msg.warn('请输入品种类型名称');
-    }
-
-    let payload: any = {
-      name: currentGenre.name,
-    };
-
-    if (currentGenre.id) {
-      // payload['id'] = currentGenre.id,
-      res = await this.$api.exchange.updateGenre(payload);
-    } else {
-      res = await this.$api.exchange.updateGenre(payload);
-    }
-
-    if (res.data.ret == 0) {
-      this.$msg.success(!currentGenre.uid ? '品种类型添加成功' : '品种类型编辑成功');
-      this.toggleGenreModal();
-      this.getDataList(this.state.filter);
-    } else {
-      this.$msg.error(res.data.msg);
-    }
-  }
-
-  onModalCancel = () => {
-    this.setState({
-      genreModalVisible: false,
-    });
-    this.props.exchange.setCurrentGenre({});
-  }
 
   resetPagination = async (pageSize, pageNum) => {
     this.setState(
@@ -157,9 +115,9 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
   };
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/exchange/genre/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/exchange/product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.exchange.setCurrentGenre(record, true, false);
+    this.props.exchange.setCurrentProduct(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {
@@ -171,9 +129,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
 
   render() {
     const { match, } = this.props;
-    const computedTitle = '交易类型设置';
-    const { genreModalVisible, } = this.state;
-    const { currentGenre, } = this.props.exchange;
+    const computedTitle = '交易品种设置';
 
     return (
       <div>
@@ -182,21 +138,9 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
-        {
-          genreModalVisible && (
-            <Modal
-              width={720}
-              visible={genreModalVisible}
-              title={
-                utils.isEmpty(currentGenre.id) ? '添加品种类型' : '编辑品种类型'
-              }
-              onOk={this.onModalConfirm}
-              onCancel={this.onModalCancel}
-            >
-              <ExchangeGenreEdtior onRef={ref => this.$genreEditor = ref} />
-            </Modal>
-          )
-        }
+        <Route path={`${match.url}/editor`} render={props => (
+          <ProductEdtior {...props} />
+        )} />
       </div>
     );
   }

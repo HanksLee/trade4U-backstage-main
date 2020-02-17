@@ -42,7 +42,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
       <div className='editor talent-editor'>
         <Form className='editor-form'>
           {
-            <FormItem label='' {...getFormItemLayout(4, 16)}>
+            <FormItem label='类型名称' {...getFormItemLayout(6, 14)}>
               {getFieldDecorator('name', {
                 initialValue: currentGenre.name,
                 rules: [

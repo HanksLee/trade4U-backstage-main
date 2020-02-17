@@ -9,7 +9,7 @@
   "scripts": {
     "fontmin": "fontmin src/assets/font/src/* src/assets/font/dist",
     "upload": "cross-env NODE_ENV=production node build/upload.js",
-    "dev": "cross-env NODE_ENV=development MODE=dev webpack-dev-server --config build/webpack.config.js --mode development --hot --host 127.0.0.1 --open --project neo-admin",
+    "dev": "cross-env NODE_ENV=development MODE=dev webpack-dev-server --config build/webpack.config.js --mode development --hot --host 127.0.0.1 --open --project moon-admin-main",
     "build:qa": "rm -rf dist/qa && cross-env NODE_ENV=production MODE=qa webpack --mode production --hide-modules --config build/webpack.config.js --project=app --report false",
     "build:prod": "rm -rf dist/prod && cross-env NODE_ENV=production MODE=prod webpack --mode production --hide-modules --config build/webpack.config.js --project=app --report false",
     "locale:pull": "narp pull --token $POEDITOR_TOKEN",

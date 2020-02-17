@@ -194,7 +194,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
   goToEditor = (record: any): void => {
     const url = `/dashboard/exchange/rule/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.exchange.setcurrentRule(record, true, false);
+    this.props.exchange.setCurrentRule(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {

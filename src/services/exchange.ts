@@ -19,6 +19,7 @@ const updateRule = (id: string, config): Promise<any> =>
 const deleteRule = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/market/${id}`, config);
 
+const getScopeOptions = (config) => API.get('/', config);
 
 export default {
   getGenreList,
@@ -27,4 +28,5 @@ export default {
   getRuleList,
   updateRule,
   deleteRule,
+  getScopeOptions,
 };

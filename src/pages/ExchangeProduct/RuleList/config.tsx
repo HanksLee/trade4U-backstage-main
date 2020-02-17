@@ -13,14 +13,28 @@ const config = self => {
 
   const columns = [
     {
-      // width: 120,
-      title: "品种类型 ID",
+      title: "规则 ID",
       dataIndex: "id",
     },
     {
-      // width: 120,
-      title: "品种类型名称",
+      title: "规则名称",
       dataIndex: "name",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "作用域",
+      dataIndex: "scope",
+      render: (text, record) => {
+        const matched = self.state.scopeOptions.find(item => item.id == text);
+
+        return (matched && matched.name) || '--';
+      },
+    },
+    {
+      title: "规则函数",
+      dataIndex: "function",
       render: (text, record) => {
         return text || '--';
       },
@@ -32,14 +46,14 @@ const config = self => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => {
-              self.props.exchange.setCurrentGenre(record, true, false);
-              self.toggleGenreModal();
+              self.props.exchange.setCurrentRule(record, true, false);
+              self.toggleRuleModal();
             }}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
-              title="请问是否确定删除品种类型"
+              title="请问是否确定删除当前规则"
               onConfirm={async () => {
-                const res = await self.$api.exchange.deleteGenre({
+                const res = await self.$api.exchange.deleteRule({
                   id: record.id,
                 });
 
@@ -61,7 +75,7 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.exchange.genreListMeta.total,
+    total: self.props.exchange.ruleListMeta.total,
     current: self.state.currentPage,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
@@ -75,8 +89,8 @@ const config = self => {
     addBtn: {
       title: () => (
         <Button type='primary' onClick={() => {
-          self.props.exchange.setCurrentGenre({});
-          self.toggleGenreModal();
+          self.props.exchange.setCurrentRule({});
+          self.toggleRuleModal();
         }}><Icon type="plus" />添加</Button>
       ),
     },
@@ -106,7 +120,7 @@ const config = self => {
       rowKey: "id",
       rowSelection,
       columns,
-      dataSource: self.props.exchange.genreList,
+      dataSource: self.props.exchange.ruleList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {

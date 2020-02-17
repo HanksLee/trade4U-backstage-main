@@ -29,6 +29,20 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     currentPage: 1,
     selectedRowKeys: [],
     ruleModalVisible: false,
+    scopeOptions: [
+      {
+        id: 1,
+        name: '保证金计算',
+      },
+      {
+        id: 2,
+        name: '盈亏计算'
+      },
+      {
+        id: 3,
+        name: '预付款计算'
+      }
+    ],
   };
 
   async componentDidMount() {
@@ -38,11 +52,22 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
+    this.getScopeOptions();
   }
 
   componentDidUpdate() {
     if (this.props.location.pathname === "/dashboard/exchange/rule") {
       this.props.history.replace("/dashboard/exchange/rule/list");
+    }
+  }
+
+  getScopeOptions = async () => {
+    const res = await this.$api.exchange.getScopeOptions();
+
+    if (res.data.status == 200) {
+      this.setState({
+        scopeOptions: res.data.list,
+      });
     }
   }
 
@@ -84,7 +109,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     }
 
     if (!currentRule.function) {
-      return this.$msg.warn('请选择利润规则函数');
+      return this.$msg.warn('请输入利润规则函数');
     }
 
     let payload: any = {
@@ -101,7 +126,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     }
 
     if (res.data.ret == 0) {
-      this.$msg.success(!currentRule.uid ? '利润规则添加成功' : '品种类型编辑成功');
+      this.$msg.success(!currentRule.uid ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleRuleModal();
       this.getDataList(this.state.filter);
     } else {
@@ -195,7 +220,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
         {
           ruleModalVisible && (
             <Modal
-              // width={}
+              width={720}
               visible={ruleModalVisible}
               title={
                 utils.isEmpty(currentRule.id) ? '添加利润规则' : '编辑利润规则'

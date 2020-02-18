@@ -1,4 +1,7 @@
-import { uploadAPI } from "utils/request";
+import {
+  uploadAPI,
+  moonAPI
+} from "utils/request";
 
 const uploadFile = async (config, url = "/uploadFile") => {
   return await uploadAPI.post(url, config, {
@@ -6,6 +9,9 @@ const uploadFile = async (config, url = "/uploadFile") => {
   });
 };
 
+const getCodeImg = async (config) => moonAPI.get(config);
+
 export default {
   uploadFile,
+  getCodeImg,
 };

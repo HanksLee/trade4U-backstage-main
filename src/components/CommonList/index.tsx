@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BaseReact } from 'components/BaseReact';
+// import { BaseReact } from 'components/BaseReact';
 import './index.scss';
 import {
   Button,

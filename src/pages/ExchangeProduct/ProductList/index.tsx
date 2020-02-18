@@ -9,7 +9,6 @@ import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
-import { Modal } from 'antd';
 
 export interface IProductListProps { }
 

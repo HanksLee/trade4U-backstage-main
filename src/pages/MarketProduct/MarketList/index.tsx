@@ -22,7 +22,8 @@ export interface IMarketProductState {
 @observer
 export default class MarketProduct extends BaseReact<IMarketProductProps, IMarketProductState> {
   state = {
-    filter: {},
+    filter: {
+    },
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
@@ -38,6 +39,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
+    this.props.market.getMarketList();
   }
 
   componentDidUpdate() {
@@ -57,8 +59,10 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       },
       async () => {
         await this.props.market.getProductList({
-          ...this.state.filter,
-          ...payload,
+          params: {
+            ...this.state.filter,
+            ...payload,
+          },
         });
         this.setState({ tableLoading: false, });
       }
@@ -70,12 +74,13 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       {
         filter: {
           ...this.state.filter,
-          pageSize,
-          pageNum,
+          limit: pageSize,
+          offset: pageNum,
         },
       },
       async () => {
         const filter = this.state.filter;
+
         this.getDataList(filter);
       }
     );
@@ -102,7 +107,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { pageNum: 1, pageSize: this.state.filter.pageSize, };
+    const filter: any = { offset: 0, pageSize: this.state.filter.pageSize, };
 
     this.setState(
       {

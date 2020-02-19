@@ -62,9 +62,9 @@ module.exports = {
     // open: true,
     hot: true,
     proxy: {
-      '/api/moon-admin': {
-        target: 'http://admin.moon.com',
-        pathRewrite: { '^/api/moon-admin': '', },
+      '/api/moon': {
+        target: 'http://api.cangshu360.com',
+        pathRewrite: { '^/api/moon': '', },
         secure: false,
         changeOrigin: true,
       }

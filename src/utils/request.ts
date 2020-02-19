@@ -19,9 +19,14 @@ export default class API implements IAPI {
   }
 
   private handleInterceptors() {
-    this.api.interceptors.request.use((res: AxiosResponse) => {
+    this.api.interceptors.request.use((config: AxiosRequestConfig) => {
+      const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+      if (token) {
+        config['headers']['Authorization'] = `Token ${token}`;
+      }
+
       NProgress.start();
-      return res;
+      return config;
     }, (err: AxiosError) => {
       NProgress.done();
       return Promise.reject(err);
@@ -30,26 +35,29 @@ export default class API implements IAPI {
     this.api.interceptors.response.use(
       async (res: AxiosResponse) => {
         let {
-          data: { statusCode, msg, },
         } = res;
 
-        if (statusCode === 401) {
+        const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+        if (!token) {
           window.location.href =
             process.env.NODE_ENV === "production"
               ? "/login"
-              : window.location.origin + "/#/";
+              : window.location.origin + "/#/login";
         }
 
-        if (Number(statusCode) >= 400) {
-          message.error(msg);
-          NProgress.done();
-          return Promise.reject(msg);
-        } else {
-          NProgress.done();
-          return res;
-        }
+        NProgress.done();
+        return res;
       },
       (err: AxiosError) => {
+        const { response: { data, status, }, } = err;
+        message.error(data.message);
+
+        if (status === 401) {
+          window.location.href =
+            process.env.NODE_ENV === "production"
+              ? "/login"
+              : window.location.origin + "/#/login";
+        }
         NProgress.done();
         return Promise.reject(err);
       }
@@ -67,5 +75,5 @@ export default class API implements IAPI {
 }
 
 export const moonAPI = new API({
-  baseURL: "/api/moon",
+  baseURL: "/api/moon/api",
 }).getInstance();

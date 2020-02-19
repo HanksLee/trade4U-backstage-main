@@ -13,6 +13,7 @@ export interface ILoginProps { }
 
 export interface ILoginState {
   loginUrl: string;
+  codeInfo: any;
 }
 
 const formItemLayout = {
@@ -33,20 +34,24 @@ const formItemLayout = {
 export default class Login extends BaseReact<ILoginProps, ILoginState> {
   state = {
     loginUrl: "",
-    codeImg: 'https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130_1280.png',
+    codeInfo: null,
   };
 
   async componentDidMount() {
+    const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+    if (token) {
+      this.props.history.push('/dashboard');
+    }
+
     this.getCodeImg();
   }
 
-  async getCodeImg() {
-    return;
+  getCodeImg = async () => {
     const res: any = await this.$api.common.getCodeImg();
 
-    if (res.data.status == 200) {
+    if (res.status == 200) {
       this.setState({
-        // codeImg: res.data.data,
+        codeInfo: res.data,
       });
     }
   }
@@ -56,8 +61,15 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
+        const codeInfo = this.state.codeInfo;
+
+        values['key'] = codeInfo.key;
+
         const res = await this.$api.common.login(values);
-        if (res.data.status == 200) {
+        if (res.status == 201) {
+          const token = res.data.token;
+          sessionStorage.setItem('MOON_ADMIN_MAIN_TOKEN', token);
+
           this.props.history.push('/dashboard');
         } else {
           this.$msg.error(res.data.message);
@@ -68,7 +80,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
 
   render() {
     const { getFieldDecorator, } = this.props.form;
-    const { codeImg, } = this.state;
+    const { codeInfo, } = this.state;
 
     return (
       <div className="login">
@@ -111,7 +123,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
                 </Form.Item>
                 <Form.Item wrapperCol={24} className='login-code-refresh'>
                   <span className='login-code-img' onClick={this.getCodeImg}>
-                    <img src={codeImg} alt=""/>
+                    <img src={codeInfo && codeInfo.image} alt=""/>
                   </span>
                   <span className="login-refresh" onClick={this.getCodeImg}>
                     刷新

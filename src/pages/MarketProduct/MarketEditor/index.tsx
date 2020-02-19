@@ -13,9 +13,6 @@ import './index.scss';
 import Validator from 'utils/validator';
 import { inject, observer } from 'mobx-react';
 import utils from 'utils';
-import {
-  marketOptions
-} from 'constant';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -89,7 +86,8 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
 
   renderEditor = () => {
     const { getFieldDecorator, } = this.props.form;
-    const { setCurrentProduct, currentShowProduct, } = this.props.market;
+    const { setCurrentProduct, currentShowProduct, marketList, } = this.props.market;
+    const { marketOptions, } = this.state;
 
     return (
       <Form className='editor-form'>
@@ -116,20 +114,15 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
                   const res = await this.$api.market.getMarketList({ offset: 0, limit: 200, });
 
                   this.setState({
-                    marketOptions: res.data.list,
-                    marketMeta: {
-                      total: res.data.meta.total,
-                      limit: res.data.meta.limit,
-                      offset: res.data.meta.offset,
-                    },
+                    marketOptions: marketList,
                   });
                 }}
               >
                 {
                   marketOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -149,10 +142,10 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         </FormItem>
         <FormItem label='简拼' {...getFormItemLayout(2, 12)} required>
           {getFieldDecorator('jianpin', {
-            initialValue: currentShowProduct && currentShowProduct.jianpin,
+            initialValue: currentShowProduct && currentShowProduct.pinyin,
           })(<Input placeholder="请输入产品简拼" onChange={evt => {
             setCurrentProduct({
-              jianpin: evt.target.value,
+              pinyin: evt.target.value,
             }, false);
           }} style={{ display: 'inline-block', width: 200, }} />)}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
@@ -160,7 +153,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         <FormItem label='产品代码' {...getFormItemLayout(2, 12)} required>
           {getFieldDecorator('code', {
             initialValue: currentShowProduct && currentShowProduct.code,
-          })(<Input placeholder="请输入产品代码" onChange={evt => {
+          })(<Input placeholder="请输入产品编码" onChange={evt => {
             setCurrentProduct({
               code: evt.target.value,
             }, false);
@@ -178,20 +171,6 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
             }}>
               <Radio style={radioStyle} value={1}>是</Radio>
               <Radio style={radioStyle} value={0}>否</Radio>
-            </Radio.Group>
-          )}
-        </FormItem>
-        <FormItem label='是否开牌' required {...getFormItemLayout(2, 6)} className='editor-upshelf'>
-          {getFieldDecorator('openStatus', {
-            initialValue: currentShowProduct && currentShowProduct.openStatus,
-          })(
-            <Radio.Group onChange={(evt) => {
-              setCurrentProduct({
-                openStatus: evt.target.value,
-              }, false);
-            }}>
-              <Radio style={radioStyle} value={1}>正常</Radio>
-              <Radio style={radioStyle} value={0}>禁止</Radio>
             </Radio.Group>
           )}
         </FormItem>
@@ -227,11 +206,9 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         let payload: any = {
           market: currentProduct.market,
           name: currentProduct.name,
-          jianpin: currentProduct.jianpin,
+          pinyin: currentProduct.pinyin,
           code: currentProduct.code,
           status: currentProduct.status,
-          openStatus: currentProduct.openStatus,
-          operator: userInfo.id,
         };
 
         // console.log('payload', payload);
@@ -239,7 +216,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         if (errMsg) return this.$msg.warn(errMsg);
 
         if (mode == 'add') {
-          this.$api.market.updateProduct(payload)
+          this.$api.market.createProduct(payload)
             .then(res => {
               this.$msg.success('行情产品创建成功');
               setTimeout(() => {
@@ -251,14 +228,14 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
               }, 1500);
             });
         } else {
-          payload.id = currentProduct.id;
+          // payload.id = currentProduct.id;
 
-          this.$api.market.updateFoodCard(payload)
+          this.$api.market.updateProduct(currentProduct.id, payload)
             .then(res => {
               this.$msg.success('行情产品更新成功');
               setTimeout(() => {
                 this.goBack();
-                this.$store.market.getProductList({
+                this.props.market.getProductList({
                   offset: 0,
                   limit: 10,
                 });
@@ -291,7 +268,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
       // }
     ]);
 
-    validator.add(payload.jianpin, [
+    validator.add(payload.pinyin, [
       {
         strategy: 'isNonEmpty',
         errMsg: '请输入简拼',
@@ -301,7 +278,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
     validator.add(payload.code, [
       {
         strategy: 'isNonEmpty',
-        errMsg: '请输入产品代码',
+        errMsg: '请输入产品编码',
       }
     ]);
 
@@ -309,13 +286,6 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
       {
         strategy: 'isNonEmpty',
         errMsg: '请选择上架状态',
-      }
-    ]);
-
-    validator.add(payload.openStatus, [
-      {
-        strategy: 'isNonEmpty',
-        errMsg: '请选择开牌状态',
       }
     ]);
 

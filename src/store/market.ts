@@ -4,32 +4,29 @@ import utils from "utils";
 
 class MarketStore extends BaseStore {
   @observable
-  productList = [
-    {
-      id: 1,
-      market: "上证",
-      name: '伊利股份',
-      jianpin: 'YLGF',
-      code: '123456',
-      status: 1,
-      openStatue: 2,
-      operator: 'TY',
-      updateTime: Date.now(),
-    }
-  ];
+  marketList = [];
+  @action
+  getMarketList = async config => {
+    const res = await this.$api.market.getMarketList(config);
+    this.setMarketList(res.data);
+  }
+  @action setMarketList = data => {
+    this.marketList = data.data;
+  }
+  @observable
+  productList = [];
   @observable
   productListMeta = {};
   @action
   getProductList = async config => {
     const res = await this.$api.market.getProductList(config);
-    const { data, } = res.data;
-    this.setProductList(data);
+    this.setProductList(res.data);
   };
   @action
   setProductList = data => {
-    this.productList = data.list;
+    this.productList = data.results;
     this.productListMeta = {
-      total: data.total,
+      total: data.count,
       offset: data.offset,
       limit: data.limit,
     };

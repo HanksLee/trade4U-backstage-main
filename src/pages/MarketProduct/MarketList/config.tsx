@@ -37,7 +37,7 @@ const config = self => {
     },
     {
       title: '简拼',
-      dataIndex: 'pinxie',
+      dataIndex: 'pinyin',
       render: (text, record) => {
         return text || '--';
       },
@@ -54,52 +54,18 @@ const config = self => {
       render: (text, record) => {
         const statusType = {
           1: 'normal',
-          2: 'block',
+          0: 'block',
         };
         const statusText = {
           1: '上架',
-          2: '下架',
+          0: '下架',
         };
-
-        if (!record.status) {
-          return '--';
-        }
 
         return <StatusText type={
           statusType[record.status]
         } text={
           statusText[record.status]
         } />;
-      },
-    },
-    {
-      title: '开牌状态',
-      render: (text, record) => {
-        const statusType = {
-          1: 'normal',
-          2: 'block',
-        };
-        const statusText = {
-          1: '上架',
-          2: '下架',
-        };
-
-        if (!record.openStatus) {
-          return '--';
-        }
-
-        return <StatusText type={
-          statusType[record.openStatus]
-        } text={
-          statusText[record.openStatus]
-        } />;
-      },
-    },
-    {
-      title: '操作人',
-      dataIndex: 'operator',
-      render: (text, record) => {
-        return text || '--';
       },
     },
     {
@@ -120,11 +86,9 @@ const config = self => {
             <Popconfirm
               title="请问是否确定删除行情产品"
               onConfirm={async () => {
-                const res = await self.$api.market.deleteProduct({
-                  id: record.id,
-                });
+                const res = await self.$api.market.deleteProduct(record.id);
 
-                if (res.data.status === 200) {
+                if (res.data.status === 204) {
                   self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);
@@ -227,8 +191,8 @@ const config = self => {
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          offset: pagination.current - 1,
+          limit: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {

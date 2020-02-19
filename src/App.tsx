@@ -21,17 +21,22 @@ const isProd = process.env.NODE_ENV === "production";
 const Router: any = !isProd ? HashRouter : BrowserRouter;
 
 class App extends BaseReact {
+  state = {
+    token: undefined,
+  }
+
   async componentDidMount() {
     this.init();
   }
 
   private init = async (): Promise<any> => {
     // @todo 一进入页面调起获取用户信息接口
-    await this.$store.common.getUserInfo();
+    const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+    this.setState({ token, });
   };
 
   render() {
-    const { userInfo, } = this.$store.common;
+    const { token, } = this.state;
 
     return (
       <ErrorBoundary>
@@ -41,7 +46,7 @@ class App extends BaseReact {
             <Switch>
               {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
               <Route exact path="/">
-                {!!userInfo ? (
+                {!!token ? (
                   <Redirect to="/dashboard" />
                 ) : (
                   <Redirect to="/login" />

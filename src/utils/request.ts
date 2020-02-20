@@ -34,9 +34,6 @@ export default class API implements IAPI {
 
     this.api.interceptors.response.use(
       async (res: AxiosResponse) => {
-        let {
-        } = res;
-
         const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
         if (!token) {
           window.location.href =

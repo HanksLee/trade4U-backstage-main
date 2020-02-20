@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Button, Icon } from "antd";
+import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
   const rowSelection = {
     selectedRowKeys,
-    onChange: (selectedRowKeys, selectedRows) => {
+    onChange: (selectedRowKeys) => {
       self.setState({ selectedRowKeys: selectedRowKeys, });
     },
   };
@@ -19,29 +19,28 @@ const config = self => {
     },
     {
       // width: 120,
-      title: "配图",
-      dataIndex: "img",
+      title: "券商名称",
+      dataIndex: "name",
+    },
+    {
+      title: "域名",
+      dataIndex: 'domain',
       render: (text, record) => {
-        return (
-          text && (
-            <div
-              style={{
-                backgroundColor: "#e8e8e8",
-                border: "1px solid rgba(232, 232, 232, 1)",
-                width: 60,
-                height: 60,
-              }}
-            >
-              <img src={text} style={{ objectFit: "contain", }} alt="配图" />
-            </div>
-          )
-        );
+        return text || '--';
       },
     },
     {
-      title: "券商名称",
+      title: '后台角标',
+      dataIndex: 'background_corner',
       render: (text, record) => {
-        return `${record.brokerName}`;
+        return text || '--';
+      },
+    },
+    {
+      title: 'logo',
+      dataIndex: 'logo',
+      render: (text, record) => {
+        return text || '--';
       },
     },
     {
@@ -52,17 +51,21 @@ const config = self => {
           <div className="common-list-table-operation">
             <span onClick={() => self.goToEditor(record)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.deleteRecord(record.shoeSaleId)}>
-              授权
-            </span>
-            <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.deleteRecord(record.shoeSaleId)}>
-              登录
-            </span>
-            <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.deleteRecord(record.shoeSaleId)}>
-              删除
-            </span>
+            <Popconfirm
+              title="请问是否确定删除券商"
+              onConfirm={async () => {
+                const res = await self.$api.broker.deleteBroker(record.id);
+
+                if (res.data.status === 204) {
+                  self.getDataList(self.state.filter);
+                } else {
+                  self.$msg.error(res.data.message);
+                }
+              }}
+              onCancel={() => {}}
+            >
+              <span>删除</span>
+            </Popconfirm>
           </div>
         );
       },
@@ -104,32 +107,18 @@ const config = self => {
         },
       },
       widgets: [
-        {
-          type: "SelectInput",
-          label: "券商",
-          placeholder: "请输入券商 ID 或券商名称",
-          options: [
-            {
-              title: "券商 ID",
-              value: "brokerId",
-            },
-            {
-              title: "券商名称",
-              value: "brokerName",
-            }
-          ],
-          inputValue: self.state.brokerValue,
-          selectValue: self.state.brokerField,
-          onSelectChange(value) {
-            self.setBrokerField(value);
-          },
-          onInputChange(evt) {
-            self.setBrokerValue(evt.target.value);
+        [{
+          type: 'Input',
+          label: '券商名称',
+          placeholder: '请输入券商名称',
+          value: self.state.name || undefined,
+          onChange(evt) {
+            self.onInputChanged('name', evt.target.value);
           },
           onPressEnter(evt) {
             self.onSearch();
           },
-        }
+        }]
       ],
       onSearch() {
         self.onSearch();
@@ -146,8 +135,8 @@ const config = self => {
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          offset: pagination.current - 1,
+          limit: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {

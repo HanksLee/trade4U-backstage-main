@@ -4,9 +4,11 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
+import BrokerEditor from 'pages/Broker/BrokerEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
+import utils from 'utils';
 
 export interface IBrokerProps {}
 
@@ -18,14 +20,16 @@ export interface IBrokerState {
 @WithRoute("/dashboard/broker", { exact: false, })
 @inject("common", "broker")
 @observer
-export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
+export default class BrokerList extends BaseReact<{}, IBrokerState> {
   state = {
-    brokerField: "brokerId",
-    filter: {},
-    brokerValue: undefined,
+    filter: {
+    },
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
+    name: undefined,
+    code: undefined,
+    market: undefined,
   };
 
   async componentDidMount() {
@@ -35,6 +39,7 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
+    this.props.broker.getBrokerList();
   }
 
   componentDidUpdate() {
@@ -54,8 +59,10 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
       },
       async () => {
         await this.props.broker.getBrokerList({
-          ...this.state.filter,
-          ...payload,
+          params: {
+            ...this.state.filter,
+            ...payload,
+          },
         });
         this.setState({ tableLoading: false, });
       }
@@ -67,12 +74,13 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
       {
         filter: {
           ...this.state.filter,
-          pageSize,
-          pageNum,
+          limit: pageSize,
+          offset: pageNum,
         },
       },
       async () => {
         const filter = this.state.filter;
+
         this.getDataList(filter);
       }
     );
@@ -94,15 +102,19 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
       }
     );
   };
+
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { pageNum: 1, pageSize: this.state.filter.pageSize, };
+    const filter: any = { offset: 0, pageSize: this.state.filter.pageSize, };
 
     this.setState(
       {
         filter,
         currentPage: 1,
+        name: undefined,
+        market: undefined,
+        code: undefined,
       },
       () => {
         this.getDataList(this.state.filter);
@@ -110,35 +122,22 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
     );
   };
 
-  setBrokerField = (brokerField): void => {
-    const filter: any = this.state.filter;
-    if (brokerField !== "brokerId") {
-      delete filter.brokerId;
-    } else if (brokerField !== "brokerName") {
-      delete filter.brokerName;
-    }
-
+  onInputChanged = (field, value) => {
     this.setState({
-      brokerField,
-      brokerValue: undefined,
-      filter: {
-        ...filter,
-        [brokerField]: undefined,
-      },
-    });
-  };
-
-  setBrokerValue = (value): void => {
-    this.setState({
-      brokerValue: value,
+      [field]: value,
       filter: {
         ...this.state.filter,
-        [this.state.brokerField]: value ? value : undefined,
+        [field]: value ? value : undefined,
       },
     });
-  };
+  }
 
-  goToEditor = (record: any): void => {};
+
+  goToEditor = (record: any): void => {
+    const url = `/dashboard/broker/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    this.props.history.push(url);
+    this.props.broker.setCurrentBroker(record, true, false);
+  }
 
   renderMenu = (record): JSX.Element => {
     return null;
@@ -158,6 +157,9 @@ export default class Broker extends BaseReact<IBrokerProps, IBrokerState> {
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
+        <Route path={`${match.url}/editor`} render={props => (
+          <BrokerEditor {...props} />
+        )} />
       </div>
     );
   }

@@ -10,7 +10,7 @@ const routes: any[] = [
   // },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: "broker-page" */ "./pages/Broker")
+      import(/* webpackChunkName: "broker-page" */ "./pages/Broker/BrokerList")
     ),
   },
   {

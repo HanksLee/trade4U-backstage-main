@@ -4,27 +4,19 @@ import utils from "utils";
 
 class BrokerStore extends BaseStore {
   @observable
-  brokerList = [
-    {
-      id: 1,
-      brokerName: "摩根大通",
-      img:
-        "https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130_1280.png",
-    }
-  ];
+  brokerList = [];
   @observable
   brokerListMeta = {};
   @action
   getBrokerList = async config => {
     const res = await this.$api.broker.getBrokerList(config);
-    const { data, } = res.data;
-    this.setBrokerList(data);
+    this.setBrokerList(res.data);
   };
   @action
   setBrokerList = data => {
-    this.brokerList = data.list;
+    this.brokerList = data.results;
     this.brokerListMeta = {
-      total: data.total,
+      total: data.count,
       offset: data.offset,
       limit: data.limit,
     };
@@ -33,7 +25,7 @@ class BrokerStore extends BaseStore {
   currentBroker: any = {};
 
   @computed
-  get currentShowBrokeer() {
+  get currentShowBroker() {
     const obj: any = {};
 
     return {
@@ -41,13 +33,7 @@ class BrokerStore extends BaseStore {
       ...obj,
     };
   }
-  @action
-  getCurrentBrokeer = async config => {
-    const res = await this.$api.broker.getCurrentBroker(config);
-    let broker = res.data.data;
 
-    this.setCurrentBroker(broker, true, false);
-  };
   @action
   setCurrentBroker = (broker, overwrite = true, store = true) => {
     if (overwrite) {

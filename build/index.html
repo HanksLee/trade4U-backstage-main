@@ -17,7 +17,6 @@
           var scriptElem = document.createElement('script');
           var firstScript = document.getElementsByTagName('script')[0];
           scriptElem.type = 'text/javascript';
-          scriptElem.src = '/service-register.js?v=' + Date.now();
           scriptElem.async = true;
           firstScript.parentElement.insertBefore(scriptElem, firstScript);
 

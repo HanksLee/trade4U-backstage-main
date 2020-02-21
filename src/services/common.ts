@@ -9,7 +9,7 @@ const uploadFile = async (config, url = "/uploadFile") => {
   });
 };
 
-const getCodeImg = async (config) => moonAPI.get('/captcha', config);
+const getCodeImg = async (config?) => moonAPI.get('/captcha', config);
 
 const login = async (config) => moonAPI.post('/system/login', config);
 

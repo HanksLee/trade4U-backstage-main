@@ -29,7 +29,7 @@ const formItemLayout = {
 };
 
 /* eslint new-cap: "off" */
-@WithRoute("/login")
+// @WithRoute("/login")
 // @ts-ignore
 @Form.create()
 export default class Login extends BaseReact<ILoginProps, ILoginState> {
@@ -49,8 +49,10 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
 
   getCodeImg = async () => {
     const res: any = await this.$api.common.getCodeImg();
+    debugger;
 
     if (res.status == 200) {
+
       this.setState({
         codeInfo: res.data,
       });

@@ -38,14 +38,6 @@ export default class API implements IAPI {
         let {
         } = res;
 
-        const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
-        if (!token) {
-          window.location.href =
-            process.env.NODE_ENV === "production"
-              ? "/login"
-              : window.location.origin + "/#/login";
-        }
-
         NProgress.done();
         return res;
       },

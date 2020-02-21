@@ -1,47 +1,31 @@
-import { action, observable, computed } from 'mobx';
-import BaseStore from 'store/base';
-import utils from 'utils';
-import moment from 'moment';
-
-const createFileList = (id, url, name = '') => ([{
-  uid: id,
-  url,
-  name,
-}]);
+import { action, observable, computed } from "mobx";
+import BaseStore from "store/base";
+import utils from "utils";
 
 class BrokerStore extends BaseStore {
   @observable
-  brokerList = [
-    {
-      id: 1,
-      brokerName: '摩根大通',
-      img: 'https://cdn.pixabay.com/photo/2017/01/11/08/31/icon-1971130_1280.png',
-
-    }
-  ];
+  brokerList = [];
   @observable
-  brokerListMeta = {
+  brokerListMeta = {};
+  @action
+  getBrokerList = async config => {
+    const res = await this.$api.broker.getBrokerList(config);
+    this.setBrokerList(res.data);
   };
   @action
-  getBrokerList = async (config) => {
-    const res = await this.$api.broker.getBrokerList(config);
-    const { data, } = res.data;
-    this.setBrokerList(data);
-  }
-  @action
   setBrokerList = data => {
-    this.brokerList = data.list;
+    this.brokerList = data.results;
     this.brokerListMeta = {
-      total: data.total,
+      total: data.count,
       offset: data.offset,
       limit: data.limit,
     };
-  }
+  };
   @observable
-  currentBroker: any = {}
+  currentBroker: any = {};
 
   @computed
-  get currentShowBrokeer() {
+  get currentShowBroker() {
     const obj: any = {};
 
     return {
@@ -49,13 +33,7 @@ class BrokerStore extends BaseStore {
       ...obj,
     };
   }
-  @action
-  getCurrentBrokeer = async (config) => {
-    const res = await this.$api.broker.getCurrentBroker(config);
-    let broker = res.data.data;
 
-    this.setCurrentBroker(broker, true, false);
-  }
   @action
   setCurrentBroker = (broker, overwrite = true, store = true) => {
     if (overwrite) {
@@ -68,9 +46,9 @@ class BrokerStore extends BaseStore {
     }
 
     if (store) {
-      utils.setLStorage('currentBroker', this.currentBroker);
+      utils.setLStorage("currentBroker", this.currentBroker);
     }
-  }
+  };
 }
 
 export default new BrokerStore();

@@ -1,4 +1,4 @@
-import json from './locales.json';
+import json from "./locales.json";
 
 export default Object.entries(json).map(item => {
   return {

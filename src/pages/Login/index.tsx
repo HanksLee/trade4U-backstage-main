@@ -8,6 +8,7 @@ import {
   Icon,
   Input
 } from 'antd';
+import utils from 'utils';
 
 export interface ILoginProps { }
 
@@ -38,7 +39,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
   };
 
   async componentDidMount() {
-    const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+    const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
     if (token) {
       this.props.history.push('/dashboard');
     }
@@ -68,7 +69,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
         const res = await this.$api.common.login(values);
         if (res.status == 201) {
           const token = res.data.token;
-          sessionStorage.setItem('MOON_ADMIN_MAIN_TOKEN', token);
+          utils.setLStorage('MOON_ADMIN_MAIN_TOKEN', token);
 
           this.props.history.push('/dashboard');
         } else {

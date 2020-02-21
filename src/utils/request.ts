@@ -6,6 +6,7 @@ import axios, {
 } from "axios";
 import { message } from "antd";
 import NProgress from "nprogress";
+import utils from 'utils';
 
 export interface IAPI {
   getInstance(): AxiosInstance;
@@ -20,7 +21,7 @@ export default class API implements IAPI {
 
   private handleInterceptors() {
     this.api.interceptors.request.use((config: AxiosRequestConfig) => {
-      const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+      const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
       if (token) {
         config['headers']['Authorization'] = `Token ${token}`;
       }
@@ -34,7 +35,10 @@ export default class API implements IAPI {
 
     this.api.interceptors.response.use(
       async (res: AxiosResponse) => {
-        const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+        let {
+        } = res;
+
+        const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
         if (!token) {
           window.location.href =
             process.env.NODE_ENV === "production"
@@ -71,6 +75,12 @@ export default class API implements IAPI {
   }
 }
 
+const apiMap = {
+  dev: '/api/moon/api',
+  qa: 'http://api.cangshu360.com/api',
+  prod: 'http://api.cangshu360.com/api',
+}
+
 export const moonAPI = new API({
-  baseURL: "/api/moon/api",
+  baseURL: apiMap[process.env.MODE],
 }).getInstance();

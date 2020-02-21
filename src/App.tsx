@@ -14,6 +14,7 @@ import {
 } from "react-router-dom";
 import { hot } from "react-hot-loader/root";
 import "./app.scss";
+import utils from 'utils';
 
 const isProd = process.env.NODE_ENV === "production";
 (window as any).$origin = `${window.location.origin}${isProd ? "" : "/#"}`;
@@ -31,7 +32,7 @@ class App extends BaseReact {
 
   private init = async (): Promise<any> => {
     // @todo 一进入页面调起获取用户信息接口
-    const token = sessionStorage.getItem('MOON_ADMIN_MAIN_TOKEN');
+    const token = utils.getStorage('MOON_ADMIN_MAIN_TOKEN');
     this.setState({ token, });
   };
 

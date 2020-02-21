@@ -19,7 +19,8 @@ import utils from 'utils';
 const isProd = process.env.NODE_ENV === "production";
 (window as any).$origin = `${window.location.origin}${isProd ? "" : "/#"}`;
 
-const Router: any = !isProd ? HashRouter : BrowserRouter;
+// const Router: any = !isProd ? HashRouter : BrowserRouter;
+const Router: any = HashRouter;
 
 class App extends BaseReact {
   state = {

@@ -1,4 +1,4 @@
-importScripts("/precache-manifest.c12cb616674370c14f992033b8b6291d.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
+importScripts("/precache-manifest.cefd48cc6992b9169279671f83aba2f3.js", "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 if (workbox) {
   var precacheController = new workbox.precaching.PrecacheController();

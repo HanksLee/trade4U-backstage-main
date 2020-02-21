@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "7c3a984118667ab32f2d",
-    "url": "/assets/css/app.7c3a9.css"
+    "revision": "d163b259c5c8437c91fd",
+    "url": "/assets/css/app.d163b.css"
   },
   {
     "revision": "86d76d5c5487d7bb642a",
     "url": "/assets/css/broker-page.86d76.css"
   },
   {
-    "revision": "81e42bad247d2f40ddc4",
-    "url": "/assets/css/exchange-genre-page.81e42.css"
+    "revision": "5b04df4ab49a568d1e32",
+    "url": "/assets/css/exchange-genre-page.5b04d.css"
   },
   {
-    "revision": "26e3624ae74996033080",
-    "url": "/assets/css/exchange-product-page.26e36.css"
+    "revision": "8bd6943bca20ff893537",
+    "url": "/assets/css/exchange-product-page.8bd69.css"
   },
   {
-    "revision": "be1c5d2b69350f782826",
-    "url": "/assets/css/exchange-rule-page.be1c5.css"
+    "revision": "c8639f34d7543555c5f8",
+    "url": "/assets/css/exchange-rule-page.c8639.css"
   },
   {
     "revision": "7cdcc7f0d8ba5827713e",
@@ -28,8 +28,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/assets/css/menus-page.e1ebb.css"
   },
   {
-    "revision": "de9c4cfc953e41d016e7",
-    "url": "/assets/css/vendor.de9c4.css"
+    "revision": "6ff520e52781301f55bf",
+    "url": "/assets/css/vendor.6ff52.css"
   },
   {
     "revision": "1cc02bec650efafd35976f88b59b81e0",
@@ -60,28 +60,28 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/assets/img/transparent.png"
   },
   {
-    "revision": "7c3a984118667ab32f2d",
-    "url": "/assets/js/app.7c3a9.js"
+    "revision": "d163b259c5c8437c91fd",
+    "url": "/assets/js/app.d163b.js"
   },
   {
     "revision": "86d76d5c5487d7bb642a",
     "url": "/assets/js/broker-page.86d76.js"
   },
   {
-    "revision": "782e68fb52234f258977",
-    "url": "/assets/js/build.782e6.js"
+    "revision": "5cdc47cd674b9efc35f0",
+    "url": "/assets/js/build.5cdc4.js"
   },
   {
-    "revision": "81e42bad247d2f40ddc4",
-    "url": "/assets/js/exchange-genre-page.81e42.js"
+    "revision": "5b04df4ab49a568d1e32",
+    "url": "/assets/js/exchange-genre-page.5b04d.js"
   },
   {
-    "revision": "26e3624ae74996033080",
-    "url": "/assets/js/exchange-product-page.26e36.js"
+    "revision": "8bd6943bca20ff893537",
+    "url": "/assets/js/exchange-product-page.8bd69.js"
   },
   {
-    "revision": "be1c5d2b69350f782826",
-    "url": "/assets/js/exchange-rule-page.be1c5.js"
+    "revision": "c8639f34d7543555c5f8",
+    "url": "/assets/js/exchange-rule-page.c8639.js"
   },
   {
     "revision": "7cdcc7f0d8ba5827713e",
@@ -92,11 +92,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/assets/js/menus-page.e1ebb.js"
   },
   {
-    "revision": "de9c4cfc953e41d016e7",
-    "url": "/assets/js/vendor.de9c4.js"
+    "revision": "6ff520e52781301f55bf",
+    "url": "/assets/js/vendor.6ff52.js"
   },
   {
-    "revision": "fc1c313be5471cb3234924d59c265539",
+    "revision": "0ed829e3f470aa8b60ea6e49811a31c9",
     "url": "/index.html"
   },
   {

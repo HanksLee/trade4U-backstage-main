@@ -52,7 +52,6 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
     debugger;
 
     if (res.status == 200) {
-
       this.setState({
         codeInfo: res.data,
       });

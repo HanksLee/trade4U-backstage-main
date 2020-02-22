@@ -15,6 +15,8 @@ import {
 import { hot } from "react-hot-loader/root";
 import "./app.scss";
 import utils from 'utils';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/es/locale/zh_CN';
 
 const isProd = process.env.NODE_ENV === "production";
 (window as any).$origin = `${window.location.origin}${isProd ? "" : "/#"}`;
@@ -43,27 +45,29 @@ class App extends BaseReact {
       <ErrorBoundary>
         <Provider {...store}>
           {/* <Router basename={basename}> */}
-          <Router>
-            <Switch>
-              {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
-              <Route exact path="/">
-                {!!token ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <Redirect to="/login" />
-                )}
-              </Route>
-              <Route path="/dashboard">
-                <Index />
-              </Route>
-              <Route exact path="/login">
-                <Login />
-              </Route>
-              <Route path="*">
-                <div>404</div>
-              </Route>
-            </Switch>
-          </Router>
+          <ConfigProvider locale={zhCN}>
+            <Router>
+              <Switch>
+                {/* 这里在 io 拦截器进行拦截一进入首页就进行路由跳转 */}
+                <Route exact path="/">
+                  {!!token ? (
+                    <Redirect to="/dashboard" />
+                  ) : (
+                    <Redirect to="/login" />
+                  )}
+                </Route>
+                <Route path="/dashboard">
+                  <Index />
+                </Route>
+                <Route exact path="/login">
+                  <Login />
+                </Route>
+                <Route path="*">
+                  <div>404</div>
+                </Route>
+              </Switch>
+            </Router>
+          </ConfigProvider>
         </Provider>
       </ErrorBoundary>
     );

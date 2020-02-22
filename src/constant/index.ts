@@ -32,16 +32,6 @@ export const PAGE_ROUTES = [
     children: [],
   },
   {
-    title: "菜单管理",
-    path: "/dashboard/menu",
-    children: [],
-  },
-  {
-    title: "权限管理",
-    path: "/dashboard/permission",
-    children: [],
-  },
-  {
     title: '行情产品管理',
     path: '/dashboard/market-product',
   },
@@ -62,5 +52,15 @@ export const PAGE_ROUTES = [
         path: '/dashboard/exchange/rule',
       }
     ],
+  },
+  {
+    title: "菜单管理",
+    path: "/dashboard/menu",
+    children: [],
+  },
+  {
+    title: "权限管理",
+    path: "/dashboard/permission",
+    children: [],
   }
 ];

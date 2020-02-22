@@ -5,5 +5,5 @@
 .status-text{color:rgba(0,0,0,0.65);display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.status-text.hot{color:#f5222d}.status-text .status-text-dot{margin-right:8px;width:6px;height:6px;border-radius:50%;display:inline-block}.status-text .status-text-dot.normal{background-color:#1890ff}.status-text .status-text-dot.hot{background-color:#f5222d}.status-text .status-text-dot.wait{background-color:#faad14}.status-text .status-text-dot.block{background-color:rgba(0,0,0,0.25)}
 
 
-.header{background-image:url("/asstets/assets/img/transparent.png");background-repeat:no-repeat;background-size:100% 100%;background-size:contain}
+.header{background-image:url("/assets/img/transparent.png");background-repeat:no-repeat;background-size:100% 100%;background-size:contain}
 

@@ -179,14 +179,14 @@ img.emoji {
 }
 
 .upload-image-preview {
-  width: 80px;
-  height: 80px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 80px;
+  height: 80px;
   font-size: 28px;
-  color: rgba(0, 0, 0, .4);
+  color: rgba(0, 0, 0, 0.4);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }

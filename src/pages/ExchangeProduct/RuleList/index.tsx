@@ -52,7 +52,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
-    this.getScopeOptions();
+    // this.getScopeOptions();
   }
 
   componentDidUpdate() {
@@ -108,24 +108,26 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       return this.$msg.warn('请选择利润规则作用域');
     }
 
-    if (!currentRule.function) {
+    if (!currentRule.func_name) {
       return this.$msg.warn('请输入利润规则函数');
     }
 
     let payload: any = {
       name: currentRule.name,
       scope: currentRule.scope,
-      function: currentRule.function,
+      func_name: currentRule.func_name,
     };
 
     if (currentRule.id) {
       // payload['id'] = currentRule.id,
-      res = await this.$api.exchange.updateRule(payload);
+      res = await this.$api.exchange.updateRule(currentRule.id, payload);
     } else {
-      res = await this.$api.exchange.updateRule(payload);
+      res = await this.$api.exchange.createRule(payload);
     }
 
-    if (res.data.ret == 0) {
+    const statusCode = currentRule.id ? 200 : 201;
+
+    if (res.status == statusCode) {
       this.$msg.success(!currentRule.uid ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleRuleModal();
       this.getDataList(this.state.filter);

@@ -17,22 +17,25 @@ interface ITableRowProps {
 class TableRow extends BaseReact<ITableRowProps> {
   render() {
     const {
+      isSorting,
       isOver,
       connectDragSource,
       connectDropTarget,
       moveRow,
       ...restProps
     } = this.props;
-    const style = { ...restProps.style, cursor: "move", };
+    let style = { ...restProps.style, };
 
     let { className, } = restProps;
-    if (isOver) {
+    if (isOver && isSorting) {
       if (restProps.index > dragingIndex) {
         className += " drop-over-downward";
       }
       if (restProps.index < dragingIndex) {
         className += " drop-over-upward";
       }
+
+      style = { ...style, cursor: "move", };
     }
 
     return connectDragSource(
@@ -44,15 +47,26 @@ class TableRow extends BaseReact<ITableRowProps> {
 }
 
 const rowSource = {
+  canDrag(props) {
+    return props.isSorting;
+  },
   beginDrag(props) {
     dragingIndex = props.index;
     return {
+      record: props.record,
       index: props.index,
     };
   },
 };
 
 const rowTarget = {
+  canDrop(props, monitor) {
+    const sourceRecord = monitor.getItem().record;
+    const targetRecord = props.record;
+
+    if (sourceRecord.parent !== targetRecord.parent) return false;
+    return true;
+  },
   drop(props, monitor) {
     const dragIndex = monitor.getItem().index;
     const hoverIndex = props.index;
@@ -61,7 +75,7 @@ const rowTarget = {
       return;
     }
 
-    props.moveRow(dragIndex, hoverIndex);
+    props.moveRow(dragIndex, hoverIndex, monitor.getItem().record);
     monitor.getItem().index = hoverIndex;
   },
 };

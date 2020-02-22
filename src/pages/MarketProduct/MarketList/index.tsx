@@ -40,12 +40,33 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
 
     this.resetPagination(defaultPageSize, defaultCurrent);
     this.props.market.getMarketList();
+    this.getMarketOptions();
   }
 
   componentDidUpdate() {
     if (this.props.location.pathname === "/dashboard/market-product") {
       this.props.history.replace("/dashboard/market-product/list");
     }
+  }
+
+  getMarketOptions = async () => {
+    const res = await this.$api.market.getMarketList();
+
+    if (res.status === 200) {
+      this.setState({
+        marketOptions: res.data.data,
+      });
+    }
+  }
+
+  onMarketSelected = (val, elem) => {
+    this.setState({
+      market: val,
+      filter: {
+        ...this.state.filter,
+        market: val,
+      },
+    });
   }
 
   getDataList = (payload = {}) => {

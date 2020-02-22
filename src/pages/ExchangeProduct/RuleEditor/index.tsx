@@ -31,24 +31,20 @@ export interface IGenreEditorState {
 @inject('common', 'exchange')
 export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEditorState> {
   state = {
-    scopeOptions: [
-      {
-        id: 1,
-        name: '保证金计算',
-      },
-      {
-        id: 2,
-        name: '盈亏计算',
-      },
-      {
-        id: 3,
-        name: '预付款计算',
-      }
-    ],
+    scopeOptions: [],
   }
 
   async componentDidMount() {
     this.props.onRef(this);
+    this.initData();
+  }
+
+  initData = async () => {
+    const res = await this.$api.exchange.getScopeOptions();
+
+    this.setState({
+      scopeOptions: res.data.data,
+    });
   }
 
   render() {
@@ -59,7 +55,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
     return (
       <div className='editor talent-editor'>
         <Form className='editor-form'>
-          <FormItem label='规则名称' {...getFormItemLayout(6, 16)}>
+          <FormItem label='规则名称' {...getFormItemLayout(6, 16)} required>
             {getFieldDecorator('name', {
               initialValue: currentRule.name,
               rules: [
@@ -90,23 +86,14 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
                     }, false);
                   }}
                   onFocus={async () => {
-                    const res = await this.$api.exchange.getScopeOptions({ offset: 0, limit: 200, });
 
-                    this.setState({
-                      scopeOptions: res.data.list,
-                      scopeOptionsMeta: {
-                        total: res.data.meta.total,
-                        limit: res.data.meta.limit,
-                        offset: res.data.meta.offset,
-                      },
-                    });
                   }}
                 >
                   {
                     scopeOptions.map(item => (
                       // @ts-ignore
-                      <Option key={item.id}>
-                        {item.name}
+                      <Option key={item.field}>
+                        {item.translation}
                       </Option>
                     ))
                   }
@@ -114,14 +101,14 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
               )
             }
           </FormItem>
-          <FormItem label='规则函数' {...getFormItemLayout(6, 16)}>
-            {getFieldDecorator('function', {
-              initialValue: currentRule.function,
+          <FormItem label='规则函数' {...getFormItemLayout(6, 16)} required>
+            {getFieldDecorator('func_name', {
+              initialValue: currentRule.func_name,
               rules: [
               ],
             })(<Input placeholder='请输入规则函数' onChange={evt => {
               setCurrentRule({
-                function: evt.target.value,
+                func_name: evt.target.value,
               }, false);
             }} />)}
           </FormItem>

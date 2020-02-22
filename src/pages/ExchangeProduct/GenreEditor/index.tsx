@@ -2,7 +2,8 @@ import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
 import {
   Form,
-  Input
+  Input,
+  Radio
 } from 'antd';
 import './index.scss';
 import {
@@ -14,6 +15,7 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
   wrapperCol: { span: wrapper, },
 });
+const radioStyle = { display: 'block', marginBottom: 12, };
 
 export interface IGenreEditorProps {
 
@@ -41,19 +43,31 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
     return (
       <div className='editor talent-editor'>
         <Form className='editor-form'>
-          {
-            <FormItem label='类型名称' {...getFormItemLayout(6, 14)}>
-              {getFieldDecorator('name', {
-                initialValue: currentGenre.name,
-                rules: [
-                ],
-              })(<Input placeholder='请输入品种类型名称' onChange={evt => {
+          <FormItem label='类型名称' {...getFormItemLayout(6, 14)}>
+            {getFieldDecorator('name', {
+              initialValue: currentGenre.name,
+              rules: [
+              ],
+            })(<Input placeholder='请输入品种类型名称' onChange={evt => {
+              setCurrentGenre({
+                name: evt.target.value,
+              }, false);
+            }} />)}
+          </FormItem>
+          <FormItem label='是否上架' required {...getFormItemLayout(6, 14)} className='editor-upshelf'>
+            {getFieldDecorator('in_use', {
+              initialValue: currentGenre && currentGenre.in_use,
+            })(
+              <Radio.Group onChange={(evt) => {
                 setCurrentGenre({
-                  name: evt.target.value,
+                  in_use: evt.target.value,
                 }, false);
-              }} />)}
-            </FormItem>
-          }
+              }}>
+                <Radio style={radioStyle} value={1}>是</Radio>
+                <Radio style={radioStyle} value={0}>否</Radio>
+              </Radio.Group>
+            )}
+          </FormItem>
         </Form>
       </div>
     );

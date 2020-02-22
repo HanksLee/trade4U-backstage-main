@@ -38,7 +38,7 @@ export const PAGE_ROUTES = [
   },
   {
     title: "权限管理",
-    path: "/dashboard/auth",
+    path: "/dashboard/permission",
     children: [],
   },
   {

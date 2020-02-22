@@ -20,7 +20,7 @@ const routes: any[] = [
   },
   {
     component: loadable(() =>
-      import(/* webpackChunkName: "menus-page" */ "./pages/Auth")
+      import(/* webpackChunkName: "permission-page" */ "./pages/Permission/PermissionList")
     ),
   },
   {

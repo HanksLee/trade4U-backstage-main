@@ -4,23 +4,23 @@ import listConfig from "./config";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import BrokerEditor from 'pages/Broker/BrokerEditor';
+import PermissionEditor from 'pages/Permission/PermissionEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
 
-export interface IBrokerProps {}
+export interface IPermissionProps {}
 
-export interface IBrokerState {
+export interface IPermissionState {
   // filter: any;
 }
 
 /* eslint new-cap: "off" */
-@WithRoute("/dashboard/broker", { exact: false, })
-@inject("common", "broker")
+@WithRoute("/dashboard/permission", { exact: false, })
+@inject("common", "permission")
 @observer
-export default class BrokerList extends BaseReact<{}, IBrokerState> {
+export default class PermissionList extends BaseReact<{}, IPermissionState> {
   state = {
     filter: {
     },
@@ -29,7 +29,6 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
     selectedRowKeys: [],
     name: undefined,
     code: undefined,
-    market: undefined,
   };
 
   async componentDidMount() {
@@ -42,8 +41,8 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
   }
 
   componentDidUpdate() {
-    if (this.props.location.pathname === "/dashboard/broker") {
-      this.props.history.replace("/dashboard/broker/list");
+    if (this.props.location.pathname === "/dashboard/permission") {
+      this.props.history.replace("/dashboard/permission/list");
     }
   }
 
@@ -57,7 +56,7 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
         },
       },
       async () => {
-        await this.props.broker.getBrokerList({
+        await this.props.permission.getPermissionList({
           params: {
             ...this.state.filter,
             ...payload,
@@ -105,14 +104,13 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { offset: 0, pageSize: this.state.filter.pageSize, };
+    const filter: any = { pageNum: 1, pageSize: this.state.filter.pageSize, };
 
     this.setState(
       {
         filter,
         currentPage: 1,
         name: undefined,
-        market: undefined,
         code: undefined,
       },
       () => {
@@ -133,21 +131,14 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
 
 
   goToEditor = (record: any): void => {
-    const url = `/dashboard/broker/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    const url = `/dashboard/permission/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.broker.setCurrentBroker(record, true, false);
+    this.props.permission.setCurrentPermission(record, true, false);
   }
-
-  renderMenu = (record): JSX.Element => {
-    return null;
-  };
-
-  // @ts-ignore
-  private onBatch = async value => {};
 
   render() {
     const { match, } = this.props;
-    const computedTitle = "券商管理";
+    const computedTitle = "权限管理";
 
     return (
       <div>
@@ -157,7 +148,7 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
           render={props => <CommonList {...props} config={listConfig(this)} />}
         />
         <Route path={`${match.url}/editor`} render={props => (
-          <BrokerEditor {...props} />
+          <PermissionEditor {...props} />
         )} />
       </div>
     );

@@ -3,7 +3,7 @@ import broker from "./broker";
 import market from "./market";
 import exchange from "./exchange";
 import menus from "./menus";
-
+import permission from "./permission";
 
 export default {
   common,
@@ -11,4 +11,5 @@ export default {
   market,
   exchange,
   menus,
+  permission,
 };

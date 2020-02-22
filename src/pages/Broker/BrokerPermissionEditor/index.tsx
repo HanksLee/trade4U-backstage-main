@@ -1,13 +1,9 @@
+import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import {
-  Table,
-  Checkbox,
-  Button
-} from 'antd';
-import { inject, observer } from 'mobx-react';
-import utils from 'utils';
 import { ColumnProps } from "antd/lib/table";
+import { Table, Checkbox, Button } from 'antd';
+import { inject, observer } from 'mobx-react';
 import './index.scss';
 
 interface Permission {
@@ -29,10 +25,6 @@ interface FormatedMenuType {
   rowSpan: number;
 }
 
-export interface IBrokerPermissionEditorProps {
-
-}
-
 export interface IBrokerPermissionEditorState {
   isEditing: boolean;
   menuList: MenuType[];
@@ -43,7 +35,7 @@ export interface IBrokerPermissionEditorState {
 // @ts-ignore
 @inject('common', 'broker')
 @observer
-export default class BrokerPermissionEditor extends BaseReact<IBrokerPermissionEditorProps, IBrokerPermissionEditorState> {
+export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermissionEditorState> {
   brokerId: string
   state: IBrokerPermissionEditorState = {
     isEditing: false,
@@ -303,7 +295,6 @@ export default class BrokerPermissionEditor extends BaseReact<IBrokerPermissionE
           <Table
             className="broker-permission-table"
             columns={this.getTableColumns()}
-            // childrenColumnName="children"
             dataSource={formatedMenuList}
             pagination={false}
             bordered

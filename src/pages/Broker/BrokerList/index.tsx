@@ -1,27 +1,20 @@
+import BrokerEditor from 'pages/Broker/BrokerEditor';
+import BrokerPermissionEditor from 'pages/Broker/BrokerPermissionEditor';
 import CommonHeader from "components/CommonHeader";
 import CommonList from "components/CommonList";
 import listConfig from "./config";
+import utils from 'utils';
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import BrokerEditor from 'pages/Broker/BrokerEditor';
-import BrokerPermissionEditor from 'pages/Broker/BrokerPermissionEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import "./index.scss";
-import utils from 'utils';
-
-export interface IBrokerProps {}
-
-export interface IBrokerState {
-  // filter: any;
-}
 
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/broker", { exact: false, })
 @inject("common", "broker")
 @observer
-export default class BrokerList extends BaseReact<{}, IBrokerState> {
+export default class BrokerList extends BaseReact<{}, {}> {
   state = {
     filter: {
     },
@@ -132,7 +125,6 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
     });
   }
 
-
   goToEditor = (record: any): void => {
     const url = `/dashboard/broker/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
@@ -154,11 +146,10 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
 
   render() {
     const { match, } = this.props;
-    const computedTitle = "券商管理";
 
     return (
       <div>
-        <CommonHeader {...this.props} links={[]} title={computedTitle} />
+        <CommonHeader {...this.props} links={[]} title="券商管理" />
         <Route
           path={`${match.url}/list`}
           render={props => <CommonList {...props} config={listConfig(this)} />}

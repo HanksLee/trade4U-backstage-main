@@ -1,17 +1,10 @@
+
+import utils from 'utils';
+import Validator from 'utils/validator';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import {
-  Form,
-  Input,
-  Button,
-  Modal,
-  Cascader,
-  Checkbox
-} from 'antd';
-import './index.scss';
-import Validator from 'utils/validator';
+import { Form, Input, Button, Modal, Cascader, Checkbox } from 'antd';
 import { inject, observer } from 'mobx-react';
-import utils from 'utils';
 import { MenuType } from 'pages/Menus';
 
 const FormItem = Form.Item;
@@ -22,10 +15,6 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   wrapperCol: { span: wrapper, },
 });
 
-export interface IPermissionEditorProps {
-
-}
-
 export interface IPermissionEditorState {
   mode: string;
   menuOptions: MenuType [];
@@ -35,7 +24,7 @@ export interface IPermissionEditorState {
 @Form.create()
 @inject('common', 'permission')
 @observer
-export default class PermissionEditor extends BaseReact<IPermissionEditorProps, IPermissionEditorState> {
+export default class PermissionEditor extends BaseReact<{}, IPermissionEditorState> {
   state = {
     mode: 'add',
     menuOptions: [],
@@ -54,13 +43,8 @@ export default class PermissionEditor extends BaseReact<IPermissionEditorProps, 
   }
 
   init = async () => {
-    const search = this.$qs.parse(this.props.location.search);
-
-    if (search.id !== 0) {
-      this.props.permission.setCurrentPermission({
-        id: search.id,
-      }, false);
-    }
+    const { permission, location, } = this.props;
+    const search = this.$qs.parse(location.search);
 
     this.setState({
       mode: search.id == 0 ? 'add' : 'edit',
@@ -72,18 +56,15 @@ export default class PermissionEditor extends BaseReact<IPermissionEditorProps, 
           title: '权限恢复操作',
           content: '检测到您存在未提交的权限记录，请问是否从上次编辑中恢复状态？',
           onOk: () => {
-            this.props.permission.setCurrentPermission(currentPermission);
+            permission.setCurrentPermission(currentPermission);
           },
           onCancel: () => {
             this.init();
             utils.rmLStorage('currentPermission');
           },
         });
-      } else {
-        if (this.state.mode === 'edit') {
-        } else {
-          this.props.permission.setCurrentPermission({}, true, false);
-        }
+      } else if (this.state.mode === 'add') {
+        permission.setCurrentPermission({}, true, false);
       }
     });
   }
@@ -109,47 +90,47 @@ export default class PermissionEditor extends BaseReact<IPermissionEditorProps, 
                   child_menu: values[1],
                 }, false);
               }}
-              style={{ display: 'inline-block', width: 200, }}
+              style={{ display: 'inline-block', width: 300, }}
             />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
         <FormItem label='权限名称' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('name', {
             initialValue: currentShowPermission && currentShowPermission.name,
-          })(<Input placeholder="请输入权限名称" onChange={evt => {
-            setCurrentPermission({
-              name: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+          })(
+            <Input placeholder="请输入权限名称" onChange={evt => {
+              setCurrentPermission({
+                name: evt.target.value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />
+          )}
         </FormItem>
         <FormItem label='code' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('code', {
             initialValue: currentShowPermission && currentShowPermission.code,
-          })(<Input placeholder="请输入code" onChange={evt => {
-            setCurrentPermission({
-              code: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+          })(
+            <Input placeholder="请输入code" onChange={evt => {
+              setCurrentPermission({
+                code: evt.target.value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />
+          )}
         </FormItem>
         <FormItem label='是否默认' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('is_default', {
             initialValue: !!(currentShowPermission && currentShowPermission.is_default),
             valuePropName: 'checked',
-          })(<Checkbox onChange={evt => {
-            setCurrentPermission({
-              is_default: evt.target.checked ? 1 : 0,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+          })(
+            <Checkbox onChange={evt => {
+              setCurrentPermission({
+                is_default: evt.target.checked ? 1 : 0,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />
+          )}
         </FormItem>
         <FormItem className='editor-form-btns'>
-          {
-            <Button type='primary' onClick={this.handleSubmit}>{
-              (this.state.mode == 'edit') ? '确认修改' : '保存'
-            }</Button>
-          }
+          <Button type='primary' onClick={this.handleSubmit}>
+            {this.state.mode == 'edit' ? '确认修改' : '保存'}
+          </Button>
           <Button onClick={this.goBack}>
             取消
           </Button>

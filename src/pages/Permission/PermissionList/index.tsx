@@ -1,26 +1,19 @@
-import CommonHeader from "components/CommonHeader";
-import CommonList from "components/CommonList";
-import listConfig from "./config";
-import WithRoute from "components/WithRoute";
+import CommonHeader from 'components/CommonHeader';
+import CommonList from 'components/CommonList';
+import listConfig from './config';
+import PermissionEditor from 'pages/Permission/PermissionEditor';
+import utils from 'utils';
+import WithRoute from 'components/WithRoute';
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import PermissionEditor from 'pages/Permission/PermissionEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
-import "./index.scss";
-import utils from 'utils';
-
-export interface IPermissionProps {}
-
-export interface IPermissionState {
-  // filter: any;
-}
 
 /* eslint new-cap: "off" */
 @WithRoute("/dashboard/permission", { exact: false, })
 @inject("common", "permission")
 @observer
-export default class PermissionList extends BaseReact<{}, IPermissionState> {
+export default class PermissionList extends BaseReact<{}> {
   state = {
     filter: {
     },

@@ -1,18 +1,9 @@
+import Validator from 'utils/validator';
+import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-
-import {
-  Form,
-  Input,
-  Button,
-  Modal,
-  Upload,
-  Icon
-} from 'antd';
-import './index.scss';
-import Validator from 'utils/validator';
+import { Form, Input, Button, Modal, Upload, Icon } from 'antd';
 import { inject, observer } from 'mobx-react';
-import utils from 'utils';
 import { RcFile } from 'antd/lib/upload';
 
 const FormItem = Form.Item;
@@ -23,18 +14,11 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   wrapperCol: { span: wrapper, },
 });
 
-export interface IBrokerEditorProps {
-
-}
-
-export interface IBrokerEditorState {
-}
-
 // @ts-ignore
 @Form.create()
 @inject('common', 'broker')
 @observer
-export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerEditorState> {
+export default class BrokerEditor extends BaseReact<{}> {
   state = {
     mode: 'add',
     brokerOptions: [],
@@ -49,13 +33,8 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
   }
 
   init = async () => {
-    const search = this.$qs.parse(this.props.location.search);
-
-    if (search.id !== 0) {
-      this.props.broker.setCurrentBroker({
-        id: search.id,
-      }, false);
-    }
+    const { broker, location, } = this.props;
+    const search = this.$qs.parse(location.search);
 
     this.setState({
       mode: search.id == 0 ? 'add' : 'edit',
@@ -67,18 +46,15 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
           title: '券商恢复操作',
           content: '检测到您存在未提交的券商记录，请问是否从上次编辑中恢复状态？',
           onOk: () => {
-            this.props.broker.setCurrentBroker(currentBroker);
+            broker.setCurrentBroker(currentBroker);
           },
           onCancel: () => {
             this.init();
             utils.rmLStorage('currentBroker');
           },
         });
-      } else {
-        if (this.state.mode === 'edit') {
-        } else {
-          this.props.broker.setCurrentBroker({}, true, false);
-        }
+      } else if (this.state.mode === 'add') {
+        broker.setCurrentBroker({}, true, false);
       }
     });
   }

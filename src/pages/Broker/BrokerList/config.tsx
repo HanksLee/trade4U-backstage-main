@@ -1,6 +1,6 @@
+import utils from "utils";
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
-import utils from "utils";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;

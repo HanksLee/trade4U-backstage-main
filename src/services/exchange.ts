@@ -11,15 +11,18 @@ const deleteGenre = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/market/${id}`, config);
 
 const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/markets", config);
+  API.get("/system/profit_rule", config);
+
+const createRule = (config): Promise<any> =>
+  API.post(`/system/profit_rule`, config);
 
 const updateRule = (id: string, config): Promise<any> =>
-  API.put(`/market/${id}`, config);
+  API.patch(`/system/profit_rule/${id}`, config);
 
 const deleteRule = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/market/${id}`, config);
+  API.delete(`/system/profit_rule/${id}`, config);
 
-const getScopeOptions = (config) => API.get('/', config);
+const getScopeOptions = (config) => API.get('/constant/profit_rule_scope_choices', config);
 
 const getProductList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/markets", config);
@@ -35,6 +38,7 @@ export default {
   updateGenre,
   deleteGenre,
   getRuleList,
+  createRule,
   updateRule,
   deleteRule,
   getScopeOptions,

@@ -27,14 +27,12 @@ const config = self => {
       title: "作用域",
       dataIndex: "scope",
       render: (text, record) => {
-        const matched = self.state.scopeOptions.find(item => item.id == text);
-
-        return (matched && matched.name) || '--';
+        return text || '--';
       },
     },
     {
       title: "规则函数",
-      dataIndex: "function",
+      dataIndex: "func_name",
       render: (text, record) => {
         return text || '--';
       },
@@ -53,11 +51,9 @@ const config = self => {
             <Popconfirm
               title="请问是否确定删除当前规则"
               onConfirm={async () => {
-                const res = await self.$api.exchange.deleteRule({
-                  id: record.id,
-                });
+                const res = await self.$api.exchange.deleteRule(record.id);
 
-                if (res.data.status === 200) {
+                if (res.status === 204) {
                   self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);

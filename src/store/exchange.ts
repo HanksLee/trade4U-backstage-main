@@ -55,29 +55,21 @@ class ExchangeStore extends BaseStore {
     }
   };
   @observable
-  ruleList = [
-    {
-      id: 1,
-      name: "SRE",
-      scope: 1,
-      function: 'Test',
-    }
-  ];
+  ruleList = [];
   @observable
   ruleListMeta = {};
   @action
   getRuleList = async config => {
     const res = await this.$api.exchange.getRuleList(config);
-    const { data, } = res.data;
-    this.setRuleList(data);
+    this.setRuleList(res.data);
   };
   @action
   setRuleList = data => {
-    this.ruleList = data.list;
+    this.ruleList = data.results;
     this.ruleListMeta = {
-      total: data.total,
-      offset: data.offset,
-      limit: data.limit,
+      total: data.count,
+      // offset: data.offset,
+      // limit: data.limit,
     };
   };
   @observable

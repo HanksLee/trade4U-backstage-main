@@ -1,16 +1,10 @@
+import Validator from 'utils/validator';
+import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-
-import {
-  Form,
-  Input,
-  Button,
-  Modal
-} from 'antd';
-import './index.scss';
-import Validator from 'utils/validator';
+import { Form, Input, Button, Modal, Upload, Icon } from 'antd';
 import { inject, observer } from 'mobx-react';
-import utils from 'utils';
+import { RcFile } from 'antd/lib/upload';
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -20,18 +14,11 @@ const getFormItemLayout = (label, wrapper, offset?) => ({
   wrapperCol: { span: wrapper, },
 });
 
-export interface IBrokerEditorProps {
-
-}
-
-export interface IBrokerEditorState {
-}
-
 // @ts-ignore
 @Form.create()
 @inject('common', 'broker')
 @observer
-export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerEditorState> {
+export default class BrokerEditor extends BaseReact<{}> {
   state = {
     mode: 'add',
     brokerOptions: [],
@@ -46,13 +33,8 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
   }
 
   init = async () => {
-    const search = this.$qs.parse(this.props.location.search);
-
-    if (search.id !== 0) {
-      this.props.broker.setCurrentBroker({
-        id: search.id,
-      }, false);
-    }
+    const { broker, location, } = this.props;
+    const search = this.$qs.parse(location.search);
 
     this.setState({
       mode: search.id == 0 ? 'add' : 'edit',
@@ -64,18 +46,15 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
           title: '券商恢复操作',
           content: '检测到您存在未提交的券商记录，请问是否从上次编辑中恢复状态？',
           onOk: () => {
-            this.props.broker.setCurrentBroker(currentBroker);
+            broker.setCurrentBroker(currentBroker);
           },
           onCancel: () => {
             this.init();
             utils.rmLStorage('currentBroker');
           },
         });
-      } else {
-        if (this.state.mode === 'edit') {
-        } else {
-          this.props.broker.setCurrentBroker({}, true, false);
-        }
+      } else if (this.state.mode === 'add') {
+        broker.setCurrentBroker({}, true, false);
       }
     });
   }
@@ -86,58 +65,97 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
 
     return (
       <Form className='editor-form'>
-        <FormItem label='券商名称' {...getFormItemLayout(2, 12)} required>
+        <FormItem label="券商名称" {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('name', {
             initialValue: currentShowBroker && currentShowBroker.name,
-          })(<Input placeholder="请输入券商名称" onChange={evt => {
-            setCurrentBroker({
-              name: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+          })(
+            <Input placeholder="请输入券商名称" onChange={evt => {
+              setCurrentBroker({
+                name: evt.target.value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />
+          )}
         </FormItem>
-        <FormItem label='域名' {...getFormItemLayout(2, 12)} required>
+        <FormItem label="域名" {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('domain', {
             initialValue: currentShowBroker && currentShowBroker.pinyin,
-          })(<Input placeholder="请输入域名" onChange={evt => {
-            setCurrentBroker({
-              domain: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+          })(
+            <Input placeholder="请输入域名" onChange={evt => {
+              setCurrentBroker({
+                domain: evt.target.value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />
+          )}
         </FormItem>
-        <FormItem label='后台角标' {...getFormItemLayout(2, 12)} required>
-          {getFieldDecorator('background_corner', {
-            initialValue: currentShowBroker && currentShowBroker.background_corner,
-          })(<Input placeholder="请输入后台角标地址" onChange={evt => {
-            setCurrentBroker({
-              background_corner: evt.target.value,
-            }, false);
-          }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+        <FormItem label="后台角标" {...getFormItemLayout(3, 12)} required>
+          {getFieldDecorator('background_corner')(
+            <Upload
+              accept="image/*"
+              listType="picture-card"
+              showUploadList={false}
+              beforeUpload={this.beforeBackgroundCornerUpload}
+            >
+              {
+                currentShowBroker && currentShowBroker.background_corner
+                  ? (
+                    <div
+                      className="upload-image-preview"
+                      style={{ backgroundImage: `url(${currentShowBroker.background_corner})`, }}
+                    />
+                  )
+                  : <div className="upload-image-preview"><Icon type="plug" /></div>
+              }
+            </Upload>
+          )}
         </FormItem>
-        <FormItem label='logo' {...getFormItemLayout(2, 12)} required>
-          {getFieldDecorator('logo', {
-            initialValue: currentShowBroker && currentShowBroker.logo,
-          })(<Input placeholder="请输入logo地址" onChange={evt => {
-            setCurrentBroker({
-              logo: evt.target.value,
-            }, false);
-          }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+        <FormItem label="logo" {...getFormItemLayout(3, 12)} required>
+          {getFieldDecorator('logo')(
+            <Upload
+              accept="image/*"
+              listType="picture-card"
+              showUploadList={false}
+              beforeUpload={this.beforeLogoUpload}
+            >
+              {
+                currentShowBroker && currentShowBroker.logo
+                  ? (
+                    <div
+                      className="upload-image-preview"
+                      style={{ backgroundImage: `url(${currentShowBroker.logo})`, }}
+                    />
+                  )
+                  : <div className="upload-image-preview"><Icon type="plus" /></div>
+              }
+            </Upload>
+          )}
         </FormItem>
         <FormItem className='editor-form-btns'>
-          {
-            <Button type='primary' onClick={this.handleSubmit}>{
-              (this.state.mode == 'edit') ? '确认修改' : '保存'
-            }</Button>
-          }
-          <Button onClick={this.goBack}>
-            取消
+          <Button type='primary' onClick={this.handleSubmit}>
+            {this.state.mode === 'edit' ? '确认修改' : '保存'}
           </Button>
+          <Button onClick={this.goBack}>取消</Button>
         </FormItem>
       </Form>
     );
+  }
+
+  beforeBackgroundCornerUpload = (file: RcFile) => {
+    this.uploadFile(file, 'background_corner');
+    return false;
+  }
+
+  beforeLogoUpload = (file: RcFile) => {
+    this.uploadFile(file, 'logo');
+    return false;
+  }
+
+  uploadFile = async (file: RcFile, name: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await this.$api.common.uploadFile(formData);
+    this.props.broker.setCurrentBroker({
+      [name]: res.data.file_path,
+    }, false);
   }
 
   goBack = () => {

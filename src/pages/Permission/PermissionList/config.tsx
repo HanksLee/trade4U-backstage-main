@@ -1,6 +1,6 @@
-import utils from "utils";
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
+import utils from "utils";
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -13,48 +13,48 @@ const config = self => {
 
   const columns = [
     {
-      title: "券商 ID",
-      dataIndex: "id",
-    },
-    {
-      title: "券商名称",
+      // width: 120,
+      title: "权限名",
       dataIndex: "name",
     },
     {
-      title: "域名",
-      dataIndex: 'domain',
-      render: (text, record) => {
+      // width: 120,
+      title: "code",
+      dataIndex: "code",
+    },
+    {
+      title: "父菜单名称",
+      dataIndex: 'parent_menu_name',
+      render: (text) => {
         return text || '--';
       },
     },
     {
-      title: '后台角标',
-      dataIndex: 'background_corner',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      title: "子菜单名称",
+      dataIndex: 'child_menu_name',
+      render: (text) => {
+        return text || '--';
       },
     },
     {
-      title: 'logo',
-      dataIndex: 'logo',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      title: "是否默认",
+      dataIndex: 'is_default',
+      render: (text) => {
+        return text ? '是' : '否';
       },
     },
     {
+      // width: 120,
       title: "操作",
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
             <span onClick={() => self.goToEditor(record)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.goToPermissionEditor(record)}>授权</span>
-            <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
-              title="请问是否确定删除券商"
+              title="请问是否确定删除权限"
               onConfirm={async () => {
-                const res = await self.$api.broker.deleteBroker(record.id);
-
+                const res = await self.$api.permission.deletePermission(record.id);
                 if (res.status === 204) {
                   self.getDataList(self.state.filter);
                 } else {
@@ -73,7 +73,7 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.broker.brokerListMeta.total,
+    total: self.props.permission.permissionListMeta.total,
     current: self.state.currentPage,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
@@ -108,11 +108,22 @@ const config = self => {
       widgets: [
         [{
           type: 'Input',
-          label: '券商名称',
-          placeholder: '请输入券商名称',
+          label: '权限名称',
+          placeholder: '请输入权限名称',
           value: self.state.name || undefined,
           onChange(evt) {
             self.onInputChanged('name', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        }, {
+          type: 'Input',
+          label: 'code',
+          placeholder: '请输入权限code',
+          value: self.state.code || undefined,
+          onChange(evt) {
+            self.onInputChanged('code', evt.target.value);
           },
           onPressEnter(evt) {
             self.onSearch();
@@ -130,7 +141,7 @@ const config = self => {
       rowKey: "id",
       rowSelection,
       columns,
-      dataSource: self.props.broker.brokerList,
+      dataSource: self.props.permission.permissionList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {

@@ -124,7 +124,6 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
 
     return (
       <Menu
-        theme="dark"
         mode="inline"
         className="app-menu"
         openKeys={openKeys}
@@ -163,10 +162,10 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     return (
       <Layout className="layout">
         {showContainer && (
-          <Sider trigger={null} collapsible collapsed={collapsed}>
+          <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
             <div className="logo">
               <img src={logo} alt="logo" />
-              {!collapsed && <span>Moon Admin</span>}
+              {!collapsed && <span>主后台</span>}
             </div>
             {this.renderMenu()}
           </Sider>

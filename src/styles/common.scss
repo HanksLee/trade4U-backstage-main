@@ -177,3 +177,16 @@ img.emoji {
     background-color: #666;
   }
 }
+
+.upload-image-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  font-size: 28px;
+  color: rgba(0, 0, 0, 0.4);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}

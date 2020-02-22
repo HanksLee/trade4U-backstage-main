@@ -85,7 +85,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
 
     let payload: any = {
       name: currentGenre.name,
-      in_use: currentGenre.in_use
+      in_use: currentGenre.in_use,
     };
 
     if (currentGenre.id) {

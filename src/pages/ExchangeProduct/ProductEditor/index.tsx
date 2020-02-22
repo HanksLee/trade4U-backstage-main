@@ -8,7 +8,7 @@ import {
   Button,
   Modal,
   Radio,
-  InputNumber,
+  InputNumber
 } from 'antd';
 import './index.scss';
 import Validator from 'utils/validator';
@@ -113,7 +113,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     const { setCurrentProduct, currentShowProduct, } = this.props.exchange;
     const {
       typeOptions,
-      marketOptions} = this.state;
+      marketOptions, } = this.state;
 
     return (
       <Form className='editor-form'>

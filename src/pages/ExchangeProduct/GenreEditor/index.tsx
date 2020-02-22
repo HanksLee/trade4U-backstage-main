@@ -3,7 +3,7 @@ import { BaseReact } from 'components/BaseReact';
 import {
   Form,
   Input,
-  Radio,
+  Radio
 } from 'antd';
 import './index.scss';
 import {

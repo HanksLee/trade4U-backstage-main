@@ -30,7 +30,7 @@ const getScopeOptions = (config) => API.get('/constant/profit_rule_scope_choices
 const getProductList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);
 
-  const createProduct = (config): Promise<any> =>
+const createProduct = (config): Promise<any> =>
   API.post(`/symbol`, config);
 
 const updateProduct = (id: string, config): Promise<any> =>

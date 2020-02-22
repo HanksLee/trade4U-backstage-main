@@ -168,8 +168,8 @@ const config = self => {
           onSelect(val, elem) {
             self.onMarketSelected(val, elem);
           },
-        },
-      ],
+        }
+        ],
         {
           type: 'Input',
           label: '产品编码',

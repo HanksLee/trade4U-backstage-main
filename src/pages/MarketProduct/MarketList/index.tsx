@@ -55,7 +55,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
     if (res.status === 200) {
       this.setState({
         marketOptions: res.data.data,
-      })
+      });
     }
   }
 

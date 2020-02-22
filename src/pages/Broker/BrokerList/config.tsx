@@ -13,12 +13,10 @@ const config = self => {
 
   const columns = [
     {
-      // width: 120,
       title: "券商 ID",
       dataIndex: "id",
     },
     {
-      // width: 120,
       title: "券商名称",
       dataIndex: "name",
     },
@@ -33,18 +31,17 @@ const config = self => {
       title: '后台角标',
       dataIndex: 'background_corner',
       render: (text, record) => {
-        return text || '--';
+        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
       },
     },
     {
       title: 'logo',
       dataIndex: 'logo',
       render: (text, record) => {
-        return text || '--';
+        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
       },
     },
     {
-      // width: 120,
       title: "操作",
       render: (text, record) => {
         return (

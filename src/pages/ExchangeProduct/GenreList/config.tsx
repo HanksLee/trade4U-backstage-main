@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
+import StatusText from 'components/StatusText';
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -26,6 +27,25 @@ const config = self => {
       },
     },
     {
+      title: '可用状态',
+      render: (text, record) => {
+        const statusType = {
+          1: 'normal',
+          0: 'block',
+        };
+        const statusText = {
+          1: '可用',
+          0: '不可用',
+        };
+
+        return <StatusText type={
+          statusType[record.in_use]
+        } text={
+          statusText[record.in_use]
+        } />;
+      },
+    },
+    {
       // width: 120,
       title: "操作",
       render: (text, record) => {
@@ -39,11 +59,9 @@ const config = self => {
             <Popconfirm
               title="请问是否确定删除品种类型"
               onConfirm={async () => {
-                const res = await self.$api.exchange.deleteGenre({
-                  id: record.id,
-                });
+                const res = await self.$api.exchange.deleteGenre(record.id);
 
-                if (res.data.status === 200) {
+                if (res.status === 204) {
                   self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);

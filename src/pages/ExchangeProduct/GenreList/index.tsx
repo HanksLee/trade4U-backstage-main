@@ -79,18 +79,25 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
       return this.$msg.warn('请输入品种类型名称');
     }
 
+    if (currentGenre.in_use == null) {
+      return this.$msg.warn('请选择品种类型是否可用');
+    }
+
     let payload: any = {
       name: currentGenre.name,
+      in_use: currentGenre.in_use
     };
 
     if (currentGenre.id) {
       // payload['id'] = currentGenre.id,
-      res = await this.$api.exchange.updateGenre(payload);
+      res = await this.$api.exchange.updateGenre(currentGenre.id, payload);
     } else {
-      res = await this.$api.exchange.updateGenre(payload);
+      res = await this.$api.exchange.createGenre(payload);
     }
 
-    if (res.data.ret == 0) {
+    const statusCode = currentGenre.id ? 200 : 201;
+
+    if (res.status == statusCode) {
       this.$msg.success(!currentGenre.uid ? '品种类型添加成功' : '品种类型编辑成功');
       this.toggleGenreModal();
       this.getDataList(this.state.filter);

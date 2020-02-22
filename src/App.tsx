@@ -32,7 +32,7 @@ class App extends BaseReact {
 
   private init = async (): Promise<any> => {
     // @todo 一进入页面调起获取用户信息接口
-    const token = utils.getStorage('MOON_ADMIN_MAIN_TOKEN');
+    const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
     this.setState({ token, });
   };
 

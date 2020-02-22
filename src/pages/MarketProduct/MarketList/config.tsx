@@ -152,17 +152,24 @@ const config = self => {
           },
         },
         {
-          type: 'Input',
+          type: 'Select',
           label: '交易市场',
-          placeholder: '请输入交易市场',
-          value: self.state.market || undefined,
-          onChange(evt) {
-            self.onInputChanged('market', evt.target.value);
+          showSearch: false,
+          placeholder: '请选择交易市场',
+          allowClear: false,
+          width: 150,
+          value: self.state.market,
+          option: {
+            key: 'field',
+            value: 'field',
+            title: 'translation',
+            data: self.state.marketOptions || [],
           },
-          onPressEnter(evt) {
-            self.onSearch();
+          onSelect(val, elem) {
+            self.onMarketSelected(val, elem);
           },
-        }],
+        },
+      ],
         {
           type: 'Input',
           label: '产品编码',

@@ -2,13 +2,16 @@ import { AxiosRequestConfig } from "axios";
 import { moonAPI as API } from "utils/request";
 
 const getGenreList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/markets", config);
+  API.get("/system/symbol_type", config);
+
+const createGenre = (config): Promise<any> =>
+  API.post(`/system/symbol_type`, config);
 
 const updateGenre = (id: string, config): Promise<any> =>
-  API.put(`/market/${id}`, config);
+  API.patch(`/system/symbol_type/${id}`, config);
 
 const deleteGenre = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/market/${id}`, config);
+  API.delete(`/system/symbol_type/${id}`, config);
 
 const getRuleList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/profit_rule", config);
@@ -25,16 +28,20 @@ const deleteRule = (id: string, config: AxiosRequestConfig): Promise<any> =>
 const getScopeOptions = (config) => API.get('/constant/profit_rule_scope_choices', config);
 
 const getProductList = (config: AxiosRequestConfig): Promise<any> =>
-  API.get("/markets", config);
+  API.get("/system/symbol", config);
+
+  const createProduct = (config): Promise<any> =>
+  API.post(`/symbol`, config);
 
 const updateProduct = (id: string, config): Promise<any> =>
-  API.put(`/market/${id}`, config);
+  API.patch(`/symbol/${id}`, config);
 
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/market/${id}`, config);
+  API.delete(`/symbol/${id}`, config);
 
 export default {
   getGenreList,
+  createGenre,
   updateGenre,
   deleteGenre,
   getRuleList,
@@ -43,6 +50,7 @@ export default {
   deleteRule,
   getScopeOptions,
   getProductList,
+  createProduct,
   updateProduct,
   deleteProduct,
 };

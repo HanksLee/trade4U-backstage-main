@@ -1,31 +1,31 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f1a6ca345153a5f70c69",
-    "url": "/assets/css/app.f1a6c.css"
+    "revision": "f7863515a39dfd5b9bd5",
+    "url": "/assets/css/app.f7863.css"
   },
   {
     "revision": "45c51b7f610c5e6e481f",
     "url": "/assets/css/broker-page.45c51.css"
   },
   {
-    "revision": "0d0d7947a7865b4d71c1",
-    "url": "/assets/css/exchange-genre-page.0d0d7.css"
+    "revision": "e2cd11425dfdb4e51095",
+    "url": "/assets/css/exchange-genre-page.e2cd1.css"
   },
   {
-    "revision": "25243d9d9c9d382d7ff6",
-    "url": "/assets/css/exchange-product-page.25243.css"
+    "revision": "168b073897939b8a4d63",
+    "url": "/assets/css/exchange-product-page.168b0.css"
   },
   {
-    "revision": "9209d417cc30f52121fa",
-    "url": "/assets/css/exchange-rule-page.9209d.css"
+    "revision": "dd42418414d532e8b61f",
+    "url": "/assets/css/exchange-rule-page.dd424.css"
   },
   {
-    "revision": "f56b6814c33f5fad0b61",
-    "url": "/assets/css/market-product-page.f56b6.css"
+    "revision": "37f22238b8e95bee6827",
+    "url": "/assets/css/market-product-page.37f22.css"
   },
   {
-    "revision": "6d671714c8d57f926aab",
-    "url": "/assets/css/menus-page.6d671.css"
+    "revision": "1a04a0936d760043d42c",
+    "url": "/assets/css/menus-page.1a04a.css"
   },
   {
     "revision": "b73572d478eedf99da77",
@@ -60,43 +60,43 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/assets/img/transparent.png"
   },
   {
-    "revision": "f1a6ca345153a5f70c69",
-    "url": "/assets/js/app.f1a6c.js"
+    "revision": "f7863515a39dfd5b9bd5",
+    "url": "/assets/js/app.f7863.js"
   },
   {
     "revision": "45c51b7f610c5e6e481f",
     "url": "/assets/js/broker-page.45c51.js"
   },
   {
-    "revision": "2b7d8e28bcb802344530",
-    "url": "/assets/js/build.2b7d8.js"
+    "revision": "c254d2fe2f9c5c4e21f2",
+    "url": "/assets/js/build.c254d.js"
   },
   {
-    "revision": "0d0d7947a7865b4d71c1",
-    "url": "/assets/js/exchange-genre-page.0d0d7.js"
+    "revision": "e2cd11425dfdb4e51095",
+    "url": "/assets/js/exchange-genre-page.e2cd1.js"
   },
   {
-    "revision": "25243d9d9c9d382d7ff6",
-    "url": "/assets/js/exchange-product-page.25243.js"
+    "revision": "168b073897939b8a4d63",
+    "url": "/assets/js/exchange-product-page.168b0.js"
   },
   {
-    "revision": "9209d417cc30f52121fa",
-    "url": "/assets/js/exchange-rule-page.9209d.js"
+    "revision": "dd42418414d532e8b61f",
+    "url": "/assets/js/exchange-rule-page.dd424.js"
   },
   {
-    "revision": "f56b6814c33f5fad0b61",
-    "url": "/assets/js/market-product-page.f56b6.js"
+    "revision": "37f22238b8e95bee6827",
+    "url": "/assets/js/market-product-page.37f22.js"
   },
   {
-    "revision": "6d671714c8d57f926aab",
-    "url": "/assets/js/menus-page.6d671.js"
+    "revision": "1a04a0936d760043d42c",
+    "url": "/assets/js/menus-page.1a04a.js"
   },
   {
     "revision": "b73572d478eedf99da77",
     "url": "/assets/js/vendor.b7357.js"
   },
   {
-    "revision": "f77807efd03a0f13f7a7354ec98e3a34",
+    "revision": "d93ecde6231830a9faf65e8bb489df30",
     "url": "/index.html"
   },
   {

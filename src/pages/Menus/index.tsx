@@ -140,8 +140,12 @@ export default class Menus extends BaseReact<IMenusProps, IMenusState> {
   };
 
   deleteMenu = async (id: string) => {
-    await this.$api.menus.deleteMenu(id);
-    this.getMenuList();
+    const res = await this.$api.menus.deleteMenu(id);
+    if (res.status === 204) {
+      this.getMenuList();
+    } else {
+      this.$msg.error(res.data.message);
+    }
   };
 
   editMenusSort = () => {

@@ -5,6 +5,7 @@ import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
 import BrokerEditor from 'pages/Broker/BrokerEditor';
+import BrokerPermissionEditor from 'pages/Broker/BrokerPermissionEditor';
 import { inject, observer } from "mobx-react";
 import { Route } from "react-router-dom";
 import "./index.scss";
@@ -138,6 +139,12 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
     this.props.broker.setCurrentBroker(record, true, false);
   }
 
+  goToPermissionEditor = (record: any): void => {
+    const url = `/dashboard/broker/permission?id=${!utils.isEmpty(record) ? record.id : 0}`;
+    this.props.history.push(url);
+    this.props.broker.setCurrentBroker(record, true, false);
+  }
+
   renderMenu = (record): JSX.Element => {
     return null;
   };
@@ -158,6 +165,9 @@ export default class BrokerList extends BaseReact<{}, IBrokerState> {
         />
         <Route path={`${match.url}/editor`} render={props => (
           <BrokerEditor {...props} />
+        )} />
+        <Route path={`${match.url}/permission`} render={props => (
+          <BrokerPermissionEditor {...props} />
         )} />
       </div>
     );

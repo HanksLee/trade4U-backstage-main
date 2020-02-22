@@ -51,6 +51,8 @@ const config = self => {
           <div className="common-list-table-operation">
             <span onClick={() => self.goToEditor(record)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
+            <span onClick={() => self.goToPermissionEditor(record)}>授权</span>
+            <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除券商"
               onConfirm={async () => {

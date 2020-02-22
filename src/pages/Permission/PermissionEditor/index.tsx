@@ -95,27 +95,7 @@ export default class PermissionEditor extends BaseReact<IPermissionEditorProps, 
 
     return (
       <Form className='editor-form'>
-        <FormItem label='权限名称' {...getFormItemLayout(2, 12)} required>
-          {getFieldDecorator('name', {
-            initialValue: currentShowPermission && currentShowPermission.name,
-          })(<Input placeholder="请输入权限名称" onChange={evt => {
-            setCurrentPermission({
-              name: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
-        </FormItem>
-        <FormItem label='code' {...getFormItemLayout(2, 12)} required>
-          {getFieldDecorator('code', {
-            initialValue: currentShowPermission && currentShowPermission.code,
-          })(<Input placeholder="请输入code" onChange={evt => {
-            setCurrentPermission({
-              code: evt.target.value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
-          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
-        </FormItem>
-        <FormItem label='所属菜单' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='所属菜单' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('menuIds', {
             initialValue: currentShowPermission && [currentShowPermission.parent_menu, currentShowPermission.child_menu],
           })(
@@ -133,7 +113,27 @@ export default class PermissionEditor extends BaseReact<IPermissionEditorProps, 
             />)}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
-        <FormItem label='是否默认' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='权限名称' {...getFormItemLayout(3, 12)} required>
+          {getFieldDecorator('name', {
+            initialValue: currentShowPermission && currentShowPermission.name,
+          })(<Input placeholder="请输入权限名称" onChange={evt => {
+            setCurrentPermission({
+              name: evt.target.value,
+            }, false);
+          }} style={{ display: 'inline-block', width: 200, }} />)}
+          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+        </FormItem>
+        <FormItem label='code' {...getFormItemLayout(3, 12)} required>
+          {getFieldDecorator('code', {
+            initialValue: currentShowPermission && currentShowPermission.code,
+          })(<Input placeholder="请输入code" onChange={evt => {
+            setCurrentPermission({
+              code: evt.target.value,
+            }, false);
+          }} style={{ display: 'inline-block', width: 200, }} />)}
+          {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
+        </FormItem>
+        <FormItem label='是否默认' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('is_default', {
             initialValue: !!(currentShowPermission && currentShowPermission.is_default),
             valuePropName: 'checked',

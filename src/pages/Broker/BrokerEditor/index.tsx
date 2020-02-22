@@ -86,7 +86,7 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
 
     return (
       <Form className='editor-form'>
-        <FormItem label='券商名称' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='券商名称' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('name', {
             initialValue: currentShowBroker && currentShowBroker.name,
           })(<Input placeholder="请输入券商名称" onChange={evt => {
@@ -96,7 +96,7 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
           }} style={{ display: 'inline-block', width: 200, }} />)}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
-        <FormItem label='域名' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='域名' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('domain', {
             initialValue: currentShowBroker && currentShowBroker.pinyin,
           })(<Input placeholder="请输入域名" onChange={evt => {
@@ -106,7 +106,7 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
           }} style={{ display: 'inline-block', width: 200, }} />)}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
-        <FormItem label='后台角标' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='后台角标' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('background_corner', {
             initialValue: currentShowBroker && currentShowBroker.background_corner,
           })(<Input placeholder="请输入后台角标地址" onChange={evt => {
@@ -116,7 +116,7 @@ export default class BrokerEditor extends BaseReact<IBrokerEditorProps, IBrokerE
           }} />)}
           {/* <span style={{ color: 'rgb(153, 153, 153)', fontSize: 12, marginLeft: 8, }}>*</span> */}
         </FormItem>
-        <FormItem label='logo' {...getFormItemLayout(2, 12)} required>
+        <FormItem label='logo' {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('logo', {
             initialValue: currentShowBroker && currentShowBroker.logo,
           })(<Input placeholder="请输入logo地址" onChange={evt => {

@@ -4,12 +4,14 @@ stages:
   - build
   - deploy
 
-stage: build
-script:
-  - npm install
-  - npm run build:qa
+build job:  
+  stage: build
+  script:
+    - npm install
+    - npm run build:qa
 
-stage: deploy
-script:
-  - echo "$WETRADE_PEM" > "$(pwd)/wetrade.pem"
-  - rsync --delete -azvv -e "ssh -i ./wetrade.pem" root@47.75.61.170:/www/wwwroot/system.cangshu360.com/ ./dist/qa/*
+deploy job:
+  stage: deploy
+  script:
+    - echo "$WETRADE_PEM" > "$(pwd)/wetrade.pem"
+    - rsync --delete -azvv -e "ssh -i ./wetrade.pem" root@47.75.61.170:/www/wwwroot/system.cangshu360.com/ ./dist/qa/*

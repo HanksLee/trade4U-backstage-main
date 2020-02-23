@@ -72,7 +72,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         });
       } else {
         if (this.state.mode === 'edit') {
-          await this.$store.market.getCurrentProduct( search.id);
+          await this.$store.market.getCurrentProduct(search.id);
         } else {
           this.props.market.setCurrentProduct({}, true, false);
         }

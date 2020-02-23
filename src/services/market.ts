@@ -4,7 +4,7 @@ import { moonAPI as API } from "utils/request";
 const getProductList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/product", config);
 
-  const getCurrentProduct = (id, config: AxiosRequestConfig): Promise<any> =>
+const getCurrentProduct = (id, config: AxiosRequestConfig): Promise<any> =>
   API.get(`/system/product/${id}`, config);
 
 const createProduct = (config) => API.post('/system/product', config);

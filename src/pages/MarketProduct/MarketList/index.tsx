@@ -143,7 +143,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       [field]: value,
     });
     this.props.market.setFilterMarket({
-      [field]: value ? value: undefined,
+      [field]: value ? value : undefined,
     });
   }
 

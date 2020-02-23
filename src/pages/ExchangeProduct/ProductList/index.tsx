@@ -52,7 +52,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       [field]: value,
     });
     this.props.exchange.setFilterProduct({
-      [field]: value ? value: undefined,
+      [field]: value ? value : undefined,
     });
   }
 
@@ -90,7 +90,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       async () => {
         this.props.exchange.setFilterProduct({
           ...payload,
-        })
+        });
         await this.props.exchange.getProductList({
           params: this.props.exchange.filterProduct,
         });

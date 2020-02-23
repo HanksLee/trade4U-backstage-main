@@ -145,8 +145,7 @@ export default class BrokerList extends BaseReact<{}, {}> {
   private onBatch = async value => {};
 
   render() {
-    const { match, } = this.props;
-
+    const { match, broker, } = this.props;
     return (
       <div>
         <CommonHeader {...this.props} links={[]} title="券商管理" />

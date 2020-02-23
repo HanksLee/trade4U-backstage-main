@@ -1,53 +1,22 @@
-import { action, observable, computed } from "mobx";
+import { action, observable } from "mobx";
 import BaseStore from "store/base";
-import utils from "utils";
+
+export interface Filter {
+  page_size: number;
+  page: number;
+  name?: string;
+  code?: string;
+}
 
 class PermissionStore extends BaseStore {
   @observable
-  permissionList = [];
-  @observable
-  permissionListMeta = {};
-  @action
-  getPermissionList = async config => {
-    const res = await this.$api.permission.getPermissionList(config);
-    this.setPermissionList(res.data);
+  filter: Filter = {
+    page_size: 10,
+    page: 1,
   };
   @action
-  setPermissionList = data => {
-    this.permissionList = data.results;
-    this.permissionListMeta = {
-      total: data.count,
-      offset: data.offset,
-      limit: data.limit,
-    };
-  };
-  @observable
-  currentPermission: any = {};
-
-  @computed
-  get currentShowPermission() {
-    const obj: any = {};
-
-    return {
-      ...this.currentPermission,
-      ...obj,
-    };
-  }
-
-  @action
-  setCurrentPermission = (permission, overwrite = true, store = true) => {
-    if (overwrite) {
-      this.currentPermission = permission;
-    } else {
-      this.currentPermission = {
-        ...this.currentPermission,
-        ...permission,
-      };
-    }
-
-    if (store) {
-      utils.setLStorage("currentPermission", this.currentPermission);
-    }
+  setFilter = (filter: Filter) => {
+    this.filter = { ...this.filter, ...filter, };
   };
 }
 

@@ -3,19 +3,7 @@ import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedRowKeys) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
-  };
-
   const columns = [
-    {
-      title: "券商 ID",
-      dataIndex: "id",
-    },
     {
       title: "券商名称",
       dataIndex: "name",
@@ -23,22 +11,23 @@ const config = self => {
     {
       title: "域名",
       dataIndex: 'domain',
-      render: (text, record) => {
-        return text || '--';
+      ellipsis: true,
+      render: (text) => {
+        return <a href={text} target="_blank">{text}</a> || '--';
       },
     },
     {
       title: '后台角标',
       dataIndex: 'background_corner',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      render: (text) => {
+        return <div className="upload-image-preview" style={{ backgroundImage: `url(${text})`, }} />;
       },
     },
     {
       title: 'logo',
       dataIndex: 'logo',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      render: (text) => {
+        return <div className="upload-image-preview" style={{ backgroundImage: `url(${text})`, }} />;
       },
     },
     {
@@ -128,7 +117,6 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      rowSelection,
       columns,
       dataSource: self.props.broker.brokerList,
       pagination,

@@ -5,7 +5,8 @@ import {
   validatePSPort,
   validateMobile,
   validateEmail,
-  validateHexColor
+  validateHexColor,
+  validateUrl
 } from "./validator-helper";
 import utils from "utils";
 
@@ -80,6 +81,14 @@ const strategies = {
     const val = value.toString();
 
     if (!val || !validateHexColor(val)) {
+      cb && cb();
+      return errMsg;
+    }
+  },
+  isUrl(value, errMsg, cb) {
+    const val = value.toString();
+
+    if (!val || !validateUrl(val)) {
       cb && cb();
       return errMsg;
     }

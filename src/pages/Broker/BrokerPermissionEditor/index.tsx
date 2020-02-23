@@ -180,8 +180,10 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
                   <div className="select-all-permission-row">
                     <Checkbox
                       disabled={!isEditing}
-                      checked={this.isCheck(record.childMenuId)}
-                      onChange={(e) => this.handleSelectAllChange(e.target.checked, record.childMenuId)}
+                      checked={this.isCheck(record.childMenuId || record.parentMenuId)}
+                      onChange={(e) => {
+                        this.handleSelectAllChange(e.target.checked, record.childMenuId || record.parentMenuId);
+                      }}
                     >
                       全选
                     </Checkbox>

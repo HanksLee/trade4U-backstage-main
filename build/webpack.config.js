@@ -42,6 +42,7 @@ module.exports = {
     alias: {
       ...makeAliasOfSrc,
       '@ibot': 'node_modules',
+      'react-dom': '@hot-loader/react-dom',
     },
   },
   stats: {

@@ -54,7 +54,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
               }, false);
             }} />)}
           </FormItem>
-          <FormItem label='是否上架' required {...getFormItemLayout(6, 14)} className='editor-upshelf'>
+          <FormItem label='是否可用' required {...getFormItemLayout(6, 14)} className='editor-upshelf'>
             {getFieldDecorator('in_use', {
               initialValue: currentGenre && currentGenre.in_use,
             })(

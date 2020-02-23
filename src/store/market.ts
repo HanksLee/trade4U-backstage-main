@@ -4,6 +4,22 @@ import utils from "utils";
 
 class MarketStore extends BaseStore {
   @observable
+  filterMarket = {
+    page_size: 10,
+    current_page: 1,
+  };
+  @action
+  setFilterMarket = (filter, overwrite = false) => {
+    if (overwrite) {
+      this.filterMarket = filter;
+    } else {
+      this.filterMarket = {
+        ...this.filterMarket,
+        ...filter,
+      };
+    }
+  };
+  @observable
   marketList = [];
   @action
   getMarketList = async config => {
@@ -27,8 +43,6 @@ class MarketStore extends BaseStore {
     this.productList = data.results;
     this.productListMeta = {
       total: data.count,
-      offset: data.offset,
-      limit: data.limit,
     };
   };
   @observable
@@ -43,13 +57,13 @@ class MarketStore extends BaseStore {
       ...obj,
     };
   }
-  // @action
-  // getCurrentBrokeer = async config => {
-  //   const res = await this.$api.product.getcurrentProduct(config);
-  //   let product = res.data.data;
+  @action
+  getCurrentProduct = async (id, config = {}) => {
+    const res = await this.$api.market.getCurrentProduct(id, config);
+    let product = res.data;
 
-  //   this.setcurrentProduct(product, true, false);
-  // };
+    this.setCurrentProduct(product, true, false);
+  };
   @action
   setCurrentProduct = (product, overwrite = true, store = true) => {
     if (overwrite) {

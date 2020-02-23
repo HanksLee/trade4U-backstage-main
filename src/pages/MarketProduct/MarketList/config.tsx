@@ -192,14 +192,14 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      rowSelection,
+      // rowSelection,
       columns,
       dataSource: self.props.market.productList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          offset: pagination.current - 1,
-          limit: pagination.pageSize,
+          current_page: pagination.current,
+          page_size: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {
@@ -216,16 +216,14 @@ const config = self => {
           delete payload.sort;
         }
 
+        self.props.market.setFilterMarket(payload);
+
         self.setState(
           {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.state.filter);
+            self.getDataList(self.props.market.filterMarket);
           }
         );
       },

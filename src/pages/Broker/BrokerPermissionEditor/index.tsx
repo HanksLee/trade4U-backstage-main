@@ -16,12 +16,14 @@ interface MenuType {
   children: MenuType[] | null;
 }
 interface FormatedMenuType {
+  key: string;
   parentMenuId: string;
   parentMenuName: string;
   childMenuId?: string;
   childMenuName?: string;
   permission: Permission[] | null;
   rowSpan: number;
+  totalPermissionCount: number;
 }
 
 export interface IBrokerPermissionEditorState {
@@ -58,8 +60,10 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
 
     menuList.forEach(menu => {
       if (menu.children && menu.children.length > 0) {
+        const results = [];
         menu.children.forEach((m, index)=> {
-          formatedMenuList.push({
+          results.push({
+            key: `${menu.id}-${m.id}`,
             parentMenuId: menu.id,
             parentMenuName: menu.name,
             childMenuId: m.id,
@@ -68,12 +72,19 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
             rowSpan: index === 0 ? menu.children.length : 0,
           });
         });
+        const totalPermissionCount = results.reduce((sum, value) => sum + value.permission.length, 0);
+        results.forEach(result => {
+          result.totalPermissionCount = totalPermissionCount;
+          formatedMenuList.push(result);
+        });
       } else {
         formatedMenuList.push({
+          key: String(menu.id),
           parentMenuId: menu.id,
           parentMenuName: menu.name,
           permission: menu.permission,
           rowSpan: 1,
+          totalPermissionCount: menu.permission.length,
         });
       }
     });
@@ -133,7 +144,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
               <>
                 <div style={{ marginBottom: '5px', }}>{text}</div>
                 {
-                  record.permission.length > 0 && (
+                  record.totalPermissionCount > 0 && (
                     <Checkbox
                       checked={this.isCheck(record.parentMenuId)}
                       disabled={!isEditing}
@@ -182,6 +193,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
                   record.permission.map(p => {
                     return (
                       <Checkbox
+                        key={p.id}
                         disabled={!isEditing}
                         checked={this.state.selectedPermissions.indexOf(p.id) !== -1}
                         onChange={(e) => this.handlePermissionCheckboxChange(p.id, e.target.checked)}
@@ -278,6 +290,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
             <Button onClick={() => this.goBack()}>取消</Button>
           </section>
           <Table
+            rowKey="key"
             className="broker-permission-table"
             columns={this.getTableColumns()}
             dataSource={formatedMenuList}

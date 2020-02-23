@@ -67,7 +67,9 @@ export default class BrokerEditor extends BaseReact<{}> {
           )}
         </FormItem>
         <FormItem label="后台角标" {...getFormItemLayout(3, 12)} required>
-          {getFieldDecorator('background_corner')(
+          {getFieldDecorator('background_corner', {
+            valuePropName: 'fileList',
+          })(
             <Upload
               accept="image/*"
               listType="picture-card"
@@ -88,7 +90,9 @@ export default class BrokerEditor extends BaseReact<{}> {
           )}
         </FormItem>
         <FormItem label="logo" {...getFormItemLayout(3, 12)} required>
-          {getFieldDecorator('logo')(
+          {getFieldDecorator('logo', {
+            valuePropName: 'fileList',
+          })(
             <Upload
               accept="image/*"
               listType="picture-card"

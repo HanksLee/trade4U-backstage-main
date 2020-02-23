@@ -3,11 +3,9 @@ import cloneDeep from "lodash/cloneDeep";
 import DragableTableRow from "./DragableTableRow";
 import EditMenuModal from "./EditMenuModal";
 import EditSubMenuModal from './EditSubMenuModal';
-import HTML5Backend from "react-dnd-html5-backend";
 import WithRoute from "components/WithRoute";
 import * as React from "react";
 import { BaseReact } from "components/BaseReact";
-import { DndProvider } from "react-dnd";
 import { Button, Icon, Table, Popconfirm } from "antd";
 import { ColumnProps } from "antd/lib/table";
 import "./index.scss";
@@ -229,21 +227,20 @@ export default class Menus extends BaseReact<IMenusProps, IMenusState> {
             
           </section>
           <section className='common-list-table'>
-            <DndProvider backend={HTML5Backend}>
-              <Table
-                columns={this.getTableColumns()}
-                childrenColumnName="children"
-                dataSource={menuList}
-                pagination={false}
-                components={{ body: { row: DragableTableRow, }, }}
-                onRow={(record, index) => ({
-                  record,
-                  isSorting,
-                  index,
-                  moveRow: this.moveRow,
-                })}
-              />
-            </DndProvider>
+            <Table
+              rowKey="id"
+              columns={this.getTableColumns()}
+              childrenColumnName="children"
+              dataSource={menuList}
+              pagination={false}
+              components={{ body: { row: DragableTableRow, }, }}
+              onRow={(record, index) => ({
+                record,
+                isSorting,
+                index,
+                moveRow: this.moveRow,
+              })}
+            />
           </section>
         </div>
         {

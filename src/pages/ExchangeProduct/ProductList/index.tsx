@@ -26,6 +26,9 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
+    name: undefined,
+    product_code: undefined,
+    type: undefined,
   };
 
   async componentDidMount() {
@@ -35,7 +38,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
-    // this.getScopeOptions();
+    this.getTypetOptions();
   }
 
   componentDidUpdate() {
@@ -44,71 +47,106 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     }
   }
 
+  onInputChanged = (field, value) => {
+    this.setState({
+      [field]: value,
+    });
+    this.props.exchange.setFilterProduct({
+      [field]: value ? value : undefined,
+    });
+  }
+
+
+  getTypetOptions = async () => {
+    const res = await this.$api.exchange.getGenreList({
+      params: {
+        page: 1,
+        page_size: 200,
+      },
+    });
+
+    if (res.status === 200) {
+      this.setState({
+        typeOptions: res.data.results,
+      });
+    }
+  }
+
+  onTypeSelected = (val, elem) => {
+    this.setState({
+      type: val,
+    }, () => {
+      this.props.exchange.setFilterProduct({
+        type: val,
+      });
+    });
+  }
+
   getDataList = (payload = {}) => {
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
-        await this.props.exchange.getProductList({
-          ...this.state.filter,
+        this.props.exchange.setFilterProduct({
           ...payload,
+        });
+        await this.props.exchange.getProductList({
+          params: this.props.exchange.filterProduct,
         });
         this.setState({ tableLoading: false, });
       }
     );
   };
 
-  resetPagination = async (pageSize, pageNum) => {
+  resetPagination = async (page_size, current_page) => {
+    this.props.exchange.setFilterProduct({
+      page_size,
+      current_page,
+    });
     this.setState(
       {
-        filter: {
-          ...this.state.filter,
-          pageSize,
-          pageNum,
-        },
+        current_page,
       },
       async () => {
-        const filter = this.state.filter;
+        const filter = this.props.exchange.filterProduct;
+
         this.getDataList(filter);
       }
     );
   };
   // @ts-ignore
   private onSearch = async () => {
-    const filter: any = this.state.filter;
-
-    // console.log('filter', filter);
-
+    this.props.exchange.setFilterProduct({
+      current_page: 1,
+    });
     this.setState(
       {
-        filter: {
-          ...filter,
-          pageNum: 1,
-        },
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.exchange.filterProduct);
       }
     );
   };
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { pageNum: 1, pageSize: this.state.filter.pageSize, };
+    const filter: any = {
+      current_page: 1,
+    };
+
+    this.props.exchange.setFilterProduct(filter, true);
 
     this.setState(
       {
-        filter,
         currentPage: 1,
+        name: undefined,
+        type: undefined,
+        product_code: undefined,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.exchange.filterProduct);
       }
     );
   };
@@ -116,7 +154,6 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   goToEditor = (record: any): void => {
     const url = `/dashboard/exchange/product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.exchange.setCurrentProduct(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {

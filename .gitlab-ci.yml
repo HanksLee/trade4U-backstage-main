@@ -1,4 +1,4 @@
-image: node:10.19.0-alpine
+image: node:10.18.0
 
 stages:
   - build
@@ -7,12 +7,12 @@ stages:
 build job:  
   stage: build
   script:
-    - npm install
-    - npm run build:qa
+    #- npm install
+    #- npm run build:qa
 
 deploy job:
   stage: deploy
   script:
-    - apk --update --no-cache add rsync openssh-client
+    - apk --update --no-cache add rsync
     - echo "$WETRADE_PEM" > "$(pwd)/wetrade.pem"
     - rsync --delete -azvv -e "ssh -i ./wetrade.pem" root@47.75.61.170:/www/wwwroot/system.cangshu360.com/ ./dist/qa/*

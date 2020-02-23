@@ -26,6 +26,9 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     tableLoading: false,
     currentPage: 1,
     selectedRowKeys: [],
+    name: undefined,
+    product_code: undefined,
+    type: undefined,
   };
 
   async componentDidMount() {
@@ -35,13 +38,49 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     } = this.props.common;
 
     this.resetPagination(defaultPageSize, defaultCurrent);
-    // this.getScopeOptions();
+    this.getTypetOptions();
   }
 
   componentDidUpdate() {
     if (this.props.location.pathname === "/dashboard/exchange/product") {
       this.props.history.replace("/dashboard/exchange/product/list");
     }
+  }
+
+  onInputChanged = (field, value) => {
+    this.setState({
+      [field]: value,
+      filter: {
+        ...this.state.filter,
+        [field]: value ? value : undefined,
+      },
+    });
+  }
+
+
+  getTypetOptions = async () => {
+    const res = await this.$api.exchange.getGenreList({
+      params: {
+        page: 1,
+        page_size: 200,
+      },
+    });
+
+    if (res.status === 200) {
+      this.setState({
+        typeOptions: res.data.results,
+      });
+    }
+  }
+
+  onTypeSelected = (val, elem) => {
+    this.setState({
+      type: val,
+      filter: {
+        ...this.state.filter,
+        type: val,
+      },
+    });
   }
 
   getDataList = (payload = {}) => {
@@ -55,8 +94,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       },
       async () => {
         await this.props.exchange.getProductList({
-          ...this.state.filter,
-          ...payload,
+          params: this.state.filter,
         });
         this.setState({ tableLoading: false, });
       }
@@ -88,7 +126,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       {
         filter: {
           ...filter,
-          pageNum: 1,
+          page_size: 1,
         },
         currentPage: 1,
       },
@@ -106,6 +144,9 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
       {
         filter,
         currentPage: 1,
+        name: undefined,
+        type: undefined,
+        product_code: undefined,
       },
       () => {
         this.getDataList(this.state.filter);
@@ -116,7 +157,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   goToEditor = (record: any): void => {
     const url = `/dashboard/exchange/product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.exchange.setCurrentProduct(record, true, false);
+    // this.props.exchange.setCurrentProduct(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {

@@ -50,7 +50,7 @@ export default class API implements IAPI {
         const { response: { data, status, }, } = err;
         message.error(data.message);
 
-        if (status === 401) {
+        if (status == 401) {
           window.location.href =
             process.env.NODE_ENV === "production"
               ? "/login"

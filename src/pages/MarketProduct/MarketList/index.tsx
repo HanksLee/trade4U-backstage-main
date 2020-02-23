@@ -95,8 +95,8 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       {
         filter: {
           ...this.state.filter,
-          limit: pageSize,
-          offset: pageNum,
+          page_size: pageSize,
+          current_page: pageNum,
         },
       },
       async () => {
@@ -116,7 +116,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
       {
         filter: {
           ...filter,
-          pageNum: 1,
+          current_page: 1,
         },
         currentPage: 1,
       },
@@ -128,7 +128,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { offset: 0, pageSize: this.state.filter.pageSize, };
+    const filter: any = { current_page: 1, page_size: this.state.filter.page_size, };
 
     this.setState(
       {

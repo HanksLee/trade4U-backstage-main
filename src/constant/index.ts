@@ -24,6 +24,15 @@ export const marketOptions = [
   }
 ];
 
+export const WeeklyOrder = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday'
+];
 
 export const PAGE_ROUTES = [
   {

@@ -2,11 +2,7 @@ import {
   moonAPI
 } from "utils/request";
 
-const uploadFile = async (config, url = "/upload-file") => {
-  return await moonAPI.post(url, config, {
-    headers: { "Content-Type": "multipart/form-data", },
-  });
-};
+const uploadFile = async (config) => moonAPI.post('/upload-file', config);
 
 const getCodeImg = async (config) => moonAPI.get('/captcha', config);
 

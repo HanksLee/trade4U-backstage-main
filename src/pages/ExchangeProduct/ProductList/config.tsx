@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 import utils from "utils";
+import { WeeklyOrder } from 'constant';
+import moment from 'moment';
 
 const config = self => {
   const { selectedRowKeys, } = self.state;
@@ -13,83 +15,220 @@ const config = self => {
 
   const columns = [
     {
-      title: "交易品种 ID",
+      width: 200,
+      title: "品种 ID",
       dataIndex: "id",
     },
     {
-      title: "交易品种",
-      dataIndex: "symbol",
+      width: 200,
+      title: "品种名称",
+      dataIndex: "name",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "行情品种",
-      dataIndex: "source",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      title: "类型",
+      title: "品种类型",
       dataIndex: "type",
       render: (text, record) => {
-        // const matched = self.state.scopeOptions.find(item => item.id == text);
-
-        return (text || '--');
+        return text || '--';
       },
     },
     {
-      title: "执行",
-      dataIndex: "function",
+      title: "行情产品",
+      dataIndex: "product",
+      render: (text, record) => {
+        return text.market || '--';
+      },
+    },
+    {
+      title: "小数位",
+      dataIndex: "decimals_place",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "价差",
-      dataIndex: "price_gap",
+      title: "合约大小",
+      dataIndex: "contract_size",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "停止",
-      dataIndex: "stop_point",
+      title: "点差",
+      dataIndex: "spread",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "买入",
-      dataIndex: "buy_point",
+      title: "止盈止损位",
+      dataIndex: "limit_stop_level",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "卖出",
-      dataIndex: "sale_point",
+      title: "预付款货币",
+      dataIndex: "margin_currency",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "位数",
-      dataIndex: "digits",
+      title: "获利货币",
+      dataIndex: "profit_currency",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
-      title: "交易",
-      dataIndex: "exchange",
+      title: "最大交易量",
+      dataIndex: "max_trading_volume",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "最小交易量",
+      dataIndex: "min_trading_volume",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "交易量步长",
+      dataIndex: "volumne_step",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "价格变动最小单位",
+      dataIndex: "min_unit_of_price_change",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "成交模式",
+      dataIndex: "transaction_mode",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "买入库存费",
+      dataIndex: "purchase_fee",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "卖出库存费",
+      dataIndex: "selling_fee",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "三日库存费",
+      dataIndex: "three_days_swap",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "交易时间段",
+      dataIndex: "trading_times",
+      render: (text, record) => {
+        return text && (
+          WeeklyOrder.map(item => {
+            return `
+              ${
+          item
+          }: ${
+            text[item].trades.map(t => moment(t).format('HH:mm')).join('-')
+          }
+            `;
+          })
+        ) || '--';
+      },
+    },
+    {
+      title: "描述",
+      dataIndex: "description",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "背景颜色",
+      dataIndex: "background",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "挂单模式",
+      dataIndex: "orders_mode",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "盈亏计算（多）",
+      dataIndex: "profit_calculate_for_bought",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "盈亏计算（空）",
+      dataIndex: "profit_calculate_for_sale",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "交易手续费（多）",
+      dataIndex: "hands_fee_for_bought",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "交易手续费（空）",
+      dataIndex: "hands_fee_for_sale",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "税金计算",
+      dataIndex: "calculate_for_tax",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "库存费计算",
+      dataIndex: "calculate_for_fee",
+      render: (text, record) => {
+        return text || '--';
+      },
+    },
+    {
+      title: "保证金计算",
+      dataIndex: "calculate_for_cash_deposit",
       render: (text, record) => {
         return text || '--';
       },
     },
     {
       // width: 120,
+      fixed: 'right',
       title: "操作",
       render: (text, record) => {
         return (
@@ -101,11 +240,10 @@ const config = self => {
             <Popconfirm
               title="请问是否确定删除当前规则"
               onConfirm={async () => {
-                const res = await self.$api.exchange.deleteProduct({
-                  id: record.id,
-                });
+                const res = await self.$api.exchange.deleteProduct(record.id);
 
-                if (res.data.status === 200) {
+                if (res.status === 204) {
+                  self.$msg.success('当期记录删除成功');
                   self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);
@@ -142,7 +280,7 @@ const config = self => {
       ),
     },
     searcher: {
-      hideSearcher: true,
+      // hideSearcher: true,
       batchControl: {
         placeholder: "请选择",
         showBatchControl: !utils.isEmpty(self.state.selectedRowKeys),
@@ -157,18 +295,64 @@ const config = self => {
         },
       },
       widgets: [
+        [{
+          type: 'Input',
+          label: '品种名称',
+          placeholder: '请输入品种名称',
+          value: self.state.name || undefined,
+          onChange(evt) {
+            self.onInputChanged('name', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        },
+        {
+          type: 'Select',
+          label: '品种类型',
+          showSearch: false,
+          placeholder: '请选择品种类型',
+          allowClear: false,
+          width: 150,
+          value: self.state.type,
+          option: {
+            key: 'id',
+            value: 'id',
+            title: 'name',
+            data: self.state.typeOptions || [],
+          },
+          onSelect(val, elem) {
+            self.onTypeSelected(val, elem);
+          },
+        }
+        ],
+        {
+          type: 'Input',
+          label: '产品编码',
+          placeholder: '请输入产品编码',
+          value: self.state.product_code || undefined,
+          onChange(evt) {
+            self.onInputChanged('product_code', evt.target.value);
+          },
+          onPressEnter(evt) {
+            self.onSearch();
+          },
+        }
       ],
       onSearch() {
+        self.onSearch();
       },
       onReset() {
+        self.onReset();
       },
     },
     table: {
       rowKey: "id",
-      rowSelection,
+      // rowSelection,
       columns,
       dataSource: self.props.exchange.productList,
       pagination,
+      scroll: { x: 2300, },
       onChange(pagination, filters, sorter) {
         const payload: any = {
           pageNum: pagination.current,

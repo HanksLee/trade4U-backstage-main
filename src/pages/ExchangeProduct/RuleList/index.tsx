@@ -82,8 +82,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       },
       async () => {
         await this.props.exchange.getRuleList({
-          ...this.state.filter,
-          ...payload,
+          params: this.state.filter,
         });
         this.setState({ tableLoading: false, });
       }
@@ -148,8 +147,8 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       {
         filter: {
           ...this.state.filter,
-          pageSize,
-          pageNum,
+          page_size: pageSize,
+          current_page: pageNum,
         },
       },
       async () => {
@@ -168,7 +167,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       {
         filter: {
           ...filter,
-          pageNum: 1,
+          current_page: 1,
         },
         currentPage: 1,
       },
@@ -180,7 +179,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { pageNum: 1, pageSize: this.state.filter.pageSize, };
+    const filter: any = { current_page: 1, pageSize: this.state.filter.page_size, };
 
     this.setState(
       {

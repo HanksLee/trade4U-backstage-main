@@ -30,14 +30,27 @@ const getScopeOptions = (config) => API.get('/constant/profit_rule_scope_choices
 const getProductList = (config: AxiosRequestConfig): Promise<any> =>
   API.get("/system/symbol", config);
 
+const getCurrentProduct = (id: string, config): Promise<any> =>
+  API.get(`/system/symbol/${id}`, config);
+
 const createProduct = (config): Promise<any> =>
-  API.post(`/symbol`, config);
+  API.post(`/system/symbol`, config);
 
 const updateProduct = (id: string, config): Promise<any> =>
-  API.patch(`/symbol/${id}`, config);
+  API.patch(`/system/symbol/${id}`, config);
 
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
-  API.delete(`/symbol/${id}`, config);
+  API.delete(`/system/symbol/${id}`, config);
+
+const getTransactionModeOptions = (config) => API.get('/constant/system_symbol_transaction_mode_choices', config);
+
+const getBgColorOptions = (config) => API.get('/constant/background_color_choices', config);
+
+const getProfitOptioins = (config) => API.get('/constant/system_profit_currency_choices', config);
+
+const getMarginCurrencyOptions = (config) => API.get('/constant/system_margin_currency_choices', config);
+
+const getOrderModeOptions = (config) => API.get('/constant/system_symbol_order_mode_choices', config);
 
 export default {
   getGenreList,
@@ -50,7 +63,13 @@ export default {
   deleteRule,
   getScopeOptions,
   getProductList,
+  getCurrentProduct,
   createProduct,
   updateProduct,
   deleteProduct,
+  getTransactionModeOptions,
+  getBgColorOptions,
+  getProfitOptioins,
+  getMarginCurrencyOptions,
+  getOrderModeOptions,
 };

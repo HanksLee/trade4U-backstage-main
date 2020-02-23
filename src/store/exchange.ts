@@ -1,6 +1,8 @@
 import { action, observable, computed } from "mobx";
 import BaseStore from "store/base";
 import utils from "utils";
+import moment from 'moment';
+import { WeeklyOrder } from 'constant';
 
 class ExchangeStore extends BaseStore {
   @observable
@@ -117,13 +119,44 @@ class ExchangeStore extends BaseStore {
 
   @computed
   get currentShowProduct() {
-    const obj: any = {};
+    const obj: any = {
+
+    };
+
+    if (!utils.isEmpty(this.currentProduct.trading_times)) {
+      obj.trading_times = WeeklyOrder.map(item => {
+        const matched = this.currentProduct.trading_times[item];
+        if (matched) {
+          return {
+            day: item,
+            trades: matched.trades.map(time => time && moment(time) || null),
+          };
+        }
+
+        return {
+          day: item,
+          trades: [],
+        };
+      });
+    } else {
+      obj.trading_times = WeeklyOrder.map(item => {
+        return {
+          day: item,
+          trades: [],
+        };
+      });
+    }
 
     return {
       ...this.currentProduct,
       ...obj,
     };
   }
+  @action
+  getCurrentProduct = async (id, config = {}) => {
+    const res = await this.$api.exchange.getCurrentProduct(id, config);
+    this.setCurrentProduct(res.data);
+  };
   @action
   setCurrentProduct = (rule, overwrite = true, store = true) => {
     if (overwrite) {

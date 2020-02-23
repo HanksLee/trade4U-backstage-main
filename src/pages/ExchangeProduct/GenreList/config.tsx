@@ -122,14 +122,14 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      rowSelection,
+      // rowSelection,
       columns,
       dataSource: self.props.exchange.genreList,
       pagination,
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          current_page: pagination.current,
+          page_size: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {

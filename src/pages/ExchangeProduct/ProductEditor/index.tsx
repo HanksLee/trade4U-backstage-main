@@ -8,18 +8,24 @@ import {
   Button,
   Modal,
   Radio,
-  InputNumber
+  InputNumber,
+  DatePicker,
+  TimePicker
 } from 'antd';
 import './index.scss';
 import Validator from 'utils/validator';
 import { inject, observer } from 'mobx-react';
 import utils from 'utils';
+import cloneDeep from 'lodash/cloneDeep';
+import { WeeklyOrder } from 'constant';
+import moment from 'moment';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
 const TextArea = Input.TextArea;
 const radioStyle = { display: 'block', marginBottom: 12, };
+const RangePicker = DatePicker.RangePicker;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -33,6 +39,8 @@ export interface IProductEditorProps {
 export interface IProductEditorState {
 }
 
+
+
 // @ts-ignore
 @Form.create()
 @inject('common', 'exchange')
@@ -42,12 +50,28 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     mode: 'add',
     typeOptions: [],
     marketOptions: [],
+    transactionModeOptions: [],
+    bgColorOptions: [],
+    profitOptions: [],
+    marginCurrencyOptions: [],
+    orderModeOptions: [],
+    deposit_rule_options: [],
+    profit_bounght_rule_options: [],
+    profit_sale_rule_options: [],
+    fee_rule_options: [],
+    tax_rule_options: [],
   }
 
   async componentDidMount() {
     this.init();
-    this.getGenreOptions();
-    this.getMarketOptions();
+    this.getGenreOptions(); // 获取品种类型
+    this.getMarketOptions(); // 获取行情产品类型
+    this.getTransactionModeOptions(); // 获取成交模式
+    this.getBgColorOptions(); // 获取背景色
+    this.getProfitOptioins(); // 获取获利货币
+    this.getMarginCurrencyOptions(); // 获取预付款货币
+    this.getOrderModeOptions(); // 获取挂单模式
+    this.getDifferentScopeOptions(); // 获取不同 scope 下的计算规则
   }
 
   componentWillUnmount() {
@@ -76,11 +100,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         });
       } else {
         if (this.state.mode === 'edit') {
-          // await this.$store.exchange.getCurrentFoodCard({
-          //   params: {
-          //     id: search.id,
-          //   },
-          // });
+          await this.$store.exchange.getCurrentProduct(search.id);
         } else {
           this.props.exchange.setCurrentProduct({}, true, false);
         }
@@ -88,13 +108,36 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     });
   }
 
+  getDifferentScopeOptions = () => {
+    const scopes = [
+      'deposit_rule',
+      'profit_bounght_rule',
+      'profit_sale_rule',
+      'fee_rule',
+      'tax_rule',
+      ''
+    ];
+
+    scopes.forEach(rule => {
+      this.getScopeOptions(rule);
+    });
+  }
+  getScopeOptions = async (rule?) => {
+    const res = await this.$api.exchange.getScopeOptions({
+      params: {
+        rule,
+      },
+    });
+
+    this.setState({
+      [`${rule}_options`]: res.data.data,
+    });
+  }
+
   getGenreOptions = async () => {
     const res = await this.$api.exchange.getGenreList({ offset: 0, limit: 200, });
     this.setState({
-      marketOptions: res.data.results,
-      marketMeta: {
-        total: res.count,
-      },
+      typeOptions: res.data.results,
     });
   }
 
@@ -108,12 +151,75 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     });
   }
 
+  getTransactionModeOptions = async () => {
+    const res = await this.$api.exchange.getTransactionModeOptions({ page: 1, page_size: 200, });
+
+    if (res.status == 200) {
+      this.setState({
+        transactionModeOptions: res.data.data || [],
+      });
+    }
+  }
+
+  getBgColorOptions = async () => {
+    const res = await this.$api.exchange.getBgColorOptions({ page: 1, page_size: 200, });
+
+    if (res.status == 200) {
+      this.setState({
+        bgColorOptions: res.data.data || [],
+      });
+    }
+  }
+
+  getProfitOptioins = async () => {
+    const res = await this.$api.exchange.getProfitOptioins({ page: 1, page_size: 200, });
+
+    if (res.status == 200) {
+      this.setState({
+        profitOptions: res.data.data || [],
+      });
+    }
+  }
+
+  getMarginCurrencyOptions = async () => {
+    const res = await this.$api.exchange.getMarginCurrencyOptions({ page: 1, page_size: 200, });
+
+    if (res.status == 200) {
+      this.setState({
+        marginCurrencyOptions: res.data.data || [],
+      });
+    }
+  }
+
+  getOrderModeOptions = async () => {
+    const res = await this.$api.exchange.getOrderModeOptions({ page: 1, page_size: 200, });
+
+    if (res.status == 200) {
+      this.setState({
+        orderModeOptions: res.data.data || [],
+      });
+    }
+  }
+
+
   renderEditor = () => {
     const { getFieldDecorator, } = this.props.form;
-    const { setCurrentProduct, currentShowProduct, } = this.props.exchange;
+    const { setCurrentProduct, currentShowProduct, currentProduct, } = this.props.exchange;
     const {
       typeOptions,
-      marketOptions, } = this.state;
+      marketOptions,
+      transactionModeOptions,
+      bgColorOptions,
+      profitOptions,
+      marginCurrencyOptions,
+      orderModeOptions,
+      deposit_rule_options,
+      profit_bounght_rule_options,
+      profit_sale_rule_options,
+      fee_rule_options,
+      tax_rule_options,
+    } = this.state;
+    // console.log(currentShowProduct);
 
     return (
       <Form className='editor-form'>
@@ -138,8 +244,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           required
         >
           {
-            getFieldDecorator('product_id', {
-              initialValue: currentShowProduct && currentShowProduct.product_id,
+            getFieldDecorator('product', {
+              initialValue: currentShowProduct && currentShowProduct.product,
             })(
               <Select
                 // @ts-ignore
@@ -147,7 +253,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 placeholder='请选择行情产品'
                 onChange={(value, elem: any) => {
                   setCurrentProduct({
-                    product_id: value,
+                    product: value,
                   }, false);
                 }}
                 onFocus={async () => {
@@ -166,7 +272,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             )
           }
         </FormItem>
-
         <FormItem label='小位数' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('decimals_place', {
             initialValue: currentShowProduct && currentShowProduct.decimals_place,
@@ -230,8 +335,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           required
         >
           {
-            getFieldDecorator('profit_currency', {
-              initialValue: currentShowProduct && currentShowProduct.profit_currency,
+            getFieldDecorator('transaction_mode', {
+              initialValue: currentShowProduct && currentShowProduct.transaction_mode,
             })(
               <Select
                 // @ts-ignore
@@ -239,7 +344,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 placeholder='请选择成交模式'
                 onChange={(value, elem: any) => {
                   setCurrentProduct({
-                    profit_currency: value,
+                    transaction_mode: value,
                   }, false);
                 }}
                 onFocus={async () => {
@@ -247,10 +352,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marketOptions.map(item => (
+                  transactionModeOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id.toString()}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -282,10 +387,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marketOptions.map(item => (
+                  bgColorOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id.toString()}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -317,10 +422,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marketOptions.map(item => (
+                  profitOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id.toString()}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -353,10 +458,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marketOptions.map(item => (
+                  marginCurrencyOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id.toString()}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -408,10 +513,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  marketOptions.map(item => (
+                  orderModeOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.id.toString()}>
-                      {item.name}
+                    <Option key={item.field}>
+                      {item.translation}
                     </Option>
                   ))
                 }
@@ -449,7 +554,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         </FormItem>
         <FormItem label='价格变动最小单位
 ' {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator('volume_step', {
+          {getFieldDecorator('min_unit_of_price_change', {
             initialValue: currentShowProduct && currentShowProduct.min_unit_of_price_change,
           })(<InputNumber min={0} type='number' placeholder="请输入价格变动最小单位
           " onChange={value => {
@@ -471,11 +576,115 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             }, false);
           }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
-        {/* 保证金计算 */}
+        <FormItem
+          label='保证金计算'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+          required
+        >
+          {
+            getFieldDecorator('calculate_for_cash_deposit', {
+              initialValue: currentShowProduct && currentShowProduct.calculate_for_cash_deposit,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择保证金计算'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    calculate_for_cash_deposit: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  deposit_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.field}>
+                      {item.translation}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
+        </FormItem>
+        <FormItem
+          label='盈亏计算（多）'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+          required
+        >
+          {
+            getFieldDecorator('profit_calculate_for_bought', {
+              initialValue: currentShowProduct && currentShowProduct.profit_calculate_for_bought,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择盈亏计算（多）'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    profit_calculate_for_bought: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  profit_bounght_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.field}>
+                      {item.translation}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
+        </FormItem>
+        <FormItem
+          label='盈亏计算（空）'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+          required
+        >
+          {
+            getFieldDecorator('profit_calculate_for_sale', {
+              initialValue: currentShowProduct && currentShowProduct.profit_calculate_for_sale,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择盈亏计算（空）'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    profit_calculate_for_sale: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  profit_sale_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.field}>
+                      {item.translation}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
+        </FormItem>
         <FormItem>
           <h2 className='editor-form-title form-title'>利润设定</h2>
         </FormItem>
-        <FormItem label='买入库存费' {...getFormItemLayout(3, 12)}>
+        <FormItem label='买入库存费（%）' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('purchase_fee', {
             initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(<InputNumber min={0} type='number' placeholder="请输入买入库存费
@@ -485,13 +694,57 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             }, false);
           }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
-        <FormItem label='卖出库存费
-' {...getFormItemLayout(3, 12)}>
+        <FormItem label='卖出库存费（%）' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('selling_fee', {
             initialValue: currentShowProduct && currentShowProduct.selling_fee,
           })(<InputNumber min={0} type='number' placeholder="请输入卖出库存费" onChange={value => {
             setCurrentProduct({
               selling_fee: value,
+            }, false);
+          }} style={{ display: 'inline-block', width: 200, }} />)}
+        </FormItem>
+        <FormItem
+          label='库存费计算'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+          required
+        >
+          {
+            getFieldDecorator('calculate_for_fee', {
+              initialValue: currentShowProduct && currentShowProduct.calculate_for_fee,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择税金计算'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    calculate_for_fee: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  fee_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.field}>
+                      {item.translation}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
+        </FormItem>
+
+        <FormItem label='三日库存费' {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator('three_days_swap', {
+            initialValue: currentShowProduct && currentShowProduct.three_days_swap,
+          })(<InputNumber min={0} type='number' placeholder="请输入三日库存费" onChange={value => {
+            setCurrentProduct({
+              three_days_swap: value,
             }, false);
           }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
@@ -513,6 +766,109 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             }, false);
           }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
+        <FormItem
+          label='税金计算'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+          required
+        >
+          {
+            getFieldDecorator('calculate_for_tax', {
+              initialValue: currentShowProduct && currentShowProduct.calculate_for_tax,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择税金计算'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    calculate_for_tax: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  tax_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.field}>
+                      {item.translation}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
+        </FormItem>
+        <FormItem>
+          <h2 className='editor-form-title form-title'>交易时间段</h2>
+        </FormItem>
+        {
+          !utils.isEmpty(currentShowProduct.trading_times) && <>
+            {
+              currentShowProduct.trading_times.map((item, index) => {
+                return <FormItem key={item.day} label={item.day} {...getFormItemLayout(3, 16)}>
+                  <TimePicker
+                    style={{ marginRight: 10, width: 180, }}
+
+                    placeholder={'请输入交易开始时间'}
+                    value={item.trades && item.trades[0]}
+                    onChange={(time) => {
+                      const tradeMap = {};
+                      const copy = currentProduct.trading_times ? cloneDeep(currentProduct.trading_times) : tradeMap;
+
+                      if (utils.isEmpty(copy)) {
+                        WeeklyOrder.forEach(item => {
+                          copy[item] = {
+                            trades: [],
+                          };
+                        });
+                      }
+                      // if (!copy[item.day].trades ) {
+                      //   copy[item.day].trades  = [];
+                      // }
+                      copy[item.day].trades[0] = time.valueOf();
+                      // console.log(copy);
+                      setCurrentProduct({
+                        trading_times: copy,
+                      }, false);
+
+                      setCurrentProduct({
+                        trading_times: copy,
+                      }, false);
+                    }}/>
+                  <TimePicker
+                    value={item.trades && item.trades[1]}
+                    placeholder={'请输入交易结束时间'}
+                    style={{ marginRight: 10, width: 180, }}
+                    onChange={(time) => {
+                      const tradeMap = {};
+                      const copy = currentProduct.trading_times ? cloneDeep(currentProduct.trading_times) : tradeMap;
+
+                      if (utils.isEmpty(copy)) {
+                        WeeklyOrder.forEach(item => {
+                          copy[item] = {
+                            trades: [],
+                          };
+                        });
+                      }
+
+
+                      // if (!copy[item.day].trades ) {
+                      //   copy[item.day].trades  = [];
+                      // }
+                      copy[item.day].trades[1] = time.valueOf();
+                      // console.log(copy);
+                      setCurrentProduct({
+                        trading_times: copy,
+                      }, false);
+                    }}/>
+                </FormItem>;
+              })
+            }
+          </>
+        }
         <FormItem className='editor-form-btns'>
           {
             <Button type='primary' onClick={this.handleSubmit}>{
@@ -543,7 +899,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         let payload: any = {
           name: currentProduct.name,
           type: currentProduct.type,
-          product_id: currentProduct.product_id,
+          product: currentProduct.product,
           decimals_place: currentProduct.decimals_place,
           contract_size: currentProduct.contract_size,
           spread: currentProduct.spread,
@@ -562,12 +918,15 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           orders_mode: currentProduct.orders_mode,
           hands_fee_for_bought: currentProduct.hands_fee_for_bought,
           hands_fee_for_sale: currentProduct.hands_fee_for_sale,
+          three_days_swap: currentProduct.three_days_swap,
+          trading_times: currentProduct.trading_times,
         };
 
         // console.log('payload', payload);
         const errMsg = this.getValidation(payload);
+        payload.trading_times = JSON.stringify(payload.trading_times);
         if (errMsg) return this.$msg.warn(errMsg);
-
+        // console.log(JSON.stringify(payload));
         if (mode == 'add') {
           const res = await this.$api.exchange.createProduct(payload);
 
@@ -576,8 +935,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             setTimeout(() => {
               this.goBack();
               this.$store.exchange.getProductList({
-                offset: 0,
-                limit: 10,
+                page: 1,
+                page_size: 10,
               });
             }, 1500);
           }
@@ -589,8 +948,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             setTimeout(() => {
               this.goBack();
               this.$store.exchange.getProductList({
-                offset: 0,
-                limit: 10,
+                page: 1,
+                page_size: 10,
               });
             }, 1500);
           }
@@ -616,7 +975,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       }
     ]);
 
-    validator.add(payload.product_id, [
+    validator.add(payload.product, [
       {
         strategy: 'isNonEmpty',
         errMsg: '请选择行情产品',
@@ -644,7 +1003,27 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       }
     ]);
 
+
+
     let errMsg: any = validator.start();
+    if (!payload.trading_times) {
+      errMsg = '请设置交易时间段';
+    } else {
+      for (let i = 0; i < WeeklyOrder.length; i++) {
+        let dayKey = WeeklyOrder[i];
+        let day: any = payload.trading_times[dayKey];
+
+        if (utils.isEmpty(day.trades)) {
+          errMsg = `请输入 ${dayKey} 的交易时间段`;
+          break;
+        } else {
+          if (day.trades[1] < day.trades[0]) {
+            errMsg = `${dayKey} 的交易结束时间不得小于开始时间`;
+            break;
+          }
+        }
+      }
+    }
 
     return errMsg;
   }

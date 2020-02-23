@@ -22,6 +22,7 @@ interface FormatedMenuType {
   childMenuName?: string;
   permission: Permission[] | null;
   rowSpan: number;
+  totalPermissionCount: number;
 }
 
 export interface IBrokerPermissionEditorState {
@@ -58,8 +59,9 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
 
     menuList.forEach(menu => {
       if (menu.children && menu.children.length > 0) {
+        const results = [];
         menu.children.forEach((m, index)=> {
-          formatedMenuList.push({
+          results.push({
             parentMenuId: menu.id,
             parentMenuName: menu.name,
             childMenuId: m.id,
@@ -68,12 +70,18 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
             rowSpan: index === 0 ? menu.children.length : 0,
           });
         });
+        const totalPermissionCount = results.reduce((sum, value) => sum + value.permission.length, 0);
+        results.forEach(result => {
+          result.totalPermissionCount = totalPermissionCount;
+          formatedMenuList.push(result);
+        });
       } else {
         formatedMenuList.push({
           parentMenuId: menu.id,
           parentMenuName: menu.name,
           permission: menu.permission,
           rowSpan: 1,
+          totalPermissionCount: menu.permission.length,
         });
       }
     });
@@ -133,7 +141,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
               <>
                 <div style={{ marginBottom: '5px', }}>{text}</div>
                 {
-                  record.permission.length > 0 && (
+                  record.totalPermissionCount > 0 && (
                     <Checkbox
                       checked={this.isCheck(record.parentMenuId)}
                       disabled={!isEditing}

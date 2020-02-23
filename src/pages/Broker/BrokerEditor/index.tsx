@@ -1,13 +1,11 @@
 import Validator from 'utils/validator';
-import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import { Form, Input, Button, Modal, Upload, Icon } from 'antd';
+import { Form, Input, Button, Upload, Icon } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { RcFile } from 'antd/lib/upload';
 
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -29,10 +27,10 @@ export default class BrokerEditor extends BaseReact<{}> {
     const { location, } = this.props;
     const search = this.$qs.parse(location.search);
     this.setState({
-      mode: search.id == 0 ? 'add' : 'edit',
+      mode: search.id === '0' ? 'add' : 'edit',
     });
 
-    if (search.id) {
+    if (search.id !== '0') {
       const res = await this.$api.broker.getBrokerDetail(search.id);
       this.setState({
         brokerDetail: res.data,
@@ -84,7 +82,7 @@ export default class BrokerEditor extends BaseReact<{}> {
                       style={{ backgroundImage: `url(${brokerDetail.background_corner})`, }}
                     />
                   )
-                  : <div className="upload-image-preview"><Icon type="plug" /></div>
+                  : <div className="upload-image-preview"><Icon type="plus" /></div>
               }
             </Upload>
           )}
@@ -170,20 +168,14 @@ export default class BrokerEditor extends BaseReact<{}> {
             .then(res => {
               this.$msg.success('券商创建成功');
               this.goBack();
-              this.$store.broker.getBrokerList({
-                offset: 0,
-                limit: 10,
-              });
+              this.props.getBrokerList();
             });
         } else {
           this.$api.broker.updateBroker(brokerDetail.id, payload)
             .then(res => {
               this.$msg.success('券商更新成功');
               this.goBack();
-              this.props.broker.getBrokerList({
-                offset: 0,
-                limit: 10,
-              });
+              this.props.getBrokerList();
             });
         }
       }

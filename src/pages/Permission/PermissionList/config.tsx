@@ -56,6 +56,7 @@ const config = self => {
     ...self.props.common.paginationConfig,
     total: self.state.total,
     current: self.props.permission.filter.page,
+    pageSize: self.props.permission.filter.page_size,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
       self.getDataList({
@@ -125,7 +126,7 @@ const config = self => {
       columns,
       dataSource: self.state.permissionList,
       pagination,
-      onChange(pagination, filters, sorter) {
+      onChange(pagination, filters) {
         const payload: any = {};
 
         if (!utils.isEmpty(filters)) {

@@ -2,23 +2,14 @@ image: node:10.8.0
 
 stages:
   - build
-  - test
   - deploy
 
-job 0:
-  stage: .pre
-  script: npm install
+stage: build
+script:
+  - npm install
+  - npm run build:qa
 
-job 1:
-  stage: build
-  script: npm run lint
-
-job 2:
-  stage: build
-  script: npm run build:qa
-
-job 3:
-  stage: deploy
-  script: make deploy
-    - echo "$WETRADE_PEM" > "$(pwd)/wetrade.pem"
-    - rsync --delete -azvv -e "ssh -i ./wetrade.pem" root@47.75.61.170:/www/wwwroot/system.cangshu360.com/ ./dist/qa/*
+stage: deploy
+script:
+  - echo "$WETRADE_PEM" > "$(pwd)/wetrade.pem"
+  - rsync --delete -azvv -e "ssh -i ./wetrade.pem" root@47.75.61.170:/www/wwwroot/system.cangshu360.com/ ./dist/qa/*

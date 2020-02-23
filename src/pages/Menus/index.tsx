@@ -228,6 +228,7 @@ export default class Menus extends BaseReact<IMenusProps, IMenusState> {
           </section>
           <section className='common-list-table'>
             <Table
+              rowKey="id"
               columns={this.getTableColumns()}
               childrenColumnName="children"
               dataSource={menuList}

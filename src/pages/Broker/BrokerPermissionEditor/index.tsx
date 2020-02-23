@@ -16,6 +16,7 @@ interface MenuType {
   children: MenuType[] | null;
 }
 interface FormatedMenuType {
+  key: string;
   parentMenuId: string;
   parentMenuName: string;
   childMenuId?: string;
@@ -62,6 +63,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
         const results = [];
         menu.children.forEach((m, index)=> {
           results.push({
+            key: `${menu.id}-${m.id}`,
             parentMenuId: menu.id,
             parentMenuName: menu.name,
             childMenuId: m.id,
@@ -77,6 +79,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
         });
       } else {
         formatedMenuList.push({
+          key: String(menu.id),
           parentMenuId: menu.id,
           parentMenuName: menu.name,
           permission: menu.permission,
@@ -190,6 +193,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
                   record.permission.map(p => {
                     return (
                       <Checkbox
+                        key={p.id}
                         disabled={!isEditing}
                         checked={this.state.selectedPermissions.indexOf(p.id) !== -1}
                         onChange={(e) => this.handlePermissionCheckboxChange(p.id, e.target.checked)}
@@ -286,6 +290,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
             <Button onClick={() => this.goBack()}>取消</Button>
           </section>
           <Table
+            rowKey="key"
             className="broker-permission-table"
             columns={this.getTableColumns()}
             dataSource={formatedMenuList}

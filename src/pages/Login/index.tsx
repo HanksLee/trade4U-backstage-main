@@ -122,7 +122,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
                   )}
 
                 </Form.Item>
-                <Form.Item wrapperCol={24} className='login-code-refresh'>
+                <Form.Item wrapperCol={{ span: 24, }} className='login-code-refresh'>
                   <span className='login-code-img' onClick={this.getCodeImg}>
                     <img src={codeInfo && codeInfo.image} alt=""/>
                   </span>
@@ -130,7 +130,7 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
                     刷新
                   </span>
                 </Form.Item>
-                <Form.Item  className='login-confirm-btn' wrapperCol={24}>
+                <Form.Item  className='login-confirm-btn' wrapperCol={{ span: 24, }}>
                   <Button block type="primary" htmlType="submit" className="login-form-button">
                     登录
                   </Button>

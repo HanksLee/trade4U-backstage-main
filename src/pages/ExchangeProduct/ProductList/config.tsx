@@ -373,16 +373,14 @@ const config = self => {
           delete payload.sort;
         }
 
+        self.props.exchange.setFilterProduct(payload);
+
         self.setState(
           {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.state.filter);
+            self.getDataList(self.props.exchange.filterProduct);
           }
         );
       },

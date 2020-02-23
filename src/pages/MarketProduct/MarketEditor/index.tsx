@@ -72,11 +72,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
         });
       } else {
         if (this.state.mode === 'edit') {
-          // await this.$store.market.getCurrentFoodCard({
-          //   params: {
-          //     id: search.id,
-          //   },
-          // });
+          await this.$store.market.getCurrentProduct( search.id);
         } else {
           this.props.market.setCurrentProduct({}, true, false);
         }
@@ -221,10 +217,7 @@ export default class AppPushEditor extends BaseReact<IMarketEditorProps, IMarket
               this.$msg.success('行情产品创建成功');
               setTimeout(() => {
                 this.goBack();
-                this.$store.market.getProductList({
-                  offset: 0,
-                  limit: 10,
-                });
+                this.props.market.getProductList(this.props.market.filterMarket);
               }, 1500);
             });
         } else {

@@ -216,16 +216,14 @@ const config = self => {
           delete payload.sort;
         }
 
+        self.props.market.setFilterMarket(payload);
+
         self.setState(
           {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
             currentPage: pagination.current,
           },
           () => {
-            self.getDataList(self.state.filter);
+            self.getDataList(self.props.market.filterMarket);
           }
         );
       },

@@ -99,6 +99,22 @@ class ExchangeStore extends BaseStore {
     }
   };
   @observable
+  filterProduct = {
+    page_size: 10,
+    current_page: 1,
+  };
+  @action
+  setFilterProduct = (filter, overwrite = false) => {
+    if (overwrite) {
+      this.filterProduct = filter;
+    } else {
+      this.filterProduct = {
+        ...this.filterProduct,
+        ...filter,
+      };
+    }
+  };
+  @observable
   productList = [];
   @observable
   productListMeta = {};

@@ -10,7 +10,7 @@ import { Route } from "react-router-dom";
 import "./index.scss";
 import utils from 'utils';
 
-export interface IMarketProductProps {}
+export interface IMarketProductProps { }
 
 export interface IMarketProductState {
   // filter: any;
@@ -62,10 +62,10 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   onMarketSelected = (val, elem) => {
     this.setState({
       market: val,
-      filter: {
-        ...this.state.filter,
+    }, () => {
+      this.props.market.setFilterMarket({
         market: val,
-      },
+      });
     });
   }
 
@@ -73,34 +73,30 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
     this.setState(
       {
         tableLoading: true,
-        filter: {
-          ...this.state.filter,
-          ...payload,
-        },
       },
       async () => {
+        this.props.market.setFilterMarket({
+          ...payload,
+        });
         await this.props.market.getProductList({
-          params: {
-            ...this.state.filter,
-            ...payload,
-          },
+          params: this.props.market.filterMarket,
         });
         this.setState({ tableLoading: false, });
       }
     );
   };
 
-  resetPagination = async (pageSize, pageNum) => {
+  resetPagination = async (page_size, current_page) => {
+    this.props.market.setFilterMarket({
+      page_size,
+      current_page,
+    });
     this.setState(
       {
-        filter: {
-          ...this.state.filter,
-          page_size: pageSize,
-          current_page: pageNum,
-        },
+        current_page,
       },
       async () => {
-        const filter = this.state.filter;
+        const filter = this.props.market.filterMarket;
 
         this.getDataList(filter);
       }
@@ -108,38 +104,36 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   };
   // @ts-ignore
   private onSearch = async () => {
-    const filter: any = this.state.filter;
-
-    // console.log('filter', filter);
-
+    this.props.market.setFilterMarket({
+      current_page: 1,
+    });
     this.setState(
       {
-        filter: {
-          ...filter,
-          current_page: 1,
-        },
         currentPage: 1,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.market.filterMarket);
       }
     );
   };
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { current_page: 1, page_size: this.state.filter.page_size, };
+    const filter: any = {
+      current_page: 1,
+    };
+
+    this.props.market.setFilterMarket(filter, true);
 
     this.setState(
       {
-        filter,
         currentPage: 1,
         name: undefined,
         market: undefined,
         code: undefined,
       },
       () => {
-        this.getDataList(this.state.filter);
+        this.getDataList(this.props.market.filterMarket);
       }
     );
   };
@@ -147,10 +141,9 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   onInputChanged = (field, value) => {
     this.setState({
       [field]: value,
-      filter: {
-        ...this.state.filter,
-        [field]: value ? value : undefined,
-      },
+    });
+    this.props.market.setFilterMarket({
+      [field]: value ? value: undefined,
     });
   }
 
@@ -158,7 +151,6 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   goToEditor = (record: any): void => {
     const url = `/dashboard/market-product/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
     this.props.history.push(url);
-    this.props.market.setCurrentProduct(record, true, false);
   }
 
   renderMenu = (record): JSX.Element => {
@@ -166,7 +158,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   };
 
   // @ts-ignore
-  private onBatch = async value => {};
+  private onBatch = async value => { };
 
   render() {
     const { match, } = this.props;

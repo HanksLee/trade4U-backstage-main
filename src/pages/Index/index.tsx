@@ -164,8 +164,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         {showContainer && (
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
             <div className="logo">
-              <img src={logo} alt="logo" />
-              {!collapsed && <span>主后台</span>}
+              {!collapsed && <span>Wetrade 主后台</span>}
             </div>
             {this.renderMenu()}
           </Sider>
@@ -198,7 +197,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
             {location.pathname === "/dashboard" ||
             location.pathname === "/dashboard/" ? (
                 <p style={{ fontSize: 30, fontWeight: 500, margin: 20, }}>
-                🐕 🐩 🐈 &nbsp;Welcome to Moon!
+                🐕 🐩 🐈 &nbsp;Welcome to Wetrade!
                 </p>
               ) : null}
             <AppRouter />

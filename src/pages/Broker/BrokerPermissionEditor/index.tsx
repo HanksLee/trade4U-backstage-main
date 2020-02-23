@@ -1,4 +1,3 @@
-import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
 import { ColumnProps } from "antd/lib/table";
@@ -49,14 +48,9 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
     this.brokerId = this.$qs.parse(this.props.location.search).id;
   }
   
-
   async componentDidMount() {
     this.getBrokerMenuList();
     this.getBrokePermission();
-  }
-
-  componentWillUnmount() {
-    this.props.broker.setCurrentBroker({}, true, false);
   }
 
   formateMenuList = (menuList: MenuType[]) => {
@@ -103,11 +97,7 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
   }
 
   goBack = () => {
-    setTimeout(() => {
-      this.props.history.goBack();
-      this.props.broker.setCurrentBroker({});
-      utils.rmLStorage('currentBroker');
-    }, 300);
+    this.props.history.goBack();
   }
 
   editPermission = () => {
@@ -124,13 +114,8 @@ export default class BrokerPermissionEditor extends BaseReact<{}, IBrokerPermiss
     })
       .then(() => {
         this.$msg.success('权限更新成功');
-        setTimeout(() => {
-          this.goBack();
-          this.props.broker.getBrokerList({
-            offset: 0,
-            limit: 10,
-          });
-        }, 1500);
+        this.goBack();
+        this.props.getBrokerList();
       });
   }
 

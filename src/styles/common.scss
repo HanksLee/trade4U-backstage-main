@@ -4,7 +4,7 @@
 }
 
 .panel-block {
-  padding: 32px;
+  padding: 24px;
   margin: 24px;
   background-color: #fff;
   border-radius: 2px;
@@ -189,4 +189,8 @@ img.emoji {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+}
+
+.ant-form-item {
+  margin-bottom: 18px;
 }

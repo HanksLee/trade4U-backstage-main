@@ -3,19 +3,7 @@ import * as React from "react";
 import { Button, Icon, Popconfirm } from "antd";
 
 const config = self => {
-  const { selectedRowKeys, } = self.state;
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: (selectedRowKeys) => {
-      self.setState({ selectedRowKeys: selectedRowKeys, });
-    },
-  };
-
   const columns = [
-    {
-      title: "券商 ID",
-      dataIndex: "id",
-    },
     {
       title: "券商名称",
       dataIndex: "name",
@@ -23,22 +11,23 @@ const config = self => {
     {
       title: "域名",
       dataIndex: 'domain',
-      render: (text, record) => {
-        return text || '--';
+      ellipsis: true,
+      render: (text) => {
+        return <a href={text} target="_blank">{text}</a> || '--';
       },
     },
     {
       title: '后台角标',
       dataIndex: 'background_corner',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      render: (text) => {
+        return <div className="upload-image-preview" style={{ backgroundImage: `url(${text})`, }} />;
       },
     },
     {
       title: 'logo',
       dataIndex: 'logo',
-      render: (text, record) => {
-        return <div className="upload-image-preview" style={{ background: `url(${text})`, }} />;
+      render: (text) => {
+        return <div className="upload-image-preview" style={{ backgroundImage: `url(${text})`, }} />;
       },
     },
     {
@@ -52,15 +41,7 @@ const config = self => {
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除券商"
-              onConfirm={async () => {
-                const res = await self.$api.broker.deleteBroker(record.id);
-
-                if (res.status === 204) {
-                  self.getDataList(self.state.filter);
-                } else {
-                  self.$msg.error(res.data.message);
-                }
-              }}
+              onConfirm={() => this.deleteBroker(record.id)}
               onCancel={() => {}}
             >
               <span>删除</span>
@@ -73,12 +54,15 @@ const config = self => {
 
   const pagination = {
     ...self.props.common.paginationConfig,
-    total: self.props.broker.brokerListMeta.total,
-    current: self.state.currentPage,
+    total: self.state.total,
+    current: self.props.broker.filter.page,
+    pageSize: self.props.broker.filter.page_size,
     onChange: (current, pageSize) => {},
     onShowSizeChange: (current, pageSize) => {
-      // @todo 调用获取表接口
-      self.resetPagination(pageSize, current);
+      self.getDataList({
+        page_size: pageSize,
+        page: current,
+      });
     },
   };
 
@@ -102,7 +86,7 @@ const config = self => {
           }
         ],
         onBatch: value => {
-          self.onBatch(value);
+          self.onBatch && self.onBatch(value);
         },
       },
       widgets: [
@@ -110,7 +94,7 @@ const config = self => {
           type: 'Input',
           label: '券商名称',
           placeholder: '请输入券商名称',
-          value: self.state.name || undefined,
+          value: self.state.tempFilter.name || undefined,
           onChange(evt) {
             self.onInputChanged('name', evt.target.value);
           },
@@ -128,15 +112,11 @@ const config = self => {
     },
     table: {
       rowKey: "id",
-      rowSelection,
       columns,
-      dataSource: self.props.broker.brokerList,
+      dataSource: self.state.brokerList,
       pagination,
-      onChange(pagination, filters, sorter) {
-        const payload: any = {
-          offset: pagination.current - 1,
-          limit: pagination.pageSize,
-        };
+      onChange(pagination, filters) {
+        const payload: any = {};
 
         if (!utils.isEmpty(filters)) {
           for (let [key, value] of Object.entries(filters)) {
@@ -144,26 +124,10 @@ const config = self => {
           }
         }
 
-        if (!utils.isEmpty(sorter)) {
-          payload.orderBy = `${sorter.field}`;
-          payload.sort = `${sorter.order === "descend" ? "desc" : "asc"}`;
-        } else {
-          delete payload.orderBy;
-          delete payload.sort;
-        }
-
-        self.setState(
-          {
-            filter: {
-              ...self.state.filter,
-              ...payload,
-            },
-            currentPage: pagination.current,
-          },
-          () => {
-            self.getDataList(self.state.filter);
-          }
-        );
+        self.getDataList({
+          page_size: pagination.pageSize,
+          page: pagination.current,
+        });
       },
     },
   };

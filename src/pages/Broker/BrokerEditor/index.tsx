@@ -1,13 +1,11 @@
 import Validator from 'utils/validator';
-import utils from 'utils';
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import { Form, Input, Button, Modal, Upload, Icon } from 'antd';
+import { Form, Input, Button, Upload, Icon } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { RcFile } from 'antd/lib/upload';
 
 const FormItem = Form.Item;
-const confirm = Modal.confirm;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -22,68 +20,49 @@ export default class BrokerEditor extends BaseReact<{}> {
   state = {
     mode: 'add',
     brokerOptions: [],
+    brokerDetail: null,
   }
 
   async componentDidMount() {
-    this.init();
-  }
-
-  componentWillUnmount() {
-    this.props.broker.setCurrentBroker({}, true, false);
-  }
-
-  init = async () => {
-    const { broker, location, } = this.props;
+    const { location, } = this.props;
     const search = this.$qs.parse(location.search);
-
     this.setState({
-      mode: search.id == 0 ? 'add' : 'edit',
-    }, async () => {
-      const currentBroker = utils.getLStorage('currentBroker');
-
-      if (currentBroker) {
-        confirm({
-          title: '券商恢复操作',
-          content: '检测到您存在未提交的券商记录，请问是否从上次编辑中恢复状态？',
-          onOk: () => {
-            broker.setCurrentBroker(currentBroker);
-          },
-          onCancel: () => {
-            this.init();
-            utils.rmLStorage('currentBroker');
-          },
-        });
-      } else if (this.state.mode === 'add') {
-        broker.setCurrentBroker({}, true, false);
-      }
+      mode: search.id === '0' ? 'add' : 'edit',
     });
+
+    if (search.id !== '0') {
+      const res = await this.$api.broker.getBrokerDetail(search.id);
+      this.setState({
+        brokerDetail: res.data,
+      });
+    }
   }
 
   renderEditor = () => {
     const { getFieldDecorator, } = this.props.form;
-    const { setCurrentBroker, currentShowBroker, } = this.props.broker;
+    const { brokerDetail, } = this.state;
 
     return (
       <Form className='editor-form'>
         <FormItem label="券商名称" {...getFormItemLayout(3, 12)} required>
           {getFieldDecorator('name', {
-            initialValue: currentShowBroker && currentShowBroker.name,
+            initialValue: brokerDetail && brokerDetail.name,
           })(
             <Input placeholder="请输入券商名称" onChange={evt => {
-              setCurrentBroker({
+              this.setCurrentBroker({
                 name: evt.target.value,
-              }, false);
+              });
             }} style={{ display: 'inline-block', width: 200, }} />
           )}
         </FormItem>
-        <FormItem label="域名" {...getFormItemLayout(3, 12)} required>
+        <FormItem label="域名" {...getFormItemLayout(3, 12)} required extra="示例：http://www.baidu.com">
           {getFieldDecorator('domain', {
-            initialValue: currentShowBroker && currentShowBroker.pinyin,
+            initialValue: brokerDetail && brokerDetail.domain,
           })(
             <Input placeholder="请输入域名" onChange={evt => {
-              setCurrentBroker({
+              this.setCurrentBroker({
                 domain: evt.target.value,
-              }, false);
+              });
             }} style={{ display: 'inline-block', width: 200, }} />
           )}
         </FormItem>
@@ -96,14 +75,14 @@ export default class BrokerEditor extends BaseReact<{}> {
               beforeUpload={this.beforeBackgroundCornerUpload}
             >
               {
-                currentShowBroker && currentShowBroker.background_corner
+                brokerDetail && brokerDetail.background_corner
                   ? (
                     <div
                       className="upload-image-preview"
-                      style={{ backgroundImage: `url(${currentShowBroker.background_corner})`, }}
+                      style={{ backgroundImage: `url(${brokerDetail.background_corner})`, }}
                     />
                   )
-                  : <div className="upload-image-preview"><Icon type="plug" /></div>
+                  : <div className="upload-image-preview"><Icon type="plus" /></div>
               }
             </Upload>
           )}
@@ -117,11 +96,11 @@ export default class BrokerEditor extends BaseReact<{}> {
               beforeUpload={this.beforeLogoUpload}
             >
               {
-                currentShowBroker && currentShowBroker.logo
+                brokerDetail && brokerDetail.logo
                   ? (
                     <div
                       className="upload-image-preview"
-                      style={{ backgroundImage: `url(${currentShowBroker.logo})`, }}
+                      style={{ backgroundImage: `url(${brokerDetail.logo})`, }}
                     />
                   )
                   : <div className="upload-image-preview"><Icon type="plus" /></div>
@@ -139,6 +118,12 @@ export default class BrokerEditor extends BaseReact<{}> {
     );
   }
 
+  setCurrentBroker = (field: any) => {
+    this.setState({
+      brokerDetail: { ...this.state.brokerDetail, ...field, },
+    });
+  }
+
   beforeBackgroundCornerUpload = (file: RcFile) => {
     this.uploadFile(file, 'background_corner');
     return false;
@@ -153,30 +138,26 @@ export default class BrokerEditor extends BaseReact<{}> {
     const formData = new FormData();
     formData.append('file', file);
     const res = await this.$api.common.uploadFile(formData);
-    this.props.broker.setCurrentBroker({
+    this.setCurrentBroker({
       [name]: res.data.file_path,
-    }, false);
+    });
   }
 
   goBack = () => {
-    setTimeout(() => {
-      this.props.history.goBack();
-      this.props.broker.setCurrentBroker({});
-      utils.rmLStorage('currentBroker');
-    }, 300);
+    this.props.history.goBack();
   }
 
   handleSubmit = async (evt) => {
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const { currentBroker, } = this.props.broker;
+        const { brokerDetail, } = this.state;
 
         const { mode, } = this.state;
         let payload: any = {
-          name: currentBroker.name,
-          domain: currentBroker.domain,
-          background_corner: currentBroker.background_corner,
-          logo: currentBroker.logo,
+          name: brokerDetail.name,
+          domain: brokerDetail.domain,
+          background_corner: brokerDetail.background_corner,
+          logo: brokerDetail.logo,
         };
 
         const errMsg = this.getValidation(payload);
@@ -186,25 +167,15 @@ export default class BrokerEditor extends BaseReact<{}> {
           this.$api.broker.createBroker(payload)
             .then(res => {
               this.$msg.success('券商创建成功');
-              setTimeout(() => {
-                this.goBack();
-                this.$store.broker.getBrokerList({
-                  offset: 0,
-                  limit: 10,
-                });
-              }, 1500);
+              this.goBack();
+              this.props.getBrokerList();
             });
         } else {
-          this.$api.broker.updateBroker(currentBroker.id, payload)
+          this.$api.broker.updateBroker(brokerDetail.id, payload)
             .then(res => {
               this.$msg.success('券商更新成功');
-              setTimeout(() => {
-                this.goBack();
-                this.props.broker.getBrokerList({
-                  offset: 0,
-                  limit: 10,
-                });
-              }, 1500);
+              this.goBack();
+              this.props.getBrokerList();
             });
         }
       }
@@ -212,7 +183,6 @@ export default class BrokerEditor extends BaseReact<{}> {
   }
 
   getValidation = (payload: any) => {
-    // console.log('payload', payload);
     const validator = new Validator();
 
     validator.add(payload.name, [
@@ -226,6 +196,10 @@ export default class BrokerEditor extends BaseReact<{}> {
       {
         strategy: 'isNonEmpty',
         errMsg: '请输入域名',
+      },
+      {
+        strategy: 'isUrl',
+        errMsg: '不合法的域名格式',
       }
     ]);
 

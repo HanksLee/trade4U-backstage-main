@@ -111,3 +111,6 @@ export const validateHexColor = (color: string): boolean => {
 
   return /^[0-9a-fA-f]{6}$/.test(others);
 };
+
+export const validateUrl = (url: string): boolean =>
+  /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(url);

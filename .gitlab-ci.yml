@@ -1,7 +1,14 @@
 image: node:10.18.0
 
 stages:
+  - build
   - deploy
+
+build job:  
+  stage: build
+  script:
+    - npm install
+    - npm run build:qa
 
 deploy job:
   stage: deploy

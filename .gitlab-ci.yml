@@ -8,6 +8,7 @@ deploy job:
   script:
     - apt-get update -y
     - apt-get -y install rsync
-    - cat "$WETRADE_SSH_PEM" > "./wetrade.pem"
-    - cat "./wetrade.pem"
-    - rsync --delete -azvv -e "ssh -i ./wetrade.pem" ./dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/
+    - echo "$WETRADE_SSH_PRIVATE_KEY" > id_rsa
+    - chmod 700 id_rsa
+    - cat "id_rsa"
+    - rsync --delete -azvv -e "ssh -i id_rsa" ./dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/

@@ -1,5 +1,11 @@
 image: node:10.18.0
 
+cache:
+  untracked: true
+  key: "$CI_BUILD_REF_NAME"
+  paths:
+    - dist/
+
 stages:
   - build
   - deploy
@@ -19,4 +25,4 @@ deploy job:
     - chmod 700 id_rsa
     - mkdir "${HOME}/.ssh"
     - echo "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
-    - rsync -hrvz --delete -e "ssh -i id_rsa" ./dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/
+    - rsync -hrvz --delete -e "ssh -i id_rsa" dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/

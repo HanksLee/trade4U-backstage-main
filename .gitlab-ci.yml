@@ -9,5 +9,5 @@ deploy job:
     - apt-get update -y
     - apt-get -y install rsync
     - echo "$WETRADE_SSH_PEM" > "$(pwd)/wetrade.pem"
-    - echo ./wetrade.pem
+    - cat ./wetrade.pem
     - rsync --delete -azvv -e "ssh -i ./wetrade.pem" ./dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/

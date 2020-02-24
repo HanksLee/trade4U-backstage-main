@@ -8,7 +8,10 @@ deploy job:
   script:
     - apt-get update -y
     - apt-get -y install rsync
-    - echo "$WETRADE_SSH_PRIVATE_KEY" > id_rsa
+    - echo "$SSH_PRIVATE_KEY" > id_rsa
+    - cat id_rsa
     - chmod 700 id_rsa
-    - cat "id_rsa"
+    - mkdir "${HOME}/.ssh"
+    - echo "${SSH_HOST_KEY}" > "${HOME}/.ssh/known_hosts"
+    - cat "${HOME}/.ssh/known_hosts"
     - rsync --delete -azvv -e "ssh -i id_rsa" ./dist/qa/* root@47.75.61.170:/www/wwwroot/system.cangshu360.com/

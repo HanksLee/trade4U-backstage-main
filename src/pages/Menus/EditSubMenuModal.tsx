@@ -24,6 +24,7 @@ class EditSubMenuModal extends BaseReact<IEditSubMenuModalProps> {
     if (mode === 'edit') {
       form.setFieldsValue({
         name: menu.name,
+        path: menu.path,
       });
     }
   }
@@ -62,6 +63,14 @@ class EditSubMenuModal extends BaseReact<IEditSubMenuModalProps> {
                 { required: true, message: '请填写子菜单名称', }
               ],
             })(<Input placeholder="请输入子菜单名称" style={{ display: 'inline-block', width: 200, }} />
+            )}
+          </FormItem>
+          <FormItem label='子菜单路径' {...getFormItemLayout(5, 19)} required>
+            {getFieldDecorator('path', {
+              rules: [
+                { required: true, message: '请填写子菜单路径', }
+              ],
+            })(<Input placeholder="请输入子菜单路径" style={{ display: 'inline-block', width: 200, }} />
             )}
           </FormItem>
         </Form>

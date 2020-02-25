@@ -164,7 +164,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         {showContainer && (
           <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
             <div className="logo">
-              {!collapsed && <span>ci:Wetrade 主后台</span>}
+              {!collapsed && <span>Wetrade 主后台</span>}
             </div>
             {this.renderMenu()}
           </Sider>

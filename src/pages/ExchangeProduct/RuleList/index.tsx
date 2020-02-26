@@ -127,7 +127,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
     const statusCode = currentRule.id ? 200 : 201;
 
     if (res.status == statusCode) {
-      this.$msg.success(!currentRule.uid ? '利润规则添加成功' : '利润规则编辑成功');
+      this.$msg.success(!currentRule.id ? '利润规则添加成功' : '利润规则编辑成功');
       this.toggleRuleModal();
       this.getDataList(this.state.filter);
     } else {

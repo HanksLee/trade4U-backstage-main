@@ -172,7 +172,7 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         <Layout
           style={{
             // minWidth: 1280,
-            overflow: "hidden",
+            // overflow: "hidden",
           }}
         >
           {showContainer && (

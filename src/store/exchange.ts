@@ -141,7 +141,8 @@ class ExchangeStore extends BaseStore {
 
     if (!utils.isEmpty(this.currentProduct.trading_times)) {
       obj.trading_times = WeeklyOrder.map(item => {
-        const matched = this.currentProduct.trading_times[item];
+        const matched = JSON.parse(this.currentProduct.trading_times)[item];
+
         if (matched) {
           return {
             day: item,
@@ -171,7 +172,7 @@ class ExchangeStore extends BaseStore {
   @action
   getCurrentProduct = async (id, config = {}) => {
     const res = await this.$api.exchange.getCurrentProduct(id, config);
-    this.setCurrentProduct(res.data);
+    this.setCurrentProduct(res.data, true, false);
   };
   @action
   setCurrentProduct = (rule, overwrite = true, store = true) => {

@@ -59,6 +59,11 @@ export default class Menus extends BaseReact<IMenusProps, IMenusState> {
         dataIndex: "name",
       },
       {
+        key: "path",
+        title: "路径",
+        dataIndex: "path",
+      },
+      {
         key: "action",
         title: "操作",
         render: (_, record) => {

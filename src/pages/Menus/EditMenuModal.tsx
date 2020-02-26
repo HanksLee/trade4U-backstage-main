@@ -57,6 +57,15 @@ class EditMenuModal extends BaseReact<IEditMenuModalProps> {
             })(<Input placeholder="请输入菜单名称" style={{ display: 'inline-block', width: 200, }} />
             )}
           </FormItem>
+          <FormItem label='菜单路径' {...getFormItemLayout(4, 20)} required>
+            {getFieldDecorator('path', {
+              initialValue: menu && menu.path,
+              rules: [
+                { required: true, message: '请填写菜单路径', }
+              ],
+            })(<Input placeholder="请输入菜单路径" style={{ display: 'inline-block', width: 200, }} />
+            )}
+          </FormItem>
         </Form>
       </Modal>
     );

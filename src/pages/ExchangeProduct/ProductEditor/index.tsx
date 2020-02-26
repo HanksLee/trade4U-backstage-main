@@ -59,7 +59,11 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     profit_bounght_rule_options: [],
     profit_sale_rule_options: [],
     fee_rule_options: [],
-    tax_rule_options: [],
+    margin_rule_options: [], // 保证金
+    profit_rule_options: [], // 盈亏计算
+    pre_pay_rule_options: [], // 预付款
+    delay_rule_options: [], // 库存费
+    tax_rule_options: [], // 税金
   }
 
   async componentDidMount() {
@@ -110,27 +114,26 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
 
   getDifferentScopeOptions = () => {
     const scopes = [
-      'deposit_rule',
-      'profit_bounght_rule',
-      'profit_sale_rule',
-      'fee_rule',
-      'tax_rule',
-      ''
+      'margin_rule',
+      'profit_rule',
+      'pre_pay_rule',
+      'delay_rule',
+      'tax_rule'
     ];
 
-    scopes.forEach(rule => {
-      this.getScopeOptions(rule);
+    scopes.forEach(scope => {
+      this.getScopeOptions(scope);
     });
   }
-  getScopeOptions = async (rule?) => {
-    const res = await this.$api.exchange.getScopeOptions({
+  getScopeOptions = async (scope?) => {
+    const res = await this.$api.exchange.getRuleList({
       params: {
-        rule,
+        scope,
       },
     });
 
     this.setState({
-      [`${rule}_options`]: res.data.data,
+      [`${scope}_options`]: res.data.results,
     });
   }
 
@@ -213,10 +216,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       profitOptions,
       marginCurrencyOptions,
       orderModeOptions,
-      deposit_rule_options,
-      profit_bounght_rule_options,
-      profit_sale_rule_options,
-      fee_rule_options,
+      margin_rule_options,
+      profit_rule_options,
       tax_rule_options,
     } = this.state;
     // console.log(currentShowProduct);
@@ -245,7 +246,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         >
           {
             getFieldDecorator('product', {
-              initialValue: currentShowProduct && currentShowProduct.product,
+              initialValue: currentShowProduct.product && currentShowProduct.product.toString(),
             })(
               <Select
                 // @ts-ignore
@@ -301,7 +302,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         >
           {
             getFieldDecorator('type', {
-              initialValue: currentShowProduct && currentShowProduct.type,
+              initialValue: currentShowProduct.type && currentShowProduct.type.toString(),
             })(
               <Select
                 // @ts-ignore
@@ -336,7 +337,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         >
           {
             getFieldDecorator('transaction_mode', {
-              initialValue: currentShowProduct && currentShowProduct.transaction_mode,
+              initialValue: currentShowProduct.transaction_mode != null && currentShowProduct.transaction_mode.toString(),
             })(
               <Select
                 // @ts-ignore
@@ -354,7 +355,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 {
                   transactionModeOptions.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
+                    <Option key={item.field.toString()}>
                       {item.translation}
                     </Option>
                   ))
@@ -580,7 +581,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           label='保证金计算'
           className='push-type-select'
           {...getFormItemLayout(3, 6)}
-          required
         >
           {
             getFieldDecorator('calculate_for_cash_deposit', {
@@ -600,10 +600,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  deposit_rule_options.map(item => (
+                  margin_rule_options.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
-                      {item.translation}
+                    <Option key={item.func_name}>
+                      {item.func_name}
                     </Option>
                   ))
                 }
@@ -615,7 +615,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           label='盈亏计算（多）'
           className='push-type-select'
           {...getFormItemLayout(3, 6)}
-          required
         >
           {
             getFieldDecorator('profit_calculate_for_bought', {
@@ -635,10 +634,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  profit_bounght_rule_options.map(item => (
+                  profit_rule_options.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
-                      {item.translation}
+                    <Option key={item.func_name}>
+                      {item.func_name}
                     </Option>
                   ))
                 }
@@ -650,7 +649,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           label='盈亏计算（空）'
           className='push-type-select'
           {...getFormItemLayout(3, 6)}
-          required
         >
           {
             getFieldDecorator('profit_calculate_for_sale', {
@@ -670,10 +668,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  profit_sale_rule_options.map(item => (
+                  profit_rule_options.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
-                      {item.translation}
+                    <Option key={item.func_name}>
+                      {item.func_name}
                     </Option>
                   ))
                 }
@@ -707,7 +705,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           label='库存费计算'
           className='push-type-select'
           {...getFormItemLayout(3, 6)}
-          required
         >
           {
             getFieldDecorator('calculate_for_fee', {
@@ -727,10 +724,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  fee_rule_options.map(item => (
+                  tax_rule_options.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
-                      {item.translation}
+                    <Option key={item.func_name}>
+                      {item.func_name}
                     </Option>
                   ))
                 }
@@ -770,7 +767,6 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           label='税金计算'
           className='push-type-select'
           {...getFormItemLayout(3, 6)}
-          required
         >
           {
             getFieldDecorator('calculate_for_tax', {
@@ -792,8 +788,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 {
                   tax_rule_options.map(item => (
                     // @ts-ignore
-                    <Option key={item.field}>
-                      {item.translation}
+                    <Option key={item.func_name}>
+                      {item.func_name}
                     </Option>
                   ))
                 }
@@ -816,7 +812,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                     value={item.trades && item.trades[0]}
                     onChange={(time) => {
                       const tradeMap = {};
-                      const copy = currentProduct.trading_times ? cloneDeep(currentProduct.trading_times) : tradeMap;
+                      const copy = currentProduct.trading_times ? cloneDeep(JSON.parse(currentProduct.trading_times)) : tradeMap;
 
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
@@ -831,11 +827,11 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                       copy[item.day].trades[0] = time.valueOf();
                       // console.log(copy);
                       setCurrentProduct({
-                        trading_times: copy,
+                        trading_times: JSON.stringify(copy),
                       }, false);
 
                       setCurrentProduct({
-                        trading_times: copy,
+                        trading_times: JSON.stringify(copy),
                       }, false);
                     }}/>
                   <TimePicker
@@ -844,7 +840,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                     style={{ marginRight: 10, width: 180, }}
                     onChange={(time) => {
                       const tradeMap = {};
-                      const copy = currentProduct.trading_times ? cloneDeep(currentProduct.trading_times) : tradeMap;
+                      const copy = currentProduct.trading_times ? cloneDeep(JSON.parse(currentProduct.trading_times)) : tradeMap;
 
                       if (utils.isEmpty(copy)) {
                         WeeklyOrder.forEach(item => {
@@ -861,7 +857,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                       copy[item.day].trades[1] = time.valueOf();
                       // console.log(copy);
                       setCurrentProduct({
-                        trading_times: copy,
+                        trading_times: JSON.stringify(copy),
                       }, false);
                     }}/>
                 </FormItem>;
@@ -920,13 +916,17 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           hands_fee_for_sale: currentProduct.hands_fee_for_sale,
           three_days_swap: currentProduct.three_days_swap,
           trading_times: currentProduct.trading_times,
+          calculate_for_cash_deposit: currentProduct.calculate_for_cash_deposit,
+          profit_calculate_for_bought: currentProduct.profit_calculate_for_bought,
+          profit_calculate_for_sale: currentProduct.profit_calculate_for_sale,
+          calculate_for_fee: currentProduct.calculate_for_fee,
+          calculate_for_tax: currentProduct.calculate_for_tax,
         };
 
         // console.log('payload', payload);
         const errMsg = this.getValidation(payload);
-        payload.trading_times = JSON.stringify(payload.trading_times);
+        // payload.trading_times = JSON.stringify(payload.trading_times);
         if (errMsg) return this.$msg.warn(errMsg);
-        // console.log(JSON.stringify(payload));
         if (mode == 'add') {
           const res = await this.$api.exchange.createProduct(payload);
 
@@ -1003,15 +1003,14 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       }
     ]);
 
-
-
     let errMsg: any = validator.start();
     if (!payload.trading_times) {
       errMsg = '请设置交易时间段';
     } else {
       for (let i = 0; i < WeeklyOrder.length; i++) {
         let dayKey = WeeklyOrder[i];
-        let day: any = payload.trading_times[dayKey];
+        let trading_times = JSON.parse(payload.trading_times);
+        let day: any = trading_times[dayKey];
 
         if (utils.isEmpty(day.trades)) {
           errMsg = `请输入 ${dayKey} 的交易时间段`;

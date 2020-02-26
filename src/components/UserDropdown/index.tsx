@@ -25,7 +25,7 @@ IUserDropdownState
   };
 
   private logout = async (): Promise<any> => {
-    localStorage.removeItem('MOON_ADMIN_MAIN');
+    localStorage.removeItem('MOON_ADMIN_MAIN_TOKEN');
 
     setTimeout(() => {
       (window as any).location.href = process.env.NODE_ENV === "production"

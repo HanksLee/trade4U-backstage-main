@@ -67,7 +67,7 @@ export default class GenreEditor extends BaseReact<IGenreEditorProps, IGenreEdit
             }} />)}
           </FormItem>
           <FormItem
-            label='交易市场'
+            label='作用域'
             className='push-type-select'
             {...getFormItemLayout(6, 6)}
             required

@@ -25,7 +25,7 @@ const config = self => {
     },
     {
       title: "作用域",
-      dataIndex: "scope",
+      dataIndex: "scope_display",
       render: (text, record) => {
         return text || '--';
       },

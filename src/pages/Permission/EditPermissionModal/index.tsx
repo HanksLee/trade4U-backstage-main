@@ -106,6 +106,7 @@ export default class EditPermissionModal extends BaseReact<IEditPermissionModalP
                 placeholder="请选择菜单"
                 options={menuOptions}
                 fieldNames={{ label: 'name', value: 'id', }}
+                changeOnSelect
               />)}
           </FormItem>
           <FormItem label='权限名称' {...getFormItemLayout(5, 13)} required>

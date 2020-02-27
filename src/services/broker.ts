@@ -21,6 +21,9 @@ const updateBrokerPermission = (config): Promise<any> =>
 const getBrokerDetail = (id, config: AxiosRequestConfig): Promise<any> =>
   API.get(`/system/broker_dealer/${id}`, config);
 
+const getBrokerLoginUrl = (id): Promise<any> =>
+  API.get(`/system/broker/${id}/jump`);
+
 export default {
   getBrokerList,
   createBroker,
@@ -29,4 +32,5 @@ export default {
   getBrokerMenuList,
   updateBrokerPermission,
   getBrokerDetail,
+  getBrokerLoginUrl,
 };

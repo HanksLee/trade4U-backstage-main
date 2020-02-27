@@ -68,197 +68,197 @@ const config = self => {
         return text || '--';
       },
     },
-    {
-      width: 100,
-      title: "止盈止损位",
-      dataIndex: "limit_stop_level",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "预付款货币",
-      dataIndex: "margin_currency_display",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "获利货币",
-      dataIndex: "profit_currency_display",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "最大交易量",
-      dataIndex: "max_trading_volume",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 200,
-      title: "最小交易量",
-      dataIndex: "min_trading_volume",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "交易量步长",
-      dataIndex: "volumne_step",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "价格变动最小单位",
-      dataIndex: "min_unit_of_price_change",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "成交模式",
-      dataIndex: "transaction_mode",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "买入库存费",
-      dataIndex: "purchase_fee",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "卖出库存费",
-      dataIndex: "selling_fee",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 200,
-      title: "三日库存费",
-      dataIndex: "three_days_swap",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 220,
-      title: "交易时间段",
-      dataIndex: "trading_times",
-      render: (text, record) => {
-        const ret = text && JSON.parse(text);
+    // {
+    //   width: 100,
+    //   title: "止盈止损位",
+    //   dataIndex: "limit_stop_level",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "预付款货币",
+    //   dataIndex: "margin_currency_display",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "获利货币",
+    //   dataIndex: "profit_currency_display",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "最大交易量",
+    //   dataIndex: "max_trading_volume",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 200,
+    //   title: "最小交易量",
+    //   dataIndex: "min_trading_volume",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "交易量步长",
+    //   dataIndex: "volumne_step",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "价格变动最小单位",
+    //   dataIndex: "min_unit_of_price_change",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "成交模式",
+    //   dataIndex: "transaction_mode",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "买入库存费",
+    //   dataIndex: "purchase_fee",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "卖出库存费",
+    //   dataIndex: "selling_fee",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 200,
+    //   title: "三日库存费",
+    //   dataIndex: "three_days_swap",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 220,
+    //   title: "交易时间段",
+    //   dataIndex: "trading_times",
+    //   render: (text, record) => {
+    //     const ret = text && JSON.parse(text);
 
-        return ret && (
-          WeeklyOrder.map(item => {
-            return `
-              ${
-          item
-          }: ${
-            ret[item].trades.map(t => moment(t).format('HH:mm')).join('-')
-          }
-            `;
-          })
-        ) || '--';
-      },
-    },
+    //     return ret && (
+    //       WeeklyOrder.map(item => {
+    //         return `
+    //           ${
+    //       item
+    //       }: ${
+    //         ret[item].trades.map(t => moment(t).format('HH:mm')).join('-')
+    //       }
+    //         `;
+    //       })
+    //     ) || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "描述",
+    //   dataIndex: "description",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "背景颜色",
+    //   dataIndex: "background_display",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "挂单模式",
+    //   dataIndex: "orders_mode_display",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "盈亏计算（多）",
+    //   dataIndex: "profit_calculate_for_bought",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "盈亏计算（空）",
+    //   dataIndex: "profit_calculate_for_sale",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "交易手续费（多）",
+    //   dataIndex: "hands_fee_for_bought",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "交易手续费（空）",
+    //   dataIndex: "hands_fee_for_sale",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "税金计算",
+    //   dataIndex: "calculate_for_tax",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "库存费计算",
+    //   dataIndex: "calculate_for_fee",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
+    // {
+    //   width: 100,
+    //   title: "保证金计算",
+    //   dataIndex: "calculate_for_cash_deposit",
+    //   render: (text, record) => {
+    //     return text || '--';
+    //   },
+    // },
     {
       width: 100,
-      title: "描述",
-      dataIndex: "description",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "背景颜色",
-      dataIndex: "background_display",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "挂单模式",
-      dataIndex: "orders_mode_display",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "盈亏计算（多）",
-      dataIndex: "profit_calculate_for_bought",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "盈亏计算（空）",
-      dataIndex: "profit_calculate_for_sale",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "交易手续费（多）",
-      dataIndex: "hands_fee_for_bought",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "交易手续费（空）",
-      dataIndex: "hands_fee_for_sale",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "税金计算",
-      dataIndex: "calculate_for_tax",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "库存费计算",
-      dataIndex: "calculate_for_fee",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      title: "保证金计算",
-      dataIndex: "calculate_for_cash_deposit",
-      render: (text, record) => {
-        return text || '--';
-      },
-    },
-    {
-      width: 100,
-      fixed: 'right',
+      // fixed: 'right',
       title: "操作",
       render: (text, record) => {
         return (

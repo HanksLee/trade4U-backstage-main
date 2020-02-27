@@ -934,9 +934,9 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             this.$msg.success('交易品种创建成功');
             setTimeout(() => {
               this.goBack();
-              this.$store.exchange.getProductList({
-                page: 1,
-                page_size: 10,
+              this.props.exchange.getProductList({
+                current_page: this.props.exchange.filterProduct.current_page,
+                page_size: this.props.exchange.filterProduct.page_size,
               });
             }, 1500);
           }
@@ -947,9 +947,9 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             this.$msg.success('交易品种更新成功');
             setTimeout(() => {
               this.goBack();
-              this.$store.exchange.getProductList({
-                page: 1,
-                page_size: 10,
+              this.props.exchange.getProductList({
+                current_page: this.props.exchange.filterProduct.current_page,
+                page_size: this.props.exchange.filterProduct.page_size,
               });
             }, 1500);
           }

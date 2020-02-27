@@ -39,9 +39,9 @@ const config = self => {
     {
       width: 100,
       title: "行情产品",
-      dataIndex: "product",
+      dataIndex: "product_display",
       render: (text, record) => {
-        return text.market || '--';
+        return text.name || '--';
       },
     },
     {

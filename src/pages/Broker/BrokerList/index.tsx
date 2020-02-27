@@ -112,14 +112,19 @@ export default class BrokerList extends BaseReact<{}, BrokerListState> {
     ));
   }
 
-  goToEditor = (record: any): void => {
-    const url = `/dashboard/broker/editor?id=${!utils.isEmpty(record) ? record.id : 0}`;
+  goToEditor = (id?: number) => {
+    const url = `/dashboard/broker/editor?id=${id ? id : 0}`;
     this.props.history.push(url);
   }
 
-  goToPermissionEditor = (record: any): void => {
-    const url = `/dashboard/broker/permission?id=${!utils.isEmpty(record) ? record.id : 0}`;
+  goToPermissionEditor = (id: number) => {
+    const url = `/dashboard/broker/permission?id=${id}`;
     this.props.history.push(url);
+  }
+
+  brokerLogin = async (id: number) => {
+    const res = await this.$api.broker.getBrokerLoginUrl(id);
+    window.open(res.data.url);
   }
 
   deleteBroker = async (id: string) => {

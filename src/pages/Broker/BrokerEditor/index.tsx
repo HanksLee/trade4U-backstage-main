@@ -55,7 +55,7 @@ export default class BrokerEditor extends BaseReact<{}> {
             }} style={{ display: 'inline-block', width: 200, }} />
           )}
         </FormItem>
-        <FormItem label="域名" {...getFormItemLayout(3, 12)} required extra="示例：http://www.baidu.com">
+        <FormItem label="域名" {...getFormItemLayout(3, 12)} required extra="示例：baidu.com">
           {getFieldDecorator('domain', {
             initialValue: brokerDetail && brokerDetail.domain,
           })(
@@ -200,10 +200,6 @@ export default class BrokerEditor extends BaseReact<{}> {
       {
         strategy: 'isNonEmpty',
         errMsg: '请输入域名',
-      },
-      {
-        strategy: 'isUrl',
-        errMsg: '不合法的域名格式',
       }
     ]);
 

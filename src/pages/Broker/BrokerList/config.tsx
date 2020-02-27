@@ -35,9 +35,11 @@ const config = self => {
       render: (text, record) => {
         return (
           <div className="common-list-table-operation">
-            <span onClick={() => self.goToEditor(record)}>编辑</span>
+            <span onClick={() => self.goToEditor(record.id)}>编辑</span>
             <span className="common-list-table-operation-spliter"></span>
-            <span onClick={() => self.goToPermissionEditor(record)}>授权</span>
+            <span onClick={() => self.goToPermissionEditor(record.id)}>授权</span>
+            <span className="common-list-table-operation-spliter"></span>
+            <span onClick={() => self.brokerLogin(record.id)}>登录</span>
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除券商"
@@ -70,7 +72,7 @@ const config = self => {
     // 是否显示增加按钮
     addBtn: {
       title: () => (
-        <Button type="primary" onClick={() => self.goToEditor({})}>
+        <Button type="primary" onClick={() => self.goToEditor()}>
           <Icon type="plus" /> 添加
         </Button>
       ),

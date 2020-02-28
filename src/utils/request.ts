@@ -44,8 +44,9 @@ export default class API implements IAPI {
       (err: AxiosError) => {
         const { response: { data, status, }, } = err;
         message.error(data.message);
-
         if (status == 401) {
+          localStorage.removeItem('MOON_ADMIN_MAIN_TOKEN');
+
           window.location.href =
             process.env.NODE_ENV === "production"
               ? "/login"

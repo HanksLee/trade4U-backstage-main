@@ -17,7 +17,7 @@ import Validator from 'utils/validator';
 import { inject, observer } from 'mobx-react';
 import utils from 'utils';
 import cloneDeep from 'lodash/cloneDeep';
-import { WeeklyOrder } from 'constant';
+import { WeeklyOrder, THREE_DAY_OPTIONS } from 'constant';
 import moment from 'moment';
 
 const FormItem = Form.Item;
@@ -603,7 +603,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                   margin_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
-                      {item.func_name}
+                      {item.name}
                     </Option>
                   ))
                 }
@@ -637,7 +637,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                   profit_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
-                      {item.func_name}
+                      {item.name}
                     </Option>
                   ))
                 }
@@ -671,7 +671,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                   profit_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
-                      {item.func_name}
+                      {item.name}
                     </Option>
                   ))
                 }
@@ -727,7 +727,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                   tax_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
-                      {item.func_name}
+                      {item.name}
                     </Option>
                   ))
                 }
@@ -736,15 +736,41 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
           }
         </FormItem>
 
-        <FormItem label='三日库存费' {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator('three_days_swap', {
-            initialValue: currentShowProduct && currentShowProduct.three_days_swap,
-          })(<InputNumber min={0} type='number' placeholder="请输入三日库存费" onChange={value => {
-            setCurrentProduct({
-              three_days_swap: value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
+        <FormItem
+          label='三日库存费'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+        >
+          {
+            getFieldDecorator('three_days_swap', {
+              initialValue: currentShowProduct && currentShowProduct.three_days_swap,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择三日库存费'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    three_days_swap: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  THREE_DAY_OPTIONS.map(item => (
+                    // @ts-ignore
+                    <Option key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
         </FormItem>
+
         <FormItem label='交易手续费（多）' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('hands_fee_for_bought', {
             initialValue: currentShowProduct && currentShowProduct.hands_fee_for_bought,
@@ -789,7 +815,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                   tax_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
-                      {item.func_name}
+                      {item.name}
                     </Option>
                   ))
                 }

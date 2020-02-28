@@ -49,7 +49,6 @@ export default class Login extends BaseReact<ILoginProps, ILoginState> {
 
   getCodeImg = async () => {
     const res: any = await this.$api.common.getCodeImg();
-    debugger;
 
     if (res.status == 200) {
       this.setState({

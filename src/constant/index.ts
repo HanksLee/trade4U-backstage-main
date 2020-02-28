@@ -37,32 +37,32 @@ export const WeeklyOrder = [
 export const THREE_DAY_OPTIONS = [
   {
     id: 0,
-    name: '周日'
+    name: '周日',
   },
   {
     id: 1,
-    name: '周一'
+    name: '周一',
   },
   {
     id: 2,
-    name: '周二'
+    name: '周二',
   },
   {
     id: 3,
-    name: '周三'
+    name: '周三',
   },
   {
     id: 4,
-    name: '周四'
+    name: '周四',
   },
   {
     id: 5,
-    name: '周五'
+    name: '周五',
   },
   {
     id: 6,
-    name: '周六'
-  },
+    name: '周六',
+  }
 ];
 
 export const PAGE_ROUTES = [

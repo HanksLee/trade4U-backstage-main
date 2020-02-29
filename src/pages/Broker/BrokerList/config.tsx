@@ -43,7 +43,7 @@ const config = self => {
             <span className="common-list-table-operation-spliter"></span>
             <Popconfirm
               title="请问是否确定删除券商"
-              onConfirm={() => this.deleteBroker(record.id)}
+              onConfirm={() => self.deleteBroker(record.id)}
               onCancel={() => {}}
             >
               <span>删除</span>

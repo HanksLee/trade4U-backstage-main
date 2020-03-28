@@ -14,5 +14,5 @@ export default {
   uploadFile,
   getCodeImg,
   login,
-  getConstantByKey
+  getConstantByKey,
 };

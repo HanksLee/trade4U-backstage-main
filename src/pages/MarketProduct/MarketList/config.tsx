@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Icon, Popconfirm } from "antd";
+import { Button, Icon, Popconfirm, Checkbox } from "antd";
 import utils from "utils";
 import StatusText from 'components/StatusText';
 import moment from 'moment';
@@ -50,29 +50,21 @@ const config = self => {
       },
     },
     {
-      title: '上架状态',
+      title: "上架状态",
+      width: 200,
+      dataIndex: "status",
       render: (text, record) => {
-        const statusType = {
-          1: 'normal',
-          0: 'block',
+        const handleChange = async (e) => {
+          const res = await self.$api.market.updateProduct(record.id, {
+            status: text == 0 ? 1 : 0,
+          });
+          if (res.status === 200) {
+            self.getDataList(self.props.market.filterProduct);
+          } else {
+            self.$msg.error(res.data.message);
+          }
         };
-        const statusText = {
-          1: '上架',
-          0: '下架',
-        };
-
-        return <StatusText type={
-          statusType[record.status]
-        } text={
-          statusText[record.status]
-        } />;
-      },
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      render: (text, record) => {
-        return (text && moment(text).format(FORMAT_TIME))  || '--';
+        return <Checkbox checked={text} onChange={handleChange} />;
       },
     },
     {
@@ -87,8 +79,8 @@ const config = self => {
               title="请问是否确定删除行情产品"
               onConfirm={async () => {
                 const res = await self.$api.market.deleteProduct(record.id);
-
-                if (res.data.status === 204) {
+                debugger;
+                if (res.status === 204) {
                   self.getDataList(self.state.filter);
                 } else {
                   self.$msg.error(res.data.message);

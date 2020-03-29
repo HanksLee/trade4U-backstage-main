@@ -10,7 +10,7 @@ const getCurrentProduct = (id, config: AxiosRequestConfig): Promise<any> =>
 const createProduct = (config) => API.post('/system/product', config);
 
 const updateProduct = (id: string, config): Promise<any> =>
-  API.put(`/system/product/${id}`, config);
+  API.patch(`/system/product/${id}`, config);
 
 const deleteProduct = (id: string, config: AxiosRequestConfig): Promise<any> =>
   API.delete(`/system/product/${id}`, config);

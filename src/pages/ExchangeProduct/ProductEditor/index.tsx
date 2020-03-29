@@ -10,7 +10,9 @@ import {
   Radio,
   InputNumber,
   DatePicker,
-  TimePicker
+  TimePicker,
+  Row,
+  Col,
 } from 'antd';
 import './index.scss';
 import Validator from 'utils/validator';
@@ -25,7 +27,7 @@ const Option = Select.Option;
 const confirm = Modal.confirm;
 const TextArea = Input.TextArea;
 const radioStyle = { display: 'block', marginBottom: 12, };
-const RangePicker = DatePicker.RangePicker;
+
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -545,10 +547,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             initialValue: currentShowProduct && currentShowProduct.min_unit_of_price_change,
           })(<InputNumber min={0} type='number' placeholder="请输入价格变动最小单位
           " onChange={value => {
-            setCurrentProduct({
-              min_unit_of_price_change: value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
+              setCurrentProduct({
+                min_unit_of_price_change: value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
         <FormItem>
           <h2 className='editor-form-title form-title'>保证金计算</h2>
@@ -673,10 +675,10 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(<InputNumber min={0} type='number' placeholder="请输入买入库存费
           " onChange={value => {
-            setCurrentProduct({
-              purchase_fee: value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
+              setCurrentProduct({
+                purchase_fee: value,
+              }, false);
+            }} style={{ display: 'inline-block', width: 200, }} />)}
         </FormItem>
         <FormItem label='卖出库存费（%）' {...getFormItemLayout(3, 12)}>
           {getFieldDecorator('selling_fee', {
@@ -812,15 +814,26 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         <FormItem>
           <h2 className='editor-form-title form-title'>交易时间段</h2>
         </FormItem>
+        <Row style={{marginBottom: 10, textAlign: 'center', fontWeight: 500}} >
+          <Col span={3}>
+            交易日
+          </Col>
+          <Col span={6}>
+            上午交易时间
+          </Col>
+          <Col span={6}>
+            下午交易时间
+          </Col>
+        </Row>
         {
           !utils.isEmpty(currentShowProduct.trading_times) && <>
             {
               currentShowProduct.trading_times.map((item, index) => {
                 return <FormItem key={item.day} label={WeeklyMap[item.day]} {...getFormItemLayout(3, 16)}>
                   <TimePicker
-                    style={{ marginRight: 10, width: 180, }}
+                    style={{ marginRight: 10, width: 200, }}
 
-                    placeholder={'请输入交易开始时间'}
+                    placeholder={'请输入上午交易开始时间'}
                     value={item.trades && item.trades[0]}
                     onChange={(time) => {
                       const tradeMap = {};
@@ -845,11 +858,11 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
                       }, false);
-                    }}/>
+                    }} />
                   <TimePicker
                     value={item.trades && item.trades[1]}
-                    placeholder={'请输入交易结束时间'}
-                    style={{ marginRight: 10, width: 180, }}
+                    placeholder={'请输入上午交易结束时间'}
+                    style={{ marginRight: 10, width: 200, }}
                     onChange={(time) => {
                       const tradeMap = {};
                       const copy = currentProduct.trading_times ? cloneDeep(JSON.parse(currentProduct.trading_times)) : tradeMap;
@@ -871,7 +884,59 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                       setCurrentProduct({
                         trading_times: JSON.stringify(copy),
                       }, false);
-                    }}/>
+                    }} />
+                  <TimePicker
+                    value={item.trades && item.trades[2]}
+                    placeholder={'请输入下午交易开始时间'}
+                    style={{ marginRight: 10, width: 200, }}
+                    onChange={(time) => {
+                      const tradeMap = {};
+                      const copy = currentProduct.trading_times ? cloneDeep(JSON.parse(currentProduct.trading_times)) : tradeMap;
+
+                      if (utils.isEmpty(copy)) {
+                        WeeklyOrder.forEach(item => {
+                          copy[item] = {
+                            trades: [],
+                          };
+                        });
+                      }
+
+
+                      // if (!copy[item.day].trades ) {
+                      //   copy[item.day].trades  = [];
+                      // }
+                      copy[item.day].trades[2] = time.valueOf();
+                      // console.log(copy);
+                      setCurrentProduct({
+                        trading_times: JSON.stringify(copy),
+                      }, false);
+                    }} />
+                  <TimePicker
+                    value={item.trades && item.trades[3]}
+                    placeholder={'请输入下午交易结束时间'}
+                    style={{ marginRight: 10, width: 200, }}
+                    onChange={(time) => {
+                      const tradeMap = {};
+                      const copy = currentProduct.trading_times ? cloneDeep(JSON.parse(currentProduct.trading_times)) : tradeMap;
+
+                      if (utils.isEmpty(copy)) {
+                        WeeklyOrder.forEach(item => {
+                          copy[item] = {
+                            trades: [],
+                          };
+                        });
+                      }
+
+
+                      // if (!copy[item.day].trades ) {
+                      //   copy[item.day].trades  = [];
+                      // }
+                      copy[item.day].trades[3] = time.valueOf();
+                      // console.log(copy);
+                      setCurrentProduct({
+                        trading_times: JSON.stringify(copy),
+                      }, false);
+                    }} />
                 </FormItem>;
               })
             }
@@ -1021,15 +1086,26 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
     } else {
       for (let i = 0; i < WeeklyOrder.length; i++) {
         let dayKey = WeeklyOrder[i];
+        let dayValue = WeeklyMap[dayKey];
         let trading_times = JSON.parse(payload.trading_times);
         let day: any = trading_times[dayKey];
 
         if (utils.isEmpty(day.trades)) {
-          errMsg = `请输入 ${dayKey} 的交易时间段`;
+          errMsg = `请输入 ${dayValue} 的交易时间段`;
           break;
         } else {
           if (day.trades[1] < day.trades[0]) {
-            errMsg = `${dayKey} 的交易结束时间不得小于开始时间`;
+            errMsg = `${dayValue} 的上午交易结束时间不得小于开始时间`;
+            break;
+          }
+
+          if (day.trades[2] < day.trades[1]) {
+            errMsg = `${dayValue} 的下午交易开始时间不得小于上午交易结束时间`;
+            break;
+          }
+
+          if (day.trades[3] < day.trades[2]) {
+            errMsg = `${dayValue} 的下午交易结束时间不得小于开始时间`;
             break;
           }
         }

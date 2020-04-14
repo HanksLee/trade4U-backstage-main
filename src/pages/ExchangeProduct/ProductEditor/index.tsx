@@ -119,7 +119,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       'pre_pay_rule',
       'delay_rule',
       'tax_rule',
-      'fee_rule',
+      'fee_rule'
     ];
 
     scopes.forEach(scope => {

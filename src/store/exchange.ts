@@ -101,7 +101,7 @@ class ExchangeStore extends BaseStore {
   @observable
   filterProduct = {
     page_size: 10,
-    current_page: 1,
+    page: 1,
   };
   @action
   setFilterProduct = (filter, overwrite = false) => {

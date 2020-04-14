@@ -86,14 +86,14 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
     );
   };
 
-  resetPagination = async (page_size, current_page) => {
+  resetPagination = async (page_size, page) => {
     this.props.market.setFilterMarket({
       page_size,
-      current_page,
+      page,
     });
     this.setState(
       {
-        current_page,
+        page,
       },
       async () => {
         const filter = this.props.market.filterMarket;
@@ -105,7 +105,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   // @ts-ignore
   private onSearch = async () => {
     this.props.market.setFilterMarket({
-      current_page: 1,
+      page: 1,
     });
     this.setState(
       {
@@ -120,7 +120,7 @@ export default class MarketProduct extends BaseReact<IMarketProductProps, IMarke
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      page: 1,
     };
 
     this.props.market.setFilterMarket(filter, true);

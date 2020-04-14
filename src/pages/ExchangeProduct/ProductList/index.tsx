@@ -99,14 +99,14 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
     );
   };
 
-  resetPagination = async (page_size, current_page) => {
+  resetPagination = async (page_size, page) => {
     this.props.exchange.setFilterProduct({
       page_size,
-      current_page,
+      page,
     });
     this.setState(
       {
-        current_page,
+        page,
       },
       async () => {
         const filter = this.props.exchange.filterProduct;
@@ -118,7 +118,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   // @ts-ignore
   private onSearch = async () => {
     this.props.exchange.setFilterProduct({
-      current_page: 1,
+      page: 1,
     });
     this.setState(
       {
@@ -133,7 +133,7 @@ export default class ProductList extends BaseReact<IProductListProps, IProductLi
   private onReset = async () => {
     // @ts-ignore
     const filter: any = {
-      current_page: 1,
+      page: 1,
     };
 
     this.props.exchange.setFilterProduct(filter, true);

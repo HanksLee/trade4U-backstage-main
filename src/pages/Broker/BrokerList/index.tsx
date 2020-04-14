@@ -61,16 +61,16 @@ export default class BrokerList extends BaseReact<{}, BrokerListState> {
     this.setState({
       tableLoading: true,
     });
-    
+
     const res = await this.$api.broker.getBrokerList({ params: payload, });
-    const { results, page_size, current_page, count, } = res.data;
-    if ((res.data.results.length === 0) && res.data.current_page !== 1) {
+    const { results, page_size, page, count, } = res.data;
+    if ((res.data.results.length === 0) && res.data.page !== 1) {
       // 删除非第一页的最后一条记录，自动翻到下一页
-      this.getDataList({ ...payload, page: current_page - 1, });
+      this.getDataList({ ...payload, page: page - 1, });
     } else {
       this.props.broker.setFilter({
         page_size,
-        page: current_page,
+        page: page,
         name: payload.name,
       });
       this.setState({

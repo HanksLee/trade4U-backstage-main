@@ -118,7 +118,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       'profit_rule',
       'pre_pay_rule',
       'delay_rule',
-      'tax_rule'
+      'tax_rule',
+      'fee_rule',
     ];
 
     scopes.forEach(scope => {
@@ -207,6 +208,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
       margin_rule_options,
       profit_rule_options,
       tax_rule_options,
+      fee_rule_options,
+      delay_rule_options,
     } = this.state;
     // console.log(currentShowProduct);
 
@@ -712,7 +715,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
                 }}
               >
                 {
-                  tax_rule_options.map(item => (
+                  delay_rule_options.map(item => (
                     // @ts-ignore
                     <Option key={item.func_name}>
                       {item.name}
@@ -758,24 +761,73 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             )
           }
         </FormItem>
+        <FormItem
+          label='买入手续费'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+        >
+          {
+            getFieldDecorator('hands_fee_for_bought', {
+              initialValue: currentShowProduct && currentShowProduct.hands_fee_for_bought,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请选择买入手续费'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    hands_fee_for_bought: value,
+                  }, false);
+                }}
+                onFocus={async () => {
 
-        <FormItem label='交易手续费（多）' {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator('hands_fee_for_bought', {
-            initialValue: currentShowProduct && currentShowProduct.hands_fee_for_bought,
-          })(<InputNumber min={0} type='number' placeholder="交易手续费（多）" onChange={value => {
-            setCurrentProduct({
-              hands_fee_for_bought: value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
+                }}
+              >
+                {
+                  fee_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.func_name}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
         </FormItem>
-        <FormItem label='交易手续费（空）' {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator('hands_fee_for_sale', {
-            initialValue: currentShowProduct && currentShowProduct.hands_fee_for_sale,
-          })(<InputNumber min={0} type='number' placeholder="请输入交易手续费（空）" onChange={value => {
-            setCurrentProduct({
-              hands_fee_for_sale: value,
-            }, false);
-          }} style={{ display: 'inline-block', width: 200, }} />)}
+        <FormItem
+          label='卖出手续费'
+          className='push-type-select'
+          {...getFormItemLayout(3, 6)}
+        >
+          {
+            getFieldDecorator('hands_fee_for_sale', {
+              initialValue: currentShowProduct && currentShowProduct.hands_fee_for_sale,
+            })(
+              <Select
+                // @ts-ignore
+                getPopupContainer={() => document.getElementsByClassName('push-type-select')[0]}
+                placeholder='请输入卖出手续费'
+                onChange={(value, elem: any) => {
+                  setCurrentProduct({
+                    hands_fee_for_sale: value,
+                  }, false);
+                }}
+                onFocus={async () => {
+
+                }}
+              >
+                {
+                  fee_rule_options.map(item => (
+                    // @ts-ignore
+                    <Option key={item.func_name}>
+                      {item.name}
+                    </Option>
+                  ))
+                }
+              </Select>
+            )
+          }
         </FormItem>
         <FormItem
           label='税金计算'
@@ -1012,7 +1064,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             setTimeout(() => {
               this.goBack();
               this.props.exchange.getProductList({
-                current_page: this.props.exchange.filterProduct.current_page,
+                page: this.props.exchange.filterProduct.page,
                 page_size: this.props.exchange.filterProduct.page_size,
               });
             }, 1500);
@@ -1025,7 +1077,7 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
             setTimeout(() => {
               this.goBack();
               this.props.exchange.getProductList({
-                current_page: this.props.exchange.filterProduct.current_page,
+                page: this.props.exchange.filterProduct.page,
                 page_size: this.props.exchange.filterProduct.page_size,
               });
             }, 1500);
@@ -1091,8 +1143,8 @@ export default class ProductEditor extends BaseReact<IProductEditorProps, IProdu
         let day: any = trading_times[dayKey];
 
         if (utils.isEmpty(day.trades)) {
-          errMsg = `请输入 ${dayValue} 的交易时间段`;
-          break;
+          // errMsg = `请输入 ${dayValue} 的交易时间段`;
+          // break;
         } else {
           if (day.trades[1] < day.trades[0]) {
             errMsg = `${dayValue} 的上午交易结束时间不得小于开始时间`;

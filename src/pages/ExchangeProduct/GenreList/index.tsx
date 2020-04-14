@@ -118,7 +118,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
         filter: {
           ...this.state.filter,
           page_size: pageSize,
-          current_page: pageNum,
+          page: pageNum,
         },
       },
       async () => {
@@ -137,7 +137,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
       {
         filter: {
           ...filter,
-          current_page: 1,
+          page: 1,
         },
         currentPage: 1,
       },
@@ -149,7 +149,7 @@ export default class ExchangeGenre extends BaseReact<IExchangeGenreProps, IExcha
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { current_page: 1, page_size: this.state.filter.page_size, };
+    const filter: any = { page: 1, page_size: this.state.filter.page_size, };
 
     this.setState(
       {

@@ -148,7 +148,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
         filter: {
           ...this.state.filter,
           page_size: pageSize,
-          current_page: pageNum,
+          page: pageNum,
         },
       },
       async () => {
@@ -167,7 +167,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
       {
         filter: {
           ...filter,
-          current_page: 1,
+          page: 1,
         },
         currentPage: 1,
       },
@@ -179,7 +179,7 @@ export default class RuleList extends BaseReact<IRuleListProps, IRuleListState> 
   // @ts-ignore
   private onReset = async () => {
     // @ts-ignore
-    const filter: any = { current_page: 1, pageSize: this.state.filter.page_size, };
+    const filter: any = { page: 1, pageSize: this.state.filter.page_size, };
 
     this.setState(
       {

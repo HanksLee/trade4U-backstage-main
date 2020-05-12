@@ -659,9 +659,9 @@ IProductEditorState
           )}
         </FormItem>
 
-        <FormItem label="交易量步长" {...getFormItemLayout(3, 12)}>
-          {getFieldDecorator("volume_step", {
-            initialValue: currentShowProduct && currentShowProduct.volume_step,
+        <FormItem label="交易数步长" {...getFormItemLayout(3, 12)}>
+          {getFieldDecorator("lots_step", {
+            initialValue: currentShowProduct && currentShowProduct.lots_step,
           })(
             <InputNumber
               min={0}
@@ -670,7 +670,7 @@ IProductEditorState
               onChange={value => {
                 setCurrentProduct(
                   {
-                    volume_step: value,
+                    lots_step: value,
                   },
                   false
                 );
@@ -1221,7 +1221,7 @@ IProductEditorState
           profit_currency: currentProduct.profit_currency,
           max_lots: currentProduct.max_lots,
           min_lots: currentProduct.min_lots,
-          volume_step: currentProduct.volume_step,
+          lots_step: currentProduct.lots_step,
           min_unit_of_price_change: currentProduct.min_unit_of_price_change,
           transaction_mode: currentProduct.transaction_mode,
           purchase_fee: currentProduct.purchase_fee,

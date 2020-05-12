@@ -12,7 +12,8 @@ import {
   DatePicker,
   TimePicker,
   Row,
-  Col
+  Col,
+  Icon,
 } from "antd";
 import "./index.scss";
 import Validator from "utils/validator";
@@ -1179,6 +1180,30 @@ IProductEditorState
                       );
                     }}
                   />
+                  <Icon type="close" onClick={() => {
+                    const tradeMap = {};
+                    const copy = currentProduct.trading_times
+                      ? cloneDeep(JSON.parse(currentProduct.trading_times))
+                      : tradeMap;
+
+                    if (utils.isEmpty(copy)) {
+                      WeeklyOrder.forEach(item => {
+                        copy[item] = {
+                          trades: [],
+                        };
+                      });
+                    }
+
+                    copy[item.day].trades = [];
+
+                    // console.log(copy);
+                    setCurrentProduct(
+                      {
+                        trading_times: JSON.stringify(copy),
+                      },
+                      false
+                    );
+                  }} />
                 </FormItem>
               );
             })}

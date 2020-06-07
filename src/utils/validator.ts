@@ -5,9 +5,10 @@ import {
   validatePSPort,
   validateMobile,
   validateEmail,
-  validateHexColor
-} from './validator-helper';
-import utils from 'utils';
+  validateHexColor,
+  validateUrl
+} from "./validator-helper";
+import utils from "utils";
 
 export interface IRule {
   strategy: string;
@@ -55,13 +56,13 @@ const strategies = {
   },
   isID(value, type, errMsg, cb) {
     let validator = null;
-    if (type === 'id') {
+    if (type === "id") {
       validator = validateIdCard;
-    } else if (type === 'HKMC') {
+    } else if (type === "HKMC") {
       validator = validateHKMC;
-    } else if (type === 'TW') {
+    } else if (type === "TW") {
       validator = validateTW;
-    } else if (type === 'PSPort') {
+    } else if (type === "PSPort") {
       validator = validatePSPort;
     }
 
@@ -84,6 +85,14 @@ const strategies = {
       return errMsg;
     }
   },
+  isUrl(value, errMsg, cb) {
+    const val = value.toString();
+
+    if (!val || !validateUrl(val)) {
+      cb && cb();
+      return errMsg;
+    }
+  },
   customReg(value, reg, errMsg, cb) {
     const val = value.toString();
 
@@ -99,7 +108,7 @@ export default class Validator implements IValidator {
 
   public add(value, rules): void {
     for (const rule of rules) {
-      const strateAry = rule.strategy.split(':');
+      const strateAry = rule.strategy.split(":");
 
       this.cache.push(() => {
         const strategy = strateAry.shift();
@@ -115,7 +124,7 @@ export default class Validator implements IValidator {
   public start(): void {
     for (const func of this.cache) {
       const errMsg = func();
-      if(errMsg) return errMsg;
+      if (errMsg) return errMsg;
     }
   }
 }

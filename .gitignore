@@ -4,7 +4,7 @@ npm-debug.log
 yarn-error.log
 .cache-loader
 .python-version
-dist/qa
+# dist/qa
 dist/dev
 .eslintcache
 

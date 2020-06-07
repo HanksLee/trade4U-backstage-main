@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { BaseReact } from 'components/BaseReact';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import AppRouter from '../../router';
 import { Layout, Menu, Icon } from 'antd';
 import UserDropdown from 'components/UserDropdown';
@@ -14,9 +14,7 @@ const { Header, Sider, Content, } = Layout;
 const SubMenu = Menu.SubMenu;
 const MenuItem = Menu.Item;
 
-export interface IndexProps {
-
-}
+export interface IndexProps {}
 
 export interface IIndexState {
   collapsed: boolean;
@@ -27,13 +25,12 @@ export interface IIndexState {
 
 // 用于计算出侧边栏的展开路径的数组
 function computedPathLevel(path: string) {
-  let
-    pathElems = path.split('/').slice(1),
-    total = '',
+  let pathElems = path.split("/").slice(1),
+    total = "",
     ret = [];
 
   for (var i = 0; i < pathElems.length; i++) {
-    total += '/' + pathElems[i];
+    total += "/" + pathElems[i];
     ret.push(total);
   }
 
@@ -59,7 +56,7 @@ function exactFromSidebarPath(pathlist) {
 /* eslint new-cap: "off" */
 // @ts-ignore
 @withRouter
-@inject('common')
+@inject("common")
 @observer
 export default class Index extends BaseReact<IndexProps, IIndexState> {
   state = {
@@ -72,16 +69,24 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
   static getDerivedStateFromProps(nextProps, prevState) {
     const {
       location: { pathname, },
-      common: {},
+      // common: {},
     } = nextProps;
 
-    const pathLevel = union(prevState.openKeys, computedPathLevel(pathname)).sort((a, b) => b.length - a.length);
-
+    const pathLevel = union(
+      prevState.openKeys,
+      computedPathLevel(pathname)
+    ).sort((a, b) => b.length - a.length);
 
     const pathlist = exactFromSidebarPath(PAGE_ROUTES);
     let selectedKeys = [];
     pathlist.forEach(item => {
-      if (pathname.split('/').slice(0, 5).join('/').indexOf(item) >= 0) {
+      if (
+        pathname
+          .split("/")
+          .slice(0, 5)
+          .join("/")
+          .indexOf(item) >= 0
+      ) {
         selectedKeys = [item];
       }
     });
@@ -92,38 +97,35 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
     };
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
     });
-  }
+  };
 
-  onMenuItemClick = (item) => {
+  onMenuItemClick = item => {
     this.setState({
       openKeys: item.keyPath,
     });
     this.props.history.push(item.key);
-  }
+  };
 
-  onOpenChange = (item) => {
+  onOpenChange = item => {
     this.setState({
       openKeys: item,
     });
-  }
+  };
 
   renderMenu = (): JSX.Element => {
-    const { selectedKeys, openKeys,  } = this.state;
+    const { selectedKeys, openKeys, } = this.state;
     const { computedSidebar, } = this.props.common;
 
     return (
       <Menu
-        theme="dark"
         mode="inline"
-        className='app-menu'
+        className="app-menu"
         openKeys={openKeys}
         onOpenChange={this.onOpenChange}
         onClick={this.onMenuItemClick}
@@ -132,12 +134,12 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         {computedSidebar.map(route => this.renderMenuItem(route))}
       </Menu>
     );
-  }
+  };
 
   renderMenuItem = (route: any): JSX.Element => {
     if (route.children && route.children.length > 0) {
       return (
-        <SubMenu key={route.path} title={route.title} >
+        <SubMenu key={route.path} title={route.title}>
           {route.children.map(subRoute => this.renderMenuItem(subRoute))}
         </SubMenu>
       );
@@ -151,56 +153,53 @@ export default class Index extends BaseReact<IndexProps, IIndexState> {
         </span>
       </MenuItem>
     );
-  }
+  };
 
   render() {
-    const { collapsed, showContainer,  } = this.state;
+    const { collapsed, showContainer, } = this.state;
     const { location, } = this.props;
 
     return (
-      <Layout className='layout'>
-        {
-          showContainer && (
-            <Sider trigger={null} collapsible collapsed={collapsed}>
-              <div className="logo">
-                <img src={logo} alt="logo" />
-                {
-                  !collapsed && <span>Moon Admin</span>
-                }
-              </div>
-              {this.renderMenu()}
-            </Sider>
-          )
-        }
-        <Layout style={{
-          minWidth: 1280,
-          overflow: 'hidden',
-        }}>
-          {
-            showContainer && (
-              <Header className='header'>
-                <Icon
-                  style={{ visibility: 'hidden', }}
-                  className="trigger"
-                  type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-                  onClick={this.toggle}
-                />
-                <UserDropdown />
-              </Header>
-            )
-          }
+      <Layout className="layout">
+        {showContainer && (
+          <Sider trigger={null} collapsible collapsed={collapsed} theme="light">
+            <div className="logo">
+              {!collapsed && <span>Wetrade 主后台</span>}
+            </div>
+            {this.renderMenu()}
+          </Sider>
+        )}
+        <Layout
+          style={{
+            // minWidth: 1280,
+            // overflow: "hidden",
+          }}
+        >
+          {showContainer && (
+            <Header className="header">
+              <Icon
+                style={{ visibility: "hidden", }}
+                className="trigger"
+                type={this.state.collapsed ? "menu-unfold" : "menu-fold"}
+                onClick={this.toggle}
+              />
+              <UserDropdown />
+            </Header>
+          )}
           <Content
-            className='content'
-            style={{
-              // height: wrapperHeight - headerHeight,
-            }}
-          >
-            {
-              (location.pathname === '/dashboard' || location.pathname === '/dashboard/')
-                ? (
-                  <p style={{ fontSize: 30, fontWeight: 500, margin: 20, }}>🐕 🐩 🐈 &nbsp;Welcome to Moon!</p>
-                ) : null
+            className="content"
+            style={
+              {
+                // height: wrapperHeight - headerHeight,
+              }
             }
+          >
+            {location.pathname === "/dashboard" ||
+            location.pathname === "/dashboard/" ? (
+                <p style={{ fontSize: 30, fontWeight: 500, margin: 20, }}>
+                🐕 🐩 🐈 &nbsp;Welcome to Wetrade!
+                </p>
+              ) : null}
             <AppRouter />
           </Content>
         </Layout>

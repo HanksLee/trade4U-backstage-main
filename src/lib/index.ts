@@ -1,2 +1,1 @@
-export { default as $wxshare } from 'lib/wechat-share';
-
+export { default as $wxshare } from "lib/wechat-share";

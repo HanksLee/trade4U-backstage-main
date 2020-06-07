@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BaseReact } from 'components/BaseReact';
+// import { BaseReact } from 'components/BaseReact';
 import './index.scss';
 import {
   Button,
@@ -283,7 +283,7 @@ const widgetMap = {
   },
 };
 
-export default class CommonList extends BaseReact {
+export default class CommonList extends React.Component<any, any> {
   state = {
     collapse: true,
   }
@@ -297,13 +297,14 @@ export default class CommonList extends BaseReact {
   renderSearcher = () => {
     const { searcher, table, } = this.props.config;
     const { collapse, } = this.state;
+    const TableHeader = table && table.tableHeader;
 
     return (
       searcher && (
         <section className="common-list-search"
         >
           {this.renderWidgets(searcher.widgets)}
-          {table && table.tableHeader && table.tableHeader()}
+          {TableHeader && <TableHeader />}
           <div className="common-list-search-right">
             {
               !searcher.hideSearcher && <>
@@ -372,13 +373,14 @@ export default class CommonList extends BaseReact {
 
   renderAddBtn = () => {
     const { addBtn, searcher, } = this.props.config;
+    const AddBtnTitle = addBtn && addBtn.title;
 
     return (
       addBtn && (
         <section className='common-list-addbtn' style={addBtn.style}>
           {
             typeof addBtn.title === 'function'
-              ? <addBtn.title />
+              ? <AddBtnTitle />
               : addBtn.title
           }
           <div className="common-list-search-batch">
@@ -407,9 +409,11 @@ export default class CommonList extends BaseReact {
     const {
       tableHeader,
     } = this.props.config;
+    const TableHeader = tableHeader;
+
     return (
       <section className='common-list-table-header'>
-        {tableHeader && tableHeader()}
+        {tableHeader && <TableHeader />}
       </section>
     );
   }

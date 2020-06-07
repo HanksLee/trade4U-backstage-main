@@ -3,9 +3,10 @@ import axios, {
   AxiosInstance,
   AxiosResponse,
   AxiosError
-} from 'axios';
-import { message } from 'antd';
-import NProgress from 'nprogress';
+} from "axios";
+import { message } from "antd";
+import NProgress from "nprogress";
+import utils from 'utils';
 
 export interface IAPI {
   getInstance(): AxiosInstance;
@@ -19,33 +20,42 @@ export default class API implements IAPI {
   }
 
   private handleInterceptors() {
-    this.api.interceptors.request.use((res: AxiosResponse) => {
+    this.api.interceptors.request.use((config: AxiosRequestConfig) => {
+      const token = utils.getLStorage('MOON_ADMIN_MAIN_TOKEN');
+      if (token) {
+        config['headers']['Authorization'] = `Token ${token}`;
+      }
+
       NProgress.start();
-      return res;
+      return config;
     }, (err: AxiosError) => {
       NProgress.done();
       return Promise.reject(err);
     });
 
-    this.api.interceptors.response.use(async (res: AxiosResponse) => {
-      let {data: {statusCode, msg}} = res;
+    this.api.interceptors.response.use(
+      async (res: AxiosResponse) => {
+        let {
+        } = res;
 
-      if (statusCode === 401) {
-        location.href = process.env.NODE_ENV === 'production' ? '/login' : location.origin + '/#/';
-      }
-
-      if (Number(statusCode) >= 400) {
-        message.error(msg);
-        NProgress.done();
-        return Promise.reject(msg);
-      } else {
         NProgress.done();
         return res;
+      },
+      (err: AxiosError) => {
+        const { response: { data, status, }, } = err;
+        message.error(data.message);
+        if (status == 401) {
+          localStorage.removeItem('MOON_ADMIN_MAIN_TOKEN');
+
+          window.location.href =
+            process.env.NODE_ENV === "production"
+              ? "/login"
+              : window.location.origin + "/#/login";
+        }
+        NProgress.done();
+        return Promise.reject(err);
       }
-    }, (err: AxiosError) => {
-      NProgress.done();
-      return Promise.reject(err);
-    });
+    );
   }
 
   constructor(config: AxiosRequestConfig) {
@@ -58,6 +68,12 @@ export default class API implements IAPI {
   }
 }
 
+const apiMap = {
+  dev: '/api/moon/api',
+  qa: 'http://api.cangshu360.com/api',
+  prod: "http://api.trading8a.com/api",
+};
+
 export const moonAPI = new API({
-  baseURL: '/api/moon',
+  baseURL: apiMap[process.env.MODE],
 }).getInstance();

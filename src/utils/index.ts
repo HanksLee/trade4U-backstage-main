@@ -1,11 +1,11 @@
-import gt from 'utils/gettext';
-import locales from 'locales';
-import isEmpty from 'lodash/isEmpty';
-import { PAGE_ROUTES } from 'constant';
-import PromiseFileReader from 'promise-file-reader';
-import commonAPI from 'services/common';
-import NProgress from 'nprogress';
-import { message } from 'antd';
+import gt from "utils/gettext";
+import locales from "locales";
+import isEmpty from "lodash/isEmpty";
+import { PAGE_ROUTES } from "constant";
+import PromiseFileReader from "promise-file-reader";
+import commonAPI from "services/common";
+import NProgress from "nprogress";
+import { message } from "antd";
 
 function setRootFontSizeFromClient() {
   let dpr, rem;
@@ -17,7 +17,9 @@ function setRootFontSizeFromClient() {
   rem = docEl.clientWidth;
   metaEl.setAttribute(
     "content",
-    `width=${docEl.clientWidth},initial-scale=${1},maximum-scale=${1}, minimum-scale=${1},use-scalable=no`
+    `width=${
+      docEl.clientWidth
+    },initial-scale=${1},maximum-scale=${1}, minimum-scale=${1},use-scalable=no`
   );
 
   docEl.setAttribute("data-dpr", dpr);
@@ -28,7 +30,7 @@ function setRootFontSizeFromClient() {
   (window as any).r = function(value: number | string): string {
     value = Number(value);
     // @ts-ignore
-    return `${(value / process.env.designWidth)}rem`;
+    return `${value / process.env.designWidth}rem`;
   };
 
   window.onresize = function() {
@@ -37,10 +39,10 @@ function setRootFontSizeFromClient() {
 }
 
 function ellipsis(value: string, len = 10) {
-  if (!value) return '';
+  if (!value) return "";
 
   value = value.toString();
-  return value.length > len ? value.slice(0, len) + '...' : value;
+  return value.length > len ? value.slice(0, len) + "..." : value;
 }
 
 function initI18n(lang: string) {
@@ -67,11 +69,12 @@ function getPageBreadcrumb(url) {
 
 function _isEmpty(value) {
   if (
-    typeof value === 'undefined' ||
-    typeof value === 'number' ||
-    typeof value === 'string' ||
-    typeof value === 'boolean' ||
-    value instanceof Date) {
+    typeof value === "undefined" ||
+    typeof value === "number" ||
+    typeof value === "string" ||
+    typeof value === "boolean" ||
+    value instanceof Date
+  ) {
     return !Boolean(value);
   } else {
     return isEmpty(value);
@@ -132,8 +135,8 @@ function getFormData(payload) {
 }
 
 function parseEmoji(text) {
-  text = text || '';
-  let ret =  text.replace(/\[(.+?)\]/g, m => {
+  text = text || "";
+  let ret = text.replace(/\[(.+?)\]/g, m => {
     // @ts-ignore
     return String.fromCharCode(`0x${m.substr(5, 4)}`, `0x${m.substr(9, 4)}`);
   });
@@ -145,7 +148,7 @@ function parseEmoji(text) {
 function moveArrayPosition(oldIndex, newIndex, arr) {
   if (newIndex >= arr.length) {
     var k = newIndex - arr.length;
-    while ((k--) + 1) {
+    while (k-- + 1) {
       arr.push(undefined);
     }
   }
@@ -154,7 +157,7 @@ function moveArrayPosition(oldIndex, newIndex, arr) {
   return arr;
 }
 
-function getFileInfo (file, callback?) {
+function getFileInfo(file, callback?) {
   let reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = function(evt) {
@@ -168,7 +171,7 @@ function getFileInfo (file, callback?) {
 }
 
 function removeSpareLF(str: string) {
-  return str.replace(/\n{2,}/g, '\n');
+  return str.replace(/\n{2,}/g, "\n");
 }
 
 function parsePrice(str) {
@@ -176,7 +179,7 @@ function parsePrice(str) {
 }
 
 function randomNum(minNum, maxNum) {
-  switch(arguments.length) {
+  switch (arguments.length) {
     case 1:
       return parseInt(Math.random() * minNum + 1, 10);
     case 2:

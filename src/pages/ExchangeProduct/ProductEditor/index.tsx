@@ -13,7 +13,7 @@ import {
   TimePicker,
   Row,
   Col,
-  Icon,
+  Icon
 } from "antd";
 import "./index.scss";
 import Validator from "utils/validator";

@@ -12,12 +12,18 @@ stages:
 
 build job:
   stage: build
+  only:
+    refs:
+      - develop
   script:
     - npm install
     - npm run build:qa
 
 deploy job:
   stage: deploy
+  only:
+    refs:
+      - develop
   script:
     - apt-get update -y
     - apt-get -y install rsync

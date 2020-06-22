@@ -22,12 +22,14 @@ import utils from "utils";
 import cloneDeep from "lodash/cloneDeep";
 import { WeeklyOrder, THREE_DAY_OPTIONS, WeeklyMap } from "constant";
 import moment from "moment";
+import Item from 'antd/lib/list/Item';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const confirm = Modal.confirm;
 const TextArea = Input.TextArea;
 const radioStyle = { display: "block", marginBottom: 12, };
+let id = 0;
 
 const getFormItemLayout = (label, wrapper, offset?) => ({
   labelCol: { span: label, offset, },
@@ -63,6 +65,7 @@ IProductEditorState
     pre_pay_rule_options: [], // 预付款
     delay_rule_options: [], // 库存费
     tax_rule_options: [], // 税金
+    tradeLoopTimes: undefined,
   };
 
   async componentDidMount() {
@@ -106,6 +109,7 @@ IProductEditorState
         } else {
           if (this.state.mode === "edit") {
             await this.$store.exchange.getCurrentProduct(search.id);
+            await this.getTradeLoopTimes();
           } else {
             this.props.exchange.setCurrentProduct({}, true, false);
           }
@@ -213,6 +217,77 @@ IProductEditorState
     }
   };
 
+  getTradeLoopTimes = async() => {
+    const { currentShowProduct, } = this.props.exchange;
+    let maxTrade = 4;
+    let tradeAry = [];
+
+    currentShowProduct.trading_times.map((item, index) => {
+      if (item.trades.length > maxTrade) { 
+        maxTrade = item.trades.length; 
+      }
+    });
+
+    if(maxTrade % 2 === 1) {
+      maxTrade += 1;
+    }
+
+    for(let i = 1; i <= maxTrade / 2; i++) {
+      tradeAry.push(i);
+    }
+
+    this.setState({ tradeLoopTimes: tradeAry, });
+  }
+
+  addTransactionPeriod = () => {
+    const { tradeLoopTimes, } = this.state;
+    let newTradeAry = [];
+    let newTradeLoopTimes = tradeLoopTimes.length + 1;
+
+    for(let i = 1; i <= newTradeLoopTimes; i++) {
+      newTradeAry.push(i);
+    }
+
+    this.setState({ tradeLoopTimes: newTradeAry, });
+  };
+
+  deleteTransactionPeriod = () => {
+    const { currentShowProduct, currentProduct, setCurrentProduct, } = this.props.exchange;
+    const { tradeLoopTimes, } = this.state;
+    const tradeMap = {};
+    const copy = currentProduct.trading_times
+      ? cloneDeep(JSON.parse(currentProduct.trading_times))
+      : tradeMap;
+
+    if(tradeLoopTimes.length <= 2) {
+      return false;
+    }
+
+    let newTradeAry = [];
+    let newTradeLoopTimes = tradeLoopTimes.length - 1;
+
+
+
+    currentShowProduct.trading_times.map((item, index) => {
+      for(let i = newTradeLoopTimes * 2 - 1; i < item.trades.length - 1; i++) {
+        copy[item.day].trades.splice(i, 1);
+      }
+    });
+
+    setCurrentProduct(
+      {
+        trading_times: JSON.stringify(copy),
+      },
+      false
+    );
+
+    for(let i = 1; i <= newTradeLoopTimes; i++) {
+      newTradeAry.push(i);
+    }
+
+    this.setState({ tradeLoopTimes: newTradeAry, });
+  };
+
   renderEditor = () => {
     const { getFieldDecorator, } = this.props.form;
     const {
@@ -232,8 +307,8 @@ IProductEditorState
       tax_rule_options,
       fee_rule_options,
       delay_rule_options,
+      tradeLoopTimes,
     } = this.state;
-    // console.log(currentShowProduct);
 
     return (
       <Form className="editor-form">
@@ -1038,177 +1113,147 @@ IProductEditorState
         </FormItem>
         <Row style={{ marginBottom: 10, textAlign: "center", fontWeight: 500, }}>
           <Col span={3}>交易日</Col>
-          <Col span={6}>上午交易时间</Col>
-          <Col span={6}>下午交易时间</Col>
+          {/* <Col span={6}></Col>
+          <Col span={6}></Col> */}
+          {!utils.isEmpty(currentProduct.trading_times) && (
+            <>
+              {currentShowProduct.trading_times.map((item, index) => {
+                return(
+                  <Col span={3}>{WeeklyMap[item.day]}</Col>
+                );
+              })}
+            </>
+          )}
         </Row>
         {!utils.isEmpty(currentShowProduct.trading_times) && (
           <>
-            {currentShowProduct.trading_times.map((item, index) => {
+            {tradeLoopTimes && tradeLoopTimes.map((item, index) => {
+              let times = index * 2;
               return (
+                <>                
+                <Col span={3}></Col>
                 <FormItem
-                  key={item.day}
-                  label={WeeklyMap[item.day]}
-                  {...getFormItemLayout(3, 16)}
-                >
-                  <TimePicker
-                    style={{ marginRight: 10, width: 200, }}
-                    placeholder={"请输入上午交易开始时间"}
-                    value={item.trades && item.trades[0]}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
+                  key={item}
+                  {...getFormItemLayout(3, 21)}
+                  className="time-picker-container"
+                > 
+                  {currentShowProduct.trading_times.map((item, index)=>{
+                    return(
+                      <div>
+                        <TimePicker
+                          placeholder={"请输入交易开始时间"}
+                          defaultValue={item.trades && item.trades[times]}
+                          onChange={time => {
+                            const tradeMap = {};
+                            const copy = currentProduct.trading_times
+                              ? cloneDeep(JSON.parse(currentProduct.trading_times))
+                              : tradeMap;
 
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-                      // if (!copy[item.day].trades ) {
-                      //   copy[item.day].trades  = [];
-                      // }
-                      copy[item.day].trades[0] = time.unix();
-                      // console.log(copy);
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
+                            if (utils.isEmpty(copy)) {
+                              WeeklyOrder.forEach(item => {
+                                copy[item] = {
+                                  trades: [],
+                                };
+                              });
+                            }
+                            // if (!copy[item.day].trades ) {
+                            //   copy[item.day].trades  = [];
+                            // }
+                            if(time) {
+                              copy[item.day].trades[times] = time.unix();
+                            }else{
+                              copy[item.day].trades.splice(times, 1);
+                            }
+                            // console.log(copy);
+                            setCurrentProduct(
+                              {
+                                trading_times: JSON.stringify(copy),
+                              },
+                              false
+                            );
+                          }}
+                        />
+                        <TimePicker
+                          value={item.trades && item.trades[(times + 1)]}
+                          placeholder={"请输入交易结束时间"}
+                          // style={{ marginRight: 10, width: 165, }}
+                          onChange={time => {
+                            const tradeMap = {};
+                            const copy = currentProduct.trading_times
+                              ? cloneDeep(JSON.parse(currentProduct.trading_times))
+                              : tradeMap;
 
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[1]}
-                    placeholder={"请输入上午交易结束时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
+                            if (utils.isEmpty(copy)) {
+                              WeeklyOrder.forEach(item => {
+                                copy[item] = {
+                                  trades: [],
+                                };
+                              });
+                            }
 
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-
-                      // if (!copy[item.day].trades ) {
-                      //   copy[item.day].trades  = [];
-                      // }
-                      copy[item.day].trades[1] = time.unix();
-                      // console.log(copy);
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[2]}
-                    placeholder={"请输入下午交易开始时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-
-                      // if (!copy[item.day].trades ) {
-                      //   copy[item.day].trades  = [];
-                      // }
-                      copy[item.day].trades[2] = time.unix();
-                      // console.log(copy);
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <TimePicker
-                    value={item.trades && item.trades[3]}
-                    placeholder={"请输入下午交易结束时间"}
-                    style={{ marginRight: 10, width: 200, }}
-                    onChange={time => {
-                      const tradeMap = {};
-                      const copy = currentProduct.trading_times
-                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                        : tradeMap;
-
-                      if (utils.isEmpty(copy)) {
-                        WeeklyOrder.forEach(item => {
-                          copy[item] = {
-                            trades: [],
-                          };
-                        });
-                      }
-
-                      // if (!copy[item.day].trades ) {
-                      //   copy[item.day].trades  = [];
-                      // }
-                      copy[item.day].trades[3] = time.unix();
-                      // console.log(copy);
-                      setCurrentProduct(
-                        {
-                          trading_times: JSON.stringify(copy),
-                        },
-                        false
-                      );
-                    }}
-                  />
-                  <Icon type="close" onClick={() => {
-                    const tradeMap = {};
-                    const copy = currentProduct.trading_times
-                      ? cloneDeep(JSON.parse(currentProduct.trading_times))
-                      : tradeMap;
-
-                    if (utils.isEmpty(copy)) {
-                      WeeklyOrder.forEach(item => {
-                        copy[item] = {
-                          trades: [],
-                        };
-                      });
-                    }
-
-                    copy[item.day].trades = [];
-
-                    // console.log(copy);
-                    setCurrentProduct(
-                      {
-                        trading_times: JSON.stringify(copy),
-                      },
-                      false
+                            // if (!copy[item.day].trades ) {
+                            //   copy[item.day].trades  = [];
+                            // }
+                            if(time) {
+                              copy[item.day].trades[times + 1] = time.unix();
+                            }else{
+                              copy[item.day].trades.splice(times + 1, 1);
+                            }
+                            
+                            // console.log(copy);
+                            setCurrentProduct(
+                              {
+                                trading_times: JSON.stringify(copy),
+                              },
+                              false
+                            );
+                          }}
+                        />
+                      </div>
                     );
-                  }} />
+                  })}
+
+                  {/* <Icon type="close" onClick={() => {
+                      const tradeMap = {};
+                      const copy = currentProduct.trading_times
+                        ? cloneDeep(JSON.parse(currentProduct.trading_times))
+                        : tradeMap;
+
+                      if (utils.isEmpty(copy)) {
+                        WeeklyOrder.forEach(item => {
+                          copy[item] = {
+                            trades: [],
+                          };
+                        });
+                      }
+
+                      copy[item.day].trades = [];
+
+                      // console.log(copy);
+                      setCurrentProduct(
+                        {
+                          trading_times: JSON.stringify(copy),
+                        },
+                        false
+                      );
+                    }} /> */}
                 </FormItem>
+                </>
               );
             })}
           </>
         )}
+        <Form.Item
+          className="btn-group"
+        >
+          <Col span={3}></Col>
+          <Button type="dashed" onClick={this.addTransactionPeriod}>
+            <Icon type="plus" /> 新增交易时间段
+          </Button>
+          <Button type="dashed" onClick={this.deleteTransactionPeriod}>
+            <Icon type="minus" /> 删除交易时间段
+          </Button>
+        </Form.Item>
         <FormItem className="editor-form-btns">
           {
             <Button type="primary" onClick={this.handleSubmit}>

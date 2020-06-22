@@ -1,0 +1,26 @@
+*{
+  //outline: 1px solid red;
+}
+
+.time-picker-container {
+  .ant-form-item-children {
+    display: flex;
+
+    > div {
+      width: calc(100% / 7 - 10px);
+      margin-right: 10px;
+    }
+  }
+}
+
+.ant-time-picker {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.btn-group {
+  button + button {
+    margin-left: 10px;
+  }
+}

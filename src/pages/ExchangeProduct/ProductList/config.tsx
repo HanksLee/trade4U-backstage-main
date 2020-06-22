@@ -386,8 +386,8 @@ const config = self => {
       scroll: { x: (columns.length - 1) * 100 + 240, },
       onChange(pagination, filters, sorter) {
         const payload: any = {
-          pageNum: pagination.current,
-          pageSize: pagination.pageSize,
+          page: pagination.current,
+          page_size: pagination.pageSize,
         };
 
         if (!utils.isEmpty(filters)) {

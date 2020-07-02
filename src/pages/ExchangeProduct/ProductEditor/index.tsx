@@ -911,7 +911,6 @@ IProductEditorState
             initialValue: currentShowProduct && currentShowProduct.purchase_fee,
           })(
             <InputNumber
-              min={0}
               type="number"
               placeholder="请输入买入库存费
           "
@@ -932,7 +931,6 @@ IProductEditorState
             initialValue: currentShowProduct && currentShowProduct.selling_fee,
           })(
             <InputNumber
-              min={0}
               type="number"
               placeholder="请输入卖出库存费"
               onChange={value => {

@@ -98,8 +98,9 @@ IProductEditorState
             title: "行情产品恢复操作",
             content:
               "检测到您存在未提交的行情产品记录，请问是否从上次编辑中恢复状态？",
-            onOk: () => {
+            onOk: async() => {
               this.props.exchange.setCurrentProduct(currentProduct);
+              await this.getTradeLoopTimes();
             },
             onCancel: () => {
               this.init();
@@ -109,10 +110,10 @@ IProductEditorState
         } else {
           if (this.state.mode === "edit") {
             await this.$store.exchange.getCurrentProduct(search.id);
-            await this.getTradeLoopTimes();
           } else {
             this.props.exchange.setCurrentProduct({}, true, false);
           }
+          await this.getTradeLoopTimes();
         }
       }
     );
@@ -1348,6 +1349,13 @@ IProductEditorState
     });
   };
 
+  concatTime = (timestmap) =>{
+    const time = moment(timestmap * 1000).format("HH:mm:ss");
+    const timeAry = time.split(":");
+    const timeNum = Number(timeAry.join(""));
+    return timeNum;
+  }
+
   getValidation = (payload: any) => {
     const validator = new Validator();
 
@@ -1394,37 +1402,46 @@ IProductEditorState
     ]);
 
     let errMsg: any = validator.start();
+
     if (!payload.trading_times) {
       errMsg = "请设置交易时间段";
-    } else {
+    } else {        
+      let trading_times = JSON.parse(payload.trading_times);
       for (let i = 0; i < WeeklyOrder.length; i++) {
         let dayKey = WeeklyOrder[i];
         let dayValue = WeeklyMap[dayKey];
-        let trading_times = JSON.parse(payload.trading_times);
         let day: any = trading_times[dayKey];
 
         if (utils.isEmpty(day.trades)) {
           // errMsg = `请输入 ${dayValue} 的交易时间段`;
           // break;
+          continue;
         } else {
-          if (day.trades[1] < day.trades[0]) {
-            errMsg = `${dayValue} 的上午交易结束时间不得小于开始时间`;
-            break;
-          }
+          const dayTradeLength = day.trades.length;
+          let dayTradeTimes = 0;
+          for(let i = 0;i < dayTradeLength;i += 2) {
+            dayTradeTimes ++;
 
-          if (day.trades[2] < day.trades[1]) {
-            errMsg = `${dayValue} 的下午交易开始时间不得小于上午交易结束时间`;
-            break;
-          }
+            if(utils.isEmpty(day.trades[i + 1]) || utils.isEmpty(day.trades[i])) {
+              errMsg = `${dayValue}第${dayTradeTimes}次的交易开始时间与结束时间都必须要设定`;
+              break;
+            }
+            if (day.trades[i + 1] < day.trades[i]) {
+              errMsg = `${dayValue}第${dayTradeTimes}次的交易结束时间不得小于开始时间`;
+              break;
+            }
 
-          if (day.trades[3] < day.trades[2]) {
-            errMsg = `${dayValue} 的下午交易结束时间不得小于开始时间`;
-            break;
+            if(i > 0) {
+              if (this.concatTime(day.trades[i]) < this.concatTime(day.trades[i - 1])) {
+                errMsg = `${dayValue}第${dayTradeTimes}次的交易开始时间不得小于第${dayTradeTimes - 1}次交易结束时间`;
+                break;
+              }
+            }
           }
         }
       }
     }
-
+    // console.log(errMsg)
     return errMsg;
   };
 
